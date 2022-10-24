@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kmorsebrown/adventOfCode/issues"
   },
-  "homepage": "https://github.com/kmorsebrown/adventOfCode#readme"
+  "homepage": "https://github.com/kmorsebrown/adventOfCode#readme",
+  "devDependencies": {
+    "eslint": "^8.26.0"
+  }
 }
