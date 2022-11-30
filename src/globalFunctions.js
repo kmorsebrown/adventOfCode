@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 async function getData(filePath) {
   try {
@@ -10,7 +11,6 @@ async function getData(filePath) {
   }
 }
 
-const data = await getData(
-  '/Users/kelseymorse-brown/develop/adventOfCode/src/AoC22/testData.txt'
-);
-console.log(data);
+module.exports = {
+  getData,
+};
