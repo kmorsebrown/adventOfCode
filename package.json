@@ -4,7 +4,7 @@
   "description": "Advent of Code",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/kmorsebrown/adventOfCode/issues"
   },
-  "homepage": "https://github.com/kmorsebrown/adventOfCode#readme"
+  "homepage": "https://github.com/kmorsebrown/adventOfCode#readme",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  },
+  "dependencies": {
+    "prettier": "^2.8.0"
+  }
 }
