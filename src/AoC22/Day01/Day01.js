@@ -26,34 +26,31 @@ async function sumCalories(input) {
 
   return sumArray;
 }
+
+// Part One
 async function getHighestTotal(input) {
   return Math.max(...input);
 }
 
-async function runDay01part1(input) {
-  try {
-    const filepath = input;
-    const formattedData = await formatData(filepath);
-    const calloriesSumArray = await sumCalories(formattedData);
-    const highestTotalCalories = await getHighestTotal(calloriesSumArray);
-    return highestTotalCalories;
-  } catch (err) {
-    console.log(err);
-  }
+// Part Two
+async function getSumTopThree(input) {
+  const topThree = input.sort((a, b) => b - a).slice(0, 3);
+  return topThree.reduce((a, b) => a + b, 0);
 }
 
 async function runDay01() {
-  const part1dataPath = path.join(__dirname, 'Day01Input.txt');
+  const dataPath = path.join(__dirname, 'Day01Input.txt');
 
   try {
+    const formattedData = await formatData(dataPath);
+    const calloriesSumArray = await sumCalories(formattedData);
     const results = await Promise.all([
-      await runDay01part1(part1dataPath),
-      'tbd',
+      await getHighestTotal(calloriesSumArray),
+      await getSumTopThree(calloriesSumArray),
     ]);
-    console.log(results);
     return results;
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -61,6 +58,6 @@ module.exports = {
   getHighestTotal,
   formatData,
   sumCalories,
-  runDay01part1,
+  getSumTopThree,
   runDay01,
 };
