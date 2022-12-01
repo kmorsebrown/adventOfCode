@@ -4,7 +4,8 @@
   "description": "Advent of Code",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js"
   },
   "repository": {
     "type": "git",

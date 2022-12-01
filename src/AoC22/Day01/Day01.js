@@ -1,13 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { getData } = require(path.join(
+const { getData, PART1_KEY, PART2_KEY } = require(path.join(
   path.dirname(path.dirname(__dirname)),
   'globalFunctions.js'
 ));
-
-console.log(
-  path.join(path.dirname(path.dirname(__dirname)), 'globalFunctions.js')
-);
 
 async function formatData(filepath) {
   const data = await getData(filepath);
@@ -34,26 +30,37 @@ async function getHighestTotal(input) {
   return Math.max(...input);
 }
 
-async function runDay01(input) {
+async function runDay01part1(input) {
   try {
     const filepath = input;
     const formattedData = await formatData(filepath);
     const calloriesSumArray = await sumCalories(formattedData);
     const highestTotalCalories = await getHighestTotal(calloriesSumArray);
-    await fs.promises.writeFile(
-      path.join(__dirname, 'Day01Result.txt'),
-      JSON.stringify(highestTotalCalories)
-    );
     return highestTotalCalories;
   } catch (err) {
     console.log(err);
   }
 }
 
-runDay01(path.join(__dirname, 'Day01Input.txt'));
+async function runDay01() {
+  const part1dataPath = path.join(__dirname, 'Day01Input.txt');
+
+  try {
+    const results = await Promise.all([
+      await runDay01part1(part1dataPath),
+      'tbd',
+    ]);
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 module.exports = {
   getHighestTotal,
   formatData,
   sumCalories,
+  runDay01part1,
+  runDay01,
 };
