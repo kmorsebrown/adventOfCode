@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getData, PART1_KEY, PART2_KEY } = require(path.join(
+const { getData } = require(path.join(
   path.dirname(path.dirname(__dirname)),
   'globalFunctions.js'
 ));
