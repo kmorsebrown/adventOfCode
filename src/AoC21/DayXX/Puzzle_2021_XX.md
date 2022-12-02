@@ -1,5 +1,7 @@
 # Day XX
 
+[Puzzle](https://adventofcode.com/2021/day/X)
+
 ## Part One
 
 TK

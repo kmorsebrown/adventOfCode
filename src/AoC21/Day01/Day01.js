@@ -5,6 +5,8 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+// https://adventofcode.com/2021/day/1
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   const numberArray = data.split('\n').map(Number);

@@ -5,6 +5,8 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+// https://adventofcode.com/2021/day/2
+
 async function formatData(filepath) {
   const input = await getData(filepath);
   const dataWithHeader = `direction unitsMoved\n${input}`;
