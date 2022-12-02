@@ -6,7 +6,8 @@
   "extends": "eslint:recommended",
   "overrides": [],
   "parserOptions": {
-    "ecmaVersion": "latest"
+    "ecmaVersion": "latest",
+    "sourceType": "module"
   },
   "rules": {
     // override configuration set by extending "eslint:recommended"

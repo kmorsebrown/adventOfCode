@@ -4,8 +4,8 @@
   "description": "Advent of Code",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js"
+    "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,10 +18,8 @@
   },
   "homepage": "https://github.com/kmorsebrown/adventOfCode#readme",
   "devDependencies": {
+    "eslint": "^8.26.0",
     "jest": "^29.3.1",
-    "eslint": "^8.26.0"
-  },
-  "dependencies": {
-    "prettier": "^2.8.0"
+    "prettier": "2.8.0"
   }
 }
