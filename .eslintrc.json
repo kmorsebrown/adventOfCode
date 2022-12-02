@@ -13,6 +13,7 @@
   "rules": {
     // override configuration set by extending "eslint:recommended"
     "no-unused-vars": "off",
-    "no-redeclare": "off"
+    "no-redeclare": "off",
+    "no-constant-condition": ["error", { "checkLoops": false }]
   }
 }
