@@ -7,6 +7,7 @@ const { getData, appendFile } = require(path.join(
 const { runDay01 } = require(path.join(__dirname, 'Day01', 'Day01.js'));
 const { runDay02 } = require(path.join(__dirname, 'Day02', 'Day02.js'));
 const { runDay03 } = require(path.join(__dirname, 'Day03', 'Day03.js'));
+const { runDay04 } = require(path.join(__dirname, 'Day04', 'Day04.js'));
 
 async function printResults() {
   const reportFilepath = path.join(
@@ -36,6 +37,12 @@ async function printResults() {
   const day03resultsArr = await runDay03();
   await appendFile(reportFilepath, `\n - Part One: ${day03resultsArr[0]}`);
   await appendFile(reportFilepath, `\n - Part Two: ${day03resultsArr[1]}`);
+
+  // Run Day 04
+  await appendFile(reportFilepath, '\n\nDay 4: Giant Squid');
+  const day04resultsArr = await runDay04();
+  await appendFile(reportFilepath, `\n - Part One: ${day04resultsArr[0]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day04resultsArr[1]}`);
 }
 
 printResults();

@@ -79,7 +79,7 @@ async function getLifeSupportRating(input) {
           numOnes += 1;
         }
       }
-      console.log('Ones: ' + numOnes + ', Zeroes: ' + numZeroes);
+      // console.log('Ones: ' + numOnes + ', Zeroes: ' + numZeroes);
 
       for (var i = 0; i < input.length; i++) {
         if (numOnes >= numZeroes) {
