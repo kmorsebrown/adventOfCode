@@ -8,7 +8,13 @@ const { getData } = require(path.join(
 async function formatData(filepath) {
   const data = await getData(filepath);
   const arrayOfStrings = data.split('\n').filter(String);
-  const rucksackArr = arrayOfStrings.map((rucksack) => {
+  return arrayOfStrings;
+}
+
+// Part One
+
+async function findDupLetters(rucksackArr) {
+  const rucksackCompArr = rucksackArr.map((rucksack) => {
     const rucksackSize = rucksack.length;
     const compSize = rucksackSize / 2;
     return [
@@ -16,13 +22,7 @@ async function formatData(filepath) {
       rucksack.slice(compSize, rucksackSize),
     ];
   });
-  return rucksackArr;
-}
-
-// Part One
-
-async function findDupLetters(rucksackArr) {
-  const dupArr = rucksackArr.map((rucksack) => {
+  const dupArr = rucksackCompArr.map((rucksack) => {
     let i = 0;
     let foundDup = false;
     let dupLetter = '';
@@ -44,7 +44,7 @@ async function findDupLetters(rucksackArr) {
   return dupArr;
 }
 
-async function getDupPrioritySum(dupItems) {
+async function getPrioritySum(dupItems) {
   // a thru z have priorities 1 - 26 and char codes 97 - 122
   // A thru Z have priorities 27 - 52 and char codes 65 - 90
   const dupPriorityArr = dupItems.map((letter) => {
@@ -59,8 +59,34 @@ async function getDupPrioritySum(dupItems) {
 }
 
 // Part Two
-async function partTwo(input) {
-  return input;
+async function getGroups(input) {
+  const newArr = [];
+  let i = 0;
+  do {
+    newArr.push(input.slice(i, i + 3));
+    i = i + 3;
+  } while (newArr.length < input.length / 3);
+  return newArr;
+}
+
+async function getBadges(rucksackGroups) {
+  const badgeArr = rucksackGroups.map((rucksackGroup) => {
+    let i = 0;
+    let foundBadge = false;
+    let badgeLetter = '';
+    do {
+      const item = Array.from(rucksackGroup[0])[i];
+      if (rucksackGroup[1].includes(item) && rucksackGroup[2].includes(item)) {
+        foundBadge = true;
+        badgeLetter = item;
+      } else {
+        i++;
+      }
+    } while (!foundBadge);
+    return badgeLetter;
+  });
+
+  return badgeArr;
 }
 
 async function runDay03() {
@@ -69,9 +95,11 @@ async function runDay03() {
   try {
     const formattedData = await formatData(dataPath);
     const dupArr = await findDupLetters(formattedData);
+    const groups = await getGroups(formattedData);
+    const badgeArr = await getBadges(groups);
     const results = await Promise.all([
-      await getDupPrioritySum(dupArr),
-      //await partTwo(formattedData),
+      await getPrioritySum(dupArr),
+      await getPrioritySum(badgeArr),
     ]);
     return results;
   } catch (err) {
@@ -82,7 +110,8 @@ async function runDay03() {
 module.exports = {
   formatData,
   findDupLetters,
-  getDupPrioritySum,
-  partTwo,
+  getPrioritySum,
+  getGroups,
+  getBadges,
   runDay03,
 };

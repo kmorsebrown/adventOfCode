@@ -34,7 +34,7 @@ async function printResults() {
   await appendFile(reportFilepath, '\n\nDay 3: Rucksack Reorganization');
   const day03resultsArr = await runDay03();
   await appendFile(reportFilepath, `\n - Part One: ${day03resultsArr[0]}`);
-  // await appendFile(reportFilepath, `\n - Part Two: ${day03resultsArr[1]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day03resultsArr[1]}`);
 }
 
 printResults();
