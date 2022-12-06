@@ -1,14 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { appendFile } = require(path.join(
-  path.dirname(__dirname),
-  'globalFunctions.js'
-));
+const { appendFile } = require('../globalFunctions.js');
 const { runDay01 } = require(path.join(__dirname, 'Day01', 'Day01.js'));
 const { runDay02 } = require(path.join(__dirname, 'Day02', 'Day02.js'));
 const { runDay03 } = require(path.join(__dirname, 'Day03', 'Day03.js'));
 const { runDay04 } = require(path.join(__dirname, 'Day04', 'Day04.js'));
 const { runDay05 } = require(path.join(__dirname, 'Day05', 'Day05.js'));
+const { runDay06 } = require(path.join(__dirname, 'Day06', 'Day06.js'));
 async function printResults() {
   const reportFilepath = path.join(
     path.dirname(path.dirname(__dirname)),
@@ -49,6 +47,12 @@ async function printResults() {
   const day05resultsArr = await runDay05();
   await appendFile(reportFilepath, `\n - Part One: ${day05resultsArr[0]}`);
   await appendFile(reportFilepath, `\n - Part Two: ${day05resultsArr[1]}`);
+
+  // Run Day 06
+  await appendFile(reportFilepath, '\n\nDay 6: Tuning Trouble');
+  const day06resultsArr = await runDay06();
+  await appendFile(reportFilepath, `\n - Part One: ${day06resultsArr[0]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day06resultsArr[1]}`);
 }
 
 printResults();
