@@ -7,16 +7,21 @@ async function formatData(filepath) {
   return data;
 }
 
-// Part One
+const MARKER_LENGTH = {
+  startOfPacket: 4,
+  startOfMessage: 14,
+};
 
-async function partOne(input) {
+async function getNumCharactersProcessed(input, markerType) {
+  let markerLength = MARKER_LENGTH[markerType];
+
   const tempArr = [];
 
   let i = 0;
   // let sopMarker;
 
   while (i < input.length) {
-    if (tempArr.length < 4) {
+    if (tempArr.length < markerLength) {
       tempArr.push(input[i]);
     } else {
       const lengthArr = tempArr.map(
@@ -38,19 +43,14 @@ async function partOne(input) {
   return i;
 }
 
-// Part Two
-async function partTwo(input) {
-  return input;
-}
-
 async function runDay06() {
   const dataPath = path.join(__dirname, 'Day06Input.txt');
 
   try {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
+      await getNumCharactersProcessed(formattedData, 'startOfPacket'),
+      await getNumCharactersProcessed(formattedData, 'startOfMessage'),
     ]);
     return results;
   } catch (err) {
@@ -60,7 +60,6 @@ async function runDay06() {
 
 module.exports = {
   formatData,
-  partOne,
-  partTwo,
+  getNumCharactersProcessed,
   runDay06,
 };

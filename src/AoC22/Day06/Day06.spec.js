@@ -1,5 +1,5 @@
 const path = require('path');
-const { formatData, partOne, partTwo } = require('./Day06.js');
+const { formatData, getNumCharactersProcessed } = require('./Day06.js');
 
 describe('Day06', () => {
   describe('formatData', () => {
@@ -9,38 +9,66 @@ describe('Day06', () => {
       expect(actual).toEqual('mjqjpqmgbljsphdztnvjfqwrcgsmlb');
     });
   });
-  describe('partOne', () => {
-    it('Identifies that the first marker is after character 7', async () => {
-      const args = 'mjqjpqmgbljsphdztnvjfqwrcgsmlb';
-      const actual = await partOne(args);
+  describe('getNumCharactersProcessed', () => {
+    it('Returns 7 if the marker type is startOfPacket', async () => {
+      const data = 'mjqjpqmgbljsphdztnvjfqwrcgsmlb';
+      const type = 'startOfPacket';
+      const actual = await getNumCharactersProcessed(data, type);
       expect(actual).toEqual(7);
     });
-    it('Identifies that the first marker is after character 5', async () => {
-      const args = 'bvwbjplbgvbhsrlpgdmjqwftvncz';
-      const actual = await partOne(args);
+    it('Returns 5 if the marker type is startOfPacket', async () => {
+      const data = 'bvwbjplbgvbhsrlpgdmjqwftvncz';
+      const type = 'startOfPacket';
+      const actual = await getNumCharactersProcessed(data, type);
       expect(actual).toEqual(5);
     });
-    it('Identifies that the first marker is after character 6', async () => {
-      const args = 'nppdvjthqldpwncqszvftbrmjlhg';
-      const actual = await partOne(args);
+    it('Returns 6 if the marker type is startOfPacket', async () => {
+      const data = 'nppdvjthqldpwncqszvftbrmjlhg';
+      const type = 'startOfPacket';
+      const actual = await getNumCharactersProcessed(data, type);
       expect(actual).toEqual(6);
     });
-    it('Identifies that the first marker is after character 10', async () => {
-      const args = 'nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg';
-      const actual = await partOne(args);
+    it('Returns 10 if the marker type is startOfPacket', async () => {
+      const data = 'nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg';
+      const type = 'startOfPacket';
+      const actual = await getNumCharactersProcessed(data, type);
       expect(actual).toEqual(10);
     });
-    it('Identifies that the first marker is after character 11', async () => {
-      const args = 'zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw';
-      const actual = await partOne(args);
+    it('Returns 11 if the marker type is startOfPacket', async () => {
+      const data = 'zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw';
+      const type = 'startOfPacket';
+      const actual = await getNumCharactersProcessed(data, type);
       expect(actual).toEqual(11);
     });
-  });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+    it('Returns 19 if the marker type is startOfMessage', async () => {
+      const data = 'mjqjpqmgbljsphdztnvjfqwrcgsmlb';
+      const type = 'startOfMessage';
+      const actual = await getNumCharactersProcessed(data, type);
+      expect(actual).toEqual(19);
+    });
+    it('Returns 23 if the marker type is startOfMessage', async () => {
+      const data = 'bvwbjplbgvbhsrlpgdmjqwftvncz';
+      const type = 'startOfMessage';
+      const actual = await getNumCharactersProcessed(data, type);
+      expect(actual).toEqual(23);
+    });
+    it('Returns 23 if the marker type is startOfMessage', async () => {
+      const data = 'nppdvjthqldpwncqszvftbrmjlhg';
+      const type = 'startOfMessage';
+      const actual = await getNumCharactersProcessed(data, type);
+      expect(actual).toEqual(23);
+    });
+    it('Returns 29 if the marker type is startOfMessage', async () => {
+      const data = 'nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg';
+      const type = 'startOfMessage';
+      const actual = await getNumCharactersProcessed(data, type);
+      expect(actual).toEqual(29);
+    });
+    it('Returns 26 if the marker type is startOfMessage', async () => {
+      const data = 'zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw';
+      const type = 'startOfMessage';
+      const actual = await getNumCharactersProcessed(data, type);
+      expect(actual).toEqual(26);
     });
   });
 });

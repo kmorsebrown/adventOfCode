@@ -52,7 +52,7 @@ async function printResults() {
   await appendFile(reportFilepath, '\n\nDay 6: Tuning Trouble');
   const day06resultsArr = await runDay06();
   await appendFile(reportFilepath, `\n - Part One: ${day06resultsArr[0]}`);
-  //await appendFile(reportFilepath, `\n - Part Two: ${day06resultsArr[1]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day06resultsArr[1]}`);
 }
 
 printResults();
