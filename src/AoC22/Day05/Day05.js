@@ -52,45 +52,66 @@ async function formatMovesData(filepath) {
   return objArr;
 }
 
-// Part One
-async function moveCrates(crates, moves) {
-  moves.forEach((element) => {
-    const fromStack = crates.get(element.from);
-    const toStack = crates.get(element.to);
-    const numCrates = element.move;
+async function moveCrates(crates, moves, cratemover) {
+  //create deep copy of crates map so the two parts don't override each other
 
-    for (let i = 1; i <= numCrates; i++) {
-      toStack.unshift(fromStack.shift());
-      crates.set(element.from, fromStack);
-      crates.set(element.to, toStack);
-    }
-  });
+  const cratesAfter = new Map(JSON.parse(JSON.stringify(Array.from(crates))));
 
-  return crates;
+  // Part One
+  if (cratemover === 9000) {
+    moves.forEach((element) => {
+      const fromStack = cratesAfter.get(element.from);
+      const toStack = cratesAfter.get(element.to);
+      const numCrates = element.move;
+
+      for (let i = 1; i <= numCrates; i++) {
+        toStack.unshift(fromStack.shift());
+        cratesAfter.set(element.from, fromStack);
+        cratesAfter.set(element.to, toStack);
+      }
+    });
+
+    return cratesAfter;
+  }
+
+  // Part Two
+  if (cratemover === 9001) {
+    moves.forEach((element) => {
+      const fromStack = cratesAfter.get(element.from);
+      const toStack = cratesAfter.get(element.to);
+      const numCrates = element.move;
+
+      const cratesToMove = [];
+
+      for (let i = 0; i < numCrates; i++) {
+        cratesToMove.push(fromStack.shift());
+      }
+
+      cratesAfter.set(element.from, fromStack);
+      cratesAfter.set(element.to, cratesToMove.concat(toStack));
+    });
+
+    return cratesAfter;
+  }
 }
 
-async function partOne(input) {
+async function getTopCrates(input) {
   const topBoxes = [];
   input.forEach((value) => topBoxes.push(value[0]));
   return topBoxes.join('');
 }
 
-// Part Two
-async function partTwo(input) {
-  return input;
-}
-
 async function runDay05() {
   const dataPath = path.join(__dirname, 'Day05Input.txt');
-
   try {
     const cratesArr = await formatCratesData(dataPath);
     const movesArr = await formatMovesData(dataPath);
-    const cratesArrAfterMove = await moveCrates(cratesArr, movesArr);
-    const results = await Promise.all([
-      await partOne(cratesArrAfterMove),
-      //await partTwo(formattedData),
-    ]);
+    const movedCrates9000 = await moveCrates(cratesArr, movesArr, 9000);
+    const movedCrates9001 = await moveCrates(cratesArr, movesArr, 9001);
+    const results = [
+      await getTopCrates(movedCrates9000),
+      await getTopCrates(movedCrates9001),
+    ];
     return results;
   } catch (err) {
     console.log(err);
@@ -101,7 +122,6 @@ module.exports = {
   formatCratesData,
   formatMovesData,
   moveCrates,
-  partOne,
-  partTwo,
+  getTopCrates,
   runDay05,
 };
