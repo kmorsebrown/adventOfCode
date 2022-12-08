@@ -18,17 +18,25 @@ async function formatData(filepath) {
   while (line < splitData.length) {
     if (splitData[line].startsWith('$ cd')) {
       let newDir = splitData[line].split(' ').pop();
-
+      let newDirName;
+      // Set new dir name to be full filepath
+      if (newDir === '/') {
+        newDirName = newDir;
+      } else if (newDir != '..' && workingDir === '/') {
+        newDirName = workingDir + newDir;
+      } else if (newDir != '..') {
+        newDirName = workingDir + '/' + newDir;
+      }
       if (newDir === '..') {
         // set working directory to parent directory
         workingDir = workingDirObj.parentDir;
         workingDirObj = filesMap.get(workingDir);
       } else {
         // set working directory to new directory
-        workingDirObj = filesMap.get(newDir)
-          ? filesMap.get(newDir)
+        workingDirObj = filesMap.get(newDirName)
+          ? filesMap.get(newDirName)
           : { parentDir: workingDir };
-        workingDir = newDir;
+        workingDir = newDirName;
       }
       line++;
     } else if (splitData[line].startsWith('$ ls')) {
@@ -37,7 +45,11 @@ async function formatData(filepath) {
       const dirsArr = [];
       while (splitData[i] && !splitData[i].startsWith('$')) {
         if (splitData[i].startsWith('dir')) {
-          dirsArr.push(splitData[i].split(' ').pop());
+          if (workingDir === '/') {
+            dirsArr.push(workingDir + splitData[i].split(' ').pop());
+          } else {
+            dirsArr.push(workingDir + '/' + splitData[i].split(' ').pop());
+          }
         } else if (splitData[i][0].match(new RegExp(/^\d/)) !== null) {
           const size = Number(splitData[i].split(' ')[0]);
           const filename = splitData[i].split(' ').pop();

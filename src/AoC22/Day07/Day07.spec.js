@@ -18,20 +18,20 @@ const testDataMapA = new Map([
     {
       parentDir: '',
       files: { 'b.txt': 14848514, 'c.dat': 8504156 },
-      dirs: ['a', 'd'],
+      dirs: ['/a', '/d'],
     },
   ],
   [
-    'a',
+    '/a',
     {
       parentDir: '/',
       files: { f: 29116, g: 2557, 'h.lst': 62596 },
-      dirs: ['e'],
+      dirs: ['/a/e'],
     },
   ],
-  ['e', { parentDir: 'a', files: { i: 584 }, dirs: [] }],
+  ['/a/e', { parentDir: '/a', files: { i: 584 }, dirs: [] }],
   [
-    'd',
+    '/d',
     {
       parentDir: '/',
       files: {
@@ -51,23 +51,23 @@ const testDataMapB = new Map([
     {
       parentDir: '',
       files: { 'b.txt': 14848514, 'c.dat': 8504156 },
-      dirs: ['a', 'd'],
+      dirs: ['/a', '/d'],
       sizeFilesOnly: 23352670,
     },
   ],
   [
-    'a',
+    '/a',
     {
       parentDir: '/',
       files: { f: 29116, g: 2557, 'h.lst': 62596 },
-      dirs: ['e'],
+      dirs: ['/a/e'],
       sizeFilesOnly: 94269,
     },
   ],
   [
-    'e',
+    '/a/e',
     {
-      parentDir: 'a',
+      parentDir: '/a',
       files: { i: 584 },
       dirs: [],
       sizeFilesOnly: 584,
@@ -75,7 +75,7 @@ const testDataMapB = new Map([
     },
   ],
   [
-    'd',
+    '/d',
     {
       parentDir: '/',
       files: {
@@ -97,11 +97,6 @@ describe('Day07', () => {
       const actual = await formatData(args);
       expect(actual).toEqual(testDataMapA);
     });
-    it('Formats the data into a map', async () => {
-      const args = path.join(__dirname, 'Day07Input.txt');
-      const actual = await formatData(args);
-      expect(actual).toEqual();
-    });
   });
   describe('getSumFiles', () => {
     it('Gets the sum of all the files in the directory, excluding any sub-directories', async () => {
@@ -109,7 +104,10 @@ describe('Day07', () => {
         JSON.parse(JSON.stringify(Array.from(testDataMapA)))
       );
       args.forEach(getSumFiles);
-      const actual = [args.get('e').sizeFilesOnly, args.get('d').sizeFilesOnly];
+      const actual = [
+        args.get('/a/e').sizeFilesOnly,
+        args.get('/d').sizeFilesOnly,
+      ];
       expect(actual).toEqual([584, 24933642]);
     });
   });
@@ -117,18 +115,18 @@ describe('Day07', () => {
     it('Returns array of keys with values containing empty dirs arrays', () => {
       const args = testDataMapA;
       const actual = getLowestLevelDirs(args);
-      expect(actual).toEqual(['e', 'd']);
+      expect(actual).toEqual(['/a/e', '/d']);
     });
   });
   describe('getParentDirs', () => {
     it('Returns array of keys with dirs arrays containing the input array', () => {
-      const actual = getParentDirs(testDataMapA, ['e', 'd']);
-      expect(actual).toEqual(['a', '/']);
+      const actual = getParentDirs(testDataMapA, ['/a/e', '/d']);
+      expect(actual).toEqual(['/a', '/']);
     });
   });
   describe('getChildDirTotal', () => {
     it('get total size of child directories', async () => {
-      const actual = await getChildDirTotal(testDataMapB, 'a');
+      const actual = await getChildDirTotal(testDataMapB, '/a');
       expect(actual).toEqual(584);
     });
     it('returns undefined if not all child directories have totals yet', async () => {
@@ -140,7 +138,7 @@ describe('Day07', () => {
     it('Returns array of dirNames that have their total size calculated', async () => {
       const args = testDataMapB;
       const actual = await getCompletedDirs(args);
-      expect(actual).toEqual(['e', 'd']);
+      expect(actual).toEqual(['/a/e', '/d']);
     });
   });
   describe('partOne', () => {
