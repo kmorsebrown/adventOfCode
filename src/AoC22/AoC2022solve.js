@@ -66,7 +66,7 @@ async function printResults() {
   await appendFile(reportFilepath, '\n\nDay 8: Treetop Tree House');
   const day08resultsArr = await runDay08();
   await appendFile(reportFilepath, `\n - Part One: ${day08resultsArr[0]}`);
-  // await appendFile(reportFilepath, `\n - Part Two: ${day08resultsArr[1]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day08resultsArr[1]}`);
 }
 
 printResults();

@@ -4,8 +4,10 @@ const {
   countEdgeTrees,
   getTreesAbove,
   getTreesBelow,
-  // getTreesLeft,
-  // getTreesRight,
+  getTreesLeft,
+  getTreesRight,
+  getDirectionScore,
+  getScenicScore,
   partOne,
   partTwo,
 } = require('./Day08.js');
@@ -47,6 +49,18 @@ describe('Day08', () => {
       expect(actual).toEqual([9, 4, 3]);
     });
   });
+  describe('getTreesLeft', () => {
+    it('Returns array of tree heights between tree and left edge, ascending', async () => {
+      const actual = await getTreesLeft(TEST_DATA, 2, 1);
+      expect(actual).toEqual([2, 5]);
+    });
+  });
+  describe('getTreesRight', () => {
+    it('Returns array of tree heights between tree and right edge, ascending', async () => {
+      const actual = await getTreesRight(TEST_DATA, 2, 1);
+      expect(actual).toEqual([2, 1]);
+    });
+  });
 
   describe('partOne', () => {
     it('TK', async () => {
@@ -55,11 +69,27 @@ describe('Day08', () => {
       expect(actual).toEqual(21);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
+  describe('getDirectionScore', () => {
+    it('Get num of trees until view is blocked in a given direction', async () => {
+      const actual = await getDirectionScore(5, [3, 5, 3]);
+      expect(actual).toEqual(2);
+    });
+  });
+  describe('getScenicScore', () => {
+    it('Get sum of directional blocked score for the tree in the middle of the fourth row', async () => {
+      const actual = await getScenicScore(TEST_DATA, 2, 3);
+      expect(actual).toEqual(8);
+    });
+    it('Get sum of directional blocked score for the tree in the middle of the second row', async () => {
+      const actual = await getScenicScore(TEST_DATA, 2, 1);
+      expect(actual).toEqual(4);
+    });
+  });
+  describe('partTwo', () => {
+    it('Gets highest possible scenic score', async () => {
       const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+      const actual = await partTwo(TEST_DATA);
+      expect(actual).toEqual(8);
     });
   });
 });
