@@ -59,7 +59,7 @@ async function printResults() {
   await appendFile(reportFilepath, '\n\nDay 7: No Space Left On Device');
   const day07resultsArr = await runDay07();
   await appendFile(reportFilepath, `\n - Part One: ${day07resultsArr[0]}`);
-  //await appendFile(reportFilepath, `\n - Part Two: ${day07resultsArr[1]}`);
+  await appendFile(reportFilepath, `\n - Part Two: ${day07resultsArr[1]}`);
 }
 
 printResults();

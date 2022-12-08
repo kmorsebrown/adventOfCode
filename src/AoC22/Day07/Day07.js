@@ -5,6 +5,9 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+const DISC_SPACE = 70000000;
+const MIN_SPACE_NEEDED = 30000000;
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n');
@@ -113,9 +116,7 @@ function getCompletedDirs(map) {
     .map(([key]) => key);
 }
 
-// Part One
-
-async function partOne(map) {
+async function getDirTotals(map) {
   map.forEach(getSumFiles);
   getLowestLevelDirs(map).forEach((element) => {
     let dirObj = map.get(element);
@@ -134,7 +135,12 @@ async function partOne(map) {
       }
     });
   }
+  return map;
+}
 
+// Part One
+
+async function partOne(map) {
   return [...map.values()]
     .filter((x) => x.totalSize < 100000)
     .map((x) => x.totalSize)
@@ -142,8 +148,27 @@ async function partOne(map) {
 }
 
 // Part Two
-async function partTwo(input) {
-  return input;
+function getTopLevelDrSize(map) {
+  const dirSizeArr = [...map.values()].map((x) => x.totalSize);
+  const largestDir = Math.max(...dirSizeArr);
+
+  return largestDir;
+}
+function getUnusedSpace(map, usedSpace) {
+  return DISC_SPACE - usedSpace;
+}
+function partTwo(map) {
+  const topLevelDirSize = getTopLevelDrSize(map);
+  const currentUnusedSpace = getUnusedSpace(map, topLevelDirSize);
+  const freeSpaceNeeded = MIN_SPACE_NEEDED - currentUnusedSpace;
+
+  const largeEnoughDirsSizesArr = [...map.entries()]
+    .filter((x) => x[1].totalSize >= freeSpaceNeeded)
+    .map((x) => x[1].totalSize);
+
+  const smallestLargeEnoughDirSize = Math.min(...largeEnoughDirsSizesArr);
+
+  return smallestLargeEnoughDirSize;
 }
 
 async function runDay07() {
@@ -151,9 +176,10 @@ async function runDay07() {
 
   try {
     const formattedData = await formatData(dataPath);
+    await getDirTotals(formattedData);
     const results = await Promise.all([
       await partOne(formattedData),
-      //await partTwo(formattedData),
+      await partTwo(formattedData),
     ]);
     return results;
   } catch (err) {
@@ -168,7 +194,10 @@ module.exports = {
   getParentDirs,
   getChildDirTotal,
   getCompletedDirs,
+  getDirTotals,
   partOne,
+  getTopLevelDrSize,
+  getUnusedSpace,
   partTwo,
   runDay07,
 };
