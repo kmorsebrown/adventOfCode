@@ -1,6 +1,8 @@
 const path = require('path');
 const { formatData, partOne, partTwo } = require('./DayXX.js');
 
+// npm test src/AoC22/DayXX/DayXX.spec.js
+
 describe.skip('DayXX', () => {
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
