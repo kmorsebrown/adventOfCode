@@ -1,0 +1,129 @@
+const fs = require('fs');
+const path = require('path');
+const { getData } = require(path.join(
+  path.dirname(path.dirname(__dirname)),
+  'globalFunctions.js'
+));
+
+async function formatData(filepath) {
+  const data = await getData(filepath);
+  const splitData = data
+    .split('\n')
+    .map((x) => x.split('').map((i) => Number(i)));
+  return splitData;
+}
+
+// Part One
+
+function getIfVisible(treesArr, tree) {
+  let i = 0;
+  let isVisible = true;
+
+  while (isVisible && i < treesArr.length) {
+    isVisible = treesArr[i] < tree;
+    i++;
+  }
+  return isVisible;
+}
+
+function countEdgeTrees(input) {
+  const edgeTreesVert = input.length * 2;
+
+  // subtract trees already counted on the vertical edges
+  const edgeTreesHoriz = (input[0].length - 2) * 2;
+
+  return edgeTreesVert + edgeTreesHoriz;
+}
+
+function getTreesAbove(input, x, y) {
+  let treesArr = [];
+  for (let i = 0; i < y; i++) {
+    treesArr.push(input[i][x]);
+  }
+  return treesArr;
+}
+
+function getTreesBelow(input, x, y) {
+  let treesArr = [];
+  for (let i = y + 1; i < input.length; i++) {
+    treesArr.unshift(input[i][x]);
+  }
+  return treesArr;
+}
+
+function getTreesLeft(input, x, y) {
+  let treesArr = [];
+  for (let i = 0; i < x; i++) {
+    treesArr.push(input[y][i]);
+  }
+  return treesArr;
+}
+
+function getTreesRight(input, x, y) {
+  let treesArr = [];
+  for (let i = x + 1; i < input.length; i++) {
+    treesArr.unshift(input[y][i]);
+  }
+  return treesArr;
+}
+
+async function partOne(input) {
+  const lastIntRow = input.length - 2;
+  const lastIntColumn = input[0].length - 2;
+
+  const numEdgeTrees = countEdgeTrees(input);
+  let numIntVisibleTrees = 0;
+
+  for (let row = 1; row <= lastIntRow; row++) {
+    for (let col = 1; col <= lastIntColumn; col++) {
+      const treeHeight = input[row][col];
+      const treesAbove = getTreesAbove(input, col, row);
+      const treesBelow = getTreesBelow(input, col, row);
+      const treesLeft = getTreesLeft(input, col, row);
+      const treesRight = getTreesRight(input, col, row);
+
+      const visibleAbove = getIfVisible(treesAbove, treeHeight);
+      const visibleBelow = getIfVisible(treesBelow, treeHeight);
+      const visibleLeft = getIfVisible(treesLeft, treeHeight);
+      const visibleRight = getIfVisible(treesRight, treeHeight);
+
+      if (visibleAbove || visibleBelow || visibleLeft || visibleRight) {
+        numIntVisibleTrees++;
+      }
+    }
+  }
+
+  return numIntVisibleTrees + numEdgeTrees;
+}
+
+// Part Two
+async function partTwo(input) {
+  return input;
+}
+
+async function runDay08() {
+  const dataPath = path.join(__dirname, 'Day08Input.txt');
+
+  try {
+    const formattedData = await formatData(dataPath);
+    const results = await Promise.all([
+      await partOne(formattedData),
+      // await partTwo(formattedData),
+    ]);
+    return results;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+module.exports = {
+  formatData,
+  countEdgeTrees,
+  getTreesAbove,
+  getTreesBelow,
+  getTreesLeft,
+  getTreesRight,
+  partOne,
+  partTwo,
+  runDay08,
+};
