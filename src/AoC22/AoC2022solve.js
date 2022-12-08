@@ -7,7 +7,7 @@ const { runDay03 } = require(path.join(__dirname, 'Day03', 'Day03.js'));
 const { runDay04 } = require(path.join(__dirname, 'Day04', 'Day04.js'));
 const { runDay05 } = require(path.join(__dirname, 'Day05', 'Day05.js'));
 const { runDay06 } = require(path.join(__dirname, 'Day06', 'Day06.js'));
-const { runDay07 } = require(path.join(__dirname, 'Day06', 'Day06.js'));
+const { runDay07 } = require(path.join(__dirname, 'Day07', 'Day07.js'));
 async function printResults() {
   const reportFilepath = path.join(
     path.dirname(path.dirname(__dirname)),
