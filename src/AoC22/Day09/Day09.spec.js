@@ -147,7 +147,7 @@ describe('Day09', () => {
       expect(actual).toEqual(13);
     });
   });
-  describe.only('partTwo', () => {
+  describe('partTwo', () => {
     it('Returns 13 unique positions for Part One data with one knot', async () => {
       const actual = await partTwo(partOneData, 1);
       expect(actual).toEqual(13);

@@ -112,31 +112,30 @@ function moveKnot(prevKnot, currentKnot) {
   const xDiff = prevKnot.x - currentKnot.x;
   const yDiff = prevKnot.y - currentKnot.y;
 
-  switch (xDiff) {
-    case -2:
+  if (Math.abs(xDiff) === 2) {
+    if (xDiff === -2) {
       currentKnot.x = currentKnot.x - 1;
-      currentKnot.y = prevKnot.y;
-      break;
-    case 2:
+    } else {
       currentKnot.x = currentKnot.x + 1;
-      currentKnot.y = prevKnot.y;
-      break;
-    default:
-    // no change
+    }
+    if (yDiff > 0) {
+      currentKnot.y = currentKnot.y + 1;
+    } else if (yDiff < 0) {
+      currentKnot.y = currentKnot.y - 1;
+    }
+  } else if (Math.abs(yDiff) === 2) {
+    if (yDiff === -2) {
+      currentKnot.y = currentKnot.y - 1;
+    } else {
+      currentKnot.y = currentKnot.y + 1;
+    }
+    if (xDiff > 0) {
+      currentKnot.x = currentKnot.x + 1;
+    } else if (xDiff < 0) {
+      currentKnot.x = currentKnot.x - 1;
+    }
   }
 
-  switch (yDiff) {
-    case -2:
-      currentKnot.y = currentKnot.y - 1;
-      currentKnot.x = prevKnot.x;
-      break;
-    case 2:
-      currentKnot.y = currentKnot.y + 1;
-      currentKnot.x = prevKnot.x;
-      break;
-    default:
-    // no change
-  }
   return currentKnot;
 }
 async function partTwo(movesArr, numKnots) {
@@ -144,36 +143,48 @@ async function partTwo(movesArr, numKnots) {
     x: 0,
     y: 0,
   };
+  let knotPositionsArr = [];
   let knotCoordArr = [];
   for (let i = 0; i < numKnots; i++) {
     knotCoordArr.push({
       x: 0,
       y: 0,
     });
+    knotPositionsArr.push(['x0y0']);
   }
-
+  const HeadPositions = ['x0y0'];
   const TailPositions = ['x0y0'];
 
   movesArr.forEach((move) => {
     for (let x = 0; x < move[1]; x++) {
+      // move head
       moveHead(move[0], headCoord);
-      knotCoordArr[0] = moveKnot(headCoord, knotCoordArr[0]);
+      HeadPositions.push(`x${headCoord.x}y${headCoord.y}`);
 
+      // move first knot
+      knotCoordArr[0] = moveKnot(headCoord, knotCoordArr[0]);
+      knotPositionsArr[0].push(`x${knotCoordArr[0].x}y${knotCoordArr[0].y}`);
+
+      // move remaining knots, if any
       for (let index = 1; index < knotCoordArr.length; index++) {
         knotCoordArr[index] = moveKnot(
           knotCoordArr[index - 1],
           knotCoordArr[index]
         );
+        knotPositionsArr[index].push(
+          `x${knotCoordArr[index].x}y${knotCoordArr[index].y}`
+        );
       }
-      let tail = knotCoordArr[numKnots - 1];
-      let currentTailPosition = `x${tail.x}y${tail.y}`;
-      if (!TailPositions.includes(currentTailPosition)) {
-        TailPositions.push(currentTailPosition);
-      }
+      // let tail = knotCoordArr[numKnots - 1];
+      // let currentTailPosition = `x${tail.x}y${tail.y}`;
+      // if (!TailPositions.includes(currentTailPosition)) {
+      //   TailPositions.push(currentTailPosition);
+      // }
     }
   });
 
-  return TailPositions.length;
+  let unique = [...new Set(knotPositionsArr[numKnots - 1])];
+  return unique.length;
 }
 
 async function runDay09() {
@@ -183,7 +194,7 @@ async function runDay09() {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
       await partOne(formattedData),
-      //await partTwo(formattedData),
+      await partTwo(formattedData, 9),
     ]);
     return results;
   } catch (err) {

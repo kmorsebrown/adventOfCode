@@ -57,9 +57,8 @@ async function writeReport() {
   await printResult('Day 5: Supply Stacks', reportFilepath, day05resultsArr);
 
   // Run Day 06
-  await appendFile(reportFilepath, '\n\nDay 6: Tuning Trouble');
   const day06resultsArr = await runDay06();
-  await printResult('TK', reportFilepath, day06resultsArr);
+  await printResult('Day 6: Tuning Trouble', reportFilepath, day05resultsArr);
 
   // Run Day 07
   const day07resultsArr = await runDay07();
