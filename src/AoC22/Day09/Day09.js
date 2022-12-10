@@ -15,7 +15,7 @@ async function formatData(filepath) {
 
 // Part One
 
-async function moveHead(commandDir, plank, HcoordArr) {
+async function moveHead(commandDir, plank) {
   let H = plank;
   switch (commandDir) {
     case 'U':
@@ -33,11 +33,10 @@ async function moveHead(commandDir, plank, HcoordArr) {
     default:
     // do nothing
   }
-  HcoordArr.push(`x${H.x}y${H.y}`);
   return H;
 }
 
-async function moveTail(plankObj, TcoordArr) {
+async function moveTail(plankObj) {
   let H = plankObj.Head;
   let T = plankObj.Tail;
   const xDiff = H.x - T.x;
@@ -68,8 +67,6 @@ async function moveTail(plankObj, TcoordArr) {
     default:
     // no change
   }
-
-  TcoordArr.push(`x${T.x}y${T.y}`);
   return T;
 }
 
@@ -77,8 +74,11 @@ async function followDirections(command, planksObj, HcoordArr, TcoordArr) {
   // console.log(command);
   for (let i = 0; i < command[1]; i++) {
     // console.log(`i: ${i}; H: ${HcoordArr}; T: ${TcoordArr}`);
-    await moveHead(command[0], planksObj.Head, HcoordArr);
-    await moveTail(planksObj, TcoordArr);
+    await moveHead(command[0], planksObj.Head);
+    HcoordArr.push(`x${planksObj.Head.x}y${planksObj.Head.y}`);
+
+    await moveTail(planksObj);
+    TcoordArr.push(`x${planksObj.Tail.x}y${planksObj.Tail.y}`);
   }
   return planksObj;
 }
@@ -108,8 +108,72 @@ async function partOne(input) {
 }
 
 // Part Two
-async function partTwo(input) {
-  return input;
+function moveKnot(prevKnot, currentKnot) {
+  const xDiff = prevKnot.x - currentKnot.x;
+  const yDiff = prevKnot.y - currentKnot.y;
+
+  switch (xDiff) {
+    case -2:
+      currentKnot.x = currentKnot.x - 1;
+      currentKnot.y = prevKnot.y;
+      break;
+    case 2:
+      currentKnot.x = currentKnot.x + 1;
+      currentKnot.y = prevKnot.y;
+      break;
+    default:
+    // no change
+  }
+
+  switch (yDiff) {
+    case -2:
+      currentKnot.y = currentKnot.y - 1;
+      currentKnot.x = prevKnot.x;
+      break;
+    case 2:
+      currentKnot.y = currentKnot.y + 1;
+      currentKnot.x = prevKnot.x;
+      break;
+    default:
+    // no change
+  }
+  return currentKnot;
+}
+async function partTwo(movesArr, numKnots) {
+  let headCoord = {
+    x: 0,
+    y: 0,
+  };
+  let knotCoordArr = [];
+  for (let i = 0; i < numKnots; i++) {
+    knotCoordArr.push({
+      x: 0,
+      y: 0,
+    });
+  }
+
+  const TailPositions = ['x0y0'];
+
+  movesArr.forEach((move) => {
+    for (let x = 0; x < move[1]; x++) {
+      moveHead(move[0], headCoord);
+      knotCoordArr[0] = moveKnot(headCoord, knotCoordArr[0]);
+
+      for (let index = 1; index < knotCoordArr.length; index++) {
+        knotCoordArr[index] = moveKnot(
+          knotCoordArr[index - 1],
+          knotCoordArr[index]
+        );
+      }
+      let tail = knotCoordArr[numKnots - 1];
+      let currentTailPosition = `x${tail.x}y${tail.y}`;
+      if (!TailPositions.includes(currentTailPosition)) {
+        TailPositions.push(currentTailPosition);
+      }
+    }
+  });
+
+  return TailPositions.length;
 }
 
 async function runDay09() {
