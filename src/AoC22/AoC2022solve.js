@@ -10,6 +10,7 @@ const { runDay06 } = require('./Day06/Day06.js');
 const { runDay07 } = require('./Day07/Day07.js');
 const { runDay08 } = require('./Day08/Day08.js');
 const { runDay09 } = require('./Day09/Day09.js');
+const { runDay10 } = require('./Day10/Day10.js');
 
 async function printResult(title, filepath, resultsArr) {
   await appendFile(filepath, `\n\n${title}`);
@@ -79,6 +80,14 @@ async function writeReport() {
   // Run Day 09
   const day09resultsArr = await runDay09();
   await printResult('Day 9: Rope Bridge', reportFilepath, day09resultsArr);
+
+  // Run Day 10
+  const day10resultsArr = await runDay10();
+  await printResult(
+    'Day 10: Cathode-Ray Tube',
+    reportFilepath,
+    day10resultsArr
+  );
 }
 
 writeReport();
