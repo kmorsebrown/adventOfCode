@@ -2,7 +2,7 @@ const path = require('path');
 const {
   formatData,
   getWorryWhileInspect,
-  getWorryNoDamage,
+  getWorryNoDamagePtOne,
   getTestResult,
   partOne,
   partTwo,
@@ -75,13 +75,13 @@ describe('Day11', () => {
       expect(actual).toEqual(6241);
     });
   });
-  describe('getWorryNoDamage', () => {
+  describe('getWorryNoDamagePtOne', () => {
     it('Divides 1501 by 3, rounded down to the nearest integer', async () => {
-      const actual = await getWorryNoDamage(1501);
+      const actual = await getWorryNoDamagePtOne(1501);
       expect(actual).toEqual(500);
     });
     it('Divides 1862 by 3, rounded down to the nearest integer', async () => {
-      const actual = await getWorryNoDamage(1862);
+      const actual = await getWorryNoDamagePtOne(1862);
       expect(actual).toEqual(620);
     });
   });
@@ -105,11 +105,11 @@ describe('Day11', () => {
       expect(actual).toEqual(10605);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
+  describe.only('partTwo', () => {
+    it('After round 1', async () => {
       const args = [];
-      const actual = await partTwo(monkeyTestMap, 10000);
-      expect(actual).toEqual(2713310158);
+      const actual = await partTwo(monkeyTestMap, 1, '/', 100);
+      expect(actual).toEqual([2, 4, 3, 6]);
     });
   });
 });

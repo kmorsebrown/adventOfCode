@@ -77,7 +77,7 @@ async function getWorryWhileInspect(item, operation) {
   }
 }
 
-async function getWorryNoDamage(item) {
+async function getWorryNoDamagePtOne(item) {
   return Math.floor(item / 3);
 }
 
@@ -100,7 +100,7 @@ async function partOne(monkeys, numRounds) {
           stats.operation
         );
         newStats.totalItems++;
-        const worryNoDamage = await getWorryNoDamage(worryWhileInspect);
+        const worryNoDamage = await getWorryNoDamagePtOne(worryWhileInspect);
         const nextMonkey = await getTestResult(worryNoDamage, stats);
         const nextMonkeyStats = monkeys.get(nextMonkey);
         nextMonkeyStats.items.push(worryNoDamage);
@@ -118,8 +118,57 @@ async function partOne(monkeys, numRounds) {
 }
 
 // Part Two
-async function partTwo(input) {
-  return input;
+
+async function manageWorryLevels(item, operator, operand) {
+  let newLevel;
+  switch (operator) {
+    case '+':
+      newLevel = Math.floor(item + operand);
+      break;
+    case '-':
+      newLevel = Math.floor(item - operand);
+      break;
+    case '*':
+      newLevel = Math.floor(item - operand);
+      break;
+    case '/':
+      newLevel = Math.floor(item / operand);
+      break;
+  }
+
+  return newLevel;
+}
+
+async function partTwo(monkeys, numRounds, operator, operand) {
+  for (let round = 1; round <= numRounds; round++) {
+    for (const [monkey, stats] of monkeys) {
+      let newStats = JSON.parse(JSON.stringify(stats));
+      while (newStats.items.length > 0) {
+        let item = newStats.items.shift();
+        const worryWhileInspect = await getWorryWhileInspect(
+          item,
+          stats.operation
+        );
+        newStats.totalItems++;
+        const worryNoDamage = await manageWorryLevels(
+          worryWhileInspect,
+          operator,
+          operand
+        );
+        const nextMonkey = await getTestResult(worryNoDamage, stats);
+        const nextMonkeyStats = monkeys.get(nextMonkey);
+        nextMonkeyStats.items.push(worryNoDamage);
+        monkeys.set(nextMonkey, nextMonkeyStats);
+      }
+      monkeys.set(monkey, newStats);
+    }
+  }
+  const totalItems = [...monkeys.values()].map((obj) => obj.totalItems);
+  // const mostActive = Math.max(...totalItems);
+  // totalItems.splice(totalItems.indexOf(mostActive), 1);
+  // const secondMostActive = Math.max(...totalItems);
+
+  return totalItems;
 }
 
 async function runDay11() {
@@ -140,7 +189,7 @@ async function runDay11() {
 module.exports = {
   formatData,
   getWorryWhileInspect,
-  getWorryNoDamage,
+  getWorryNoDamagePtOne,
   getTestResult,
   partOne,
   partTwo,
