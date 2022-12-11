@@ -11,7 +11,7 @@ const { runDay07 } = require('./Day07/Day07.js');
 const { runDay08 } = require('./Day08/Day08.js');
 const { runDay09 } = require('./Day09/Day09.js');
 const { runDay10 } = require('./Day10/Day10.js');
-const { runDay11 } = require('./Day10/Day11.js');
+const { runDay11 } = require('./Day11/Day11.js');
 
 async function printResult(title, filepath, resultsArr) {
   await appendFile(filepath, `\n\n${title}`);

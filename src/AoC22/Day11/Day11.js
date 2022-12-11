@@ -51,23 +51,70 @@ async function formatData(filepath) {
 
   monkeyArr.forEach((monkey, index) => {
     let monkeyObj = {
-      startingItems: startingItemsArr[index]
-        .split(', ')
-        .map((num) => Number(num)),
+      items: startingItemsArr[index].split(', ').map((num) => Number(num)),
       operation: operationArr[index].split(' '),
       test: Number(testArr[index]),
-      true: 'monkey' + trueArr[index],
-      false: 'monkey' + falseArr[index],
+      isTrue: 'monkey' + trueArr[index],
+      isFalse: 'monkey' + falseArr[index],
+      totalItems: 0,
     };
     monkeyMap.set(monkey, monkeyObj);
   });
   return monkeyMap;
 }
-
 // Part One
 
-async function partOne(input) {
-  return input;
+async function getWorryWhileInspect(item, operation) {
+  const oldLevel = item;
+  let operand2 =
+    operation[1] === 'old' ? Number(oldLevel) : Number(operation[1]);
+
+  if (operation[0] === '+') {
+    return oldLevel + operand2;
+  } else {
+    // operator is '*'
+    return oldLevel * operand2;
+  }
+}
+
+async function getWorryNoDamage(item) {
+  return Math.floor(item / 3);
+}
+
+async function getTestResult(item, monkeyStats) {
+  if (Number.isInteger(item / monkeyStats.test)) {
+    return monkeyStats.isTrue;
+  } else {
+    return monkeyStats.isFalse;
+  }
+}
+
+async function partOne(monkeys, numRounds) {
+  for (let round = 1; round <= numRounds; round++) {
+    for (const [monkey, stats] of monkeys) {
+      let newStats = JSON.parse(JSON.stringify(stats));
+      while (newStats.items.length > 0) {
+        let item = newStats.items.shift();
+        const worryWhileInspect = await getWorryWhileInspect(
+          item,
+          stats.operation
+        );
+        newStats.totalItems++;
+        const worryNoDamage = await getWorryNoDamage(worryWhileInspect);
+        const nextMonkey = await getTestResult(worryNoDamage, stats);
+        const nextMonkeyStats = monkeys.get(nextMonkey);
+        nextMonkeyStats.items.push(worryNoDamage);
+        monkeys.set(nextMonkey, nextMonkeyStats);
+      }
+      monkeys.set(monkey, newStats);
+    }
+  }
+  const totalItems = [...monkeys.values()].map((obj) => obj.totalItems);
+  const mostActive = Math.max(...totalItems);
+  totalItems.splice(totalItems.indexOf(mostActive), 1);
+  const secondMostActive = Math.max(...totalItems);
+
+  return mostActive * secondMostActive;
 }
 
 // Part Two
@@ -80,6 +127,7 @@ async function runDay11() {
 
   try {
     const formattedData = await formatData(dataPath);
+    console.log(formattedData);
     const results = await Promise.all([
       await partOne(formattedData),
       await partTwo(formattedData),
@@ -92,6 +140,9 @@ async function runDay11() {
 
 module.exports = {
   formatData,
+  getWorryWhileInspect,
+  getWorryNoDamage,
+  getTestResult,
   partOne,
   partTwo,
   runDay11,
