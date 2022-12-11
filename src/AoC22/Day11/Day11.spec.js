@@ -5,6 +5,7 @@ const {
   getWorryNoDamagePtOne,
   getTestResult,
   partOne,
+  getInspectedTotal,
   partTwo,
 } = require('./Day11.js');
 
@@ -105,11 +106,124 @@ describe('Day11', () => {
       expect(actual).toEqual(10605);
     });
   });
-  describe.only('partTwo', () => {
+  describe.only('getInspectedTotal', () => {
+    const operator = '/';
+    const operand = 1000;
     it('After round 1', async () => {
-      const args = [];
-      const actual = await partTwo(monkeyTestMap, 1, '/', 100);
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        1,
+        operator,
+        operand
+      );
       expect(actual).toEqual([2, 4, 3, 6]);
+    });
+    it('After round 20', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        20,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([99, 97, 8, 103]);
+    });
+    it('After round 1000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        1000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([5204, 4792, 199, 5192]);
+    });
+    it('After round 2000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        2000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([10419, 9577, 392, 10391]);
+    });
+
+    it('After round 3000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        3000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([15638, 14358, 587, 15593]);
+    });
+    it('After round 4000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        4000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([20858, 19138, 780, 20797]);
+    });
+    it('After round 5000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        5000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([26075, 23921, 974, 26000]);
+    });
+
+    it('After round 6000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        6000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([31294, 28702, 1165, 31204]);
+    });
+    it('After round 7000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        7000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([36508, 33488, 1360, 36400]);
+    });
+    it('After round 8000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        8000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([41728, 38268, 1553, 41606]);
+    });
+    it('After round 9000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        9000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([46945, 43051, 1746, 46807]);
+    });
+    it('After round 100000', async () => {
+      const actual = await getInspectedTotal(
+        monkeyTestMap,
+        10000,
+        operator,
+        operand
+      );
+      expect(actual).toEqual([52166, 47830, 1938, 52013]);
+    });
+    describe('partTwo', () => {
+      it('Gets monkey business level', async () => {
+        const actual = await partOne([52166, 47830, 1938, 52013]);
+        expect(actual).toEqual(2713310158);
+      });
     });
   });
 });

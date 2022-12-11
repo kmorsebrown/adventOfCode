@@ -139,7 +139,7 @@ async function manageWorryLevels(item, operator, operand) {
   return newLevel;
 }
 
-async function partTwo(monkeys, numRounds, operator, operand) {
+async function getInspectedTotal(monkeys, numRounds, operator, operand) {
   for (let round = 1; round <= numRounds; round++) {
     for (const [monkey, stats] of monkeys) {
       let newStats = JSON.parse(JSON.stringify(stats));
@@ -171,6 +171,14 @@ async function partTwo(monkeys, numRounds, operator, operand) {
   return totalItems;
 }
 
+async function partTwo(inspectedTotalArr) {
+  const mostActive = Math.max(...inspectedTotalArr);
+  inspectedTotalArr.splice(inspectedTotalArr.indexOf(mostActive), 1);
+  const secondMostActive = Math.max(...inspectedTotalArr);
+
+  return mostActive * secondMostActive;
+}
+
 async function runDay11() {
   const dataPath = path.join(__dirname, 'Day11Input.txt');
 
@@ -192,6 +200,7 @@ module.exports = {
   getWorryNoDamagePtOne,
   getTestResult,
   partOne,
+  getInspectedTotal,
   partTwo,
   runDay11,
 };
