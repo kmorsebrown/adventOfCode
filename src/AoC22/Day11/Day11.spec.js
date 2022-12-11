@@ -108,8 +108,8 @@ describe('Day11', () => {
   describe.skip('partTwo', () => {
     it('TK', async () => {
       const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+      const actual = await partTwo(monkeyTestMap, 10000);
+      expect(actual).toEqual(2713310158);
     });
   });
 });

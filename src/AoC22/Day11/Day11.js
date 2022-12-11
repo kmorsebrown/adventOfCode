@@ -127,9 +127,8 @@ async function runDay11() {
 
   try {
     const formattedData = await formatData(dataPath);
-    console.log(formattedData);
     const results = await Promise.all([
-      await partOne(formattedData),
+      await partOne(formattedData, 20),
       await partTwo(formattedData),
     ]);
     return results;
