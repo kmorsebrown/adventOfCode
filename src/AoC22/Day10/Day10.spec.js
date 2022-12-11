@@ -160,6 +160,10 @@ const partOneTestLong = [
 
 const partOneTestShort = ['noop', 'addx 3', 'addx -5'];
 
+const partTwoRender =
+  '\n##..##..##..##..##..##..##..##..##..##..\n###...###...###...###...###...###...###.\n####....####....####....####....####....\n#####.....#####.....#####.....#####.....\n######......######......######......####\n#######.......#######.......#######.....';
+
+console.log(partTwoRender);
 describe('Day10', () => {
   describe('formatData', () => {
     it('Formats data into an array of strings', async () => {
@@ -205,11 +209,10 @@ describe('Day10', () => {
       expect(actual).toEqual(13140);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('Renders image', async () => {
+      const actual = await partTwo(partOneTestLong);
+      expect(actual).toEqual(partTwoRender);
     });
   });
 });
