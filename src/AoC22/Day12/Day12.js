@@ -176,12 +176,30 @@ const findShortestPath = (input, startPosition, endPosition) => {
     distance: distances[endPosition],
     path: shortestPath,
   };
-  return results;
+  return results.distance;
 };
 
 // Part Two
-async function partTwo(input) {
-  return input;
+async function getStartPoints(input) {
+  const startArr = [];
+
+  for (let y = 0; y < input.length; y++) {
+    for (let x = 0; x < input[y].length; x++) {
+      if (input[y][x] === 1) {
+        startArr.push(`x${x}y${y}`);
+      }
+    }
+  }
+  return startArr;
+}
+async function partTwo(input, startArr, endPosition) {
+  const results = await Promise.all(
+    startArr.map(async (start) => {
+      const result = await findShortestPath(input, start, endPosition);
+      return result;
+    })
+  );
+  return Math.min(...results);
 }
 
 async function runDay12() {
@@ -189,11 +207,14 @@ async function runDay12() {
 
   try {
     const formattedData = await formatData(dataPath);
-    const start = await getCoords(dataPath, 'S');
-    const end = await getCoords(dataPath, 'E');
+    const [start, end, startArr] = await Promise.all([
+      await getCoords(dataPath, 'S'),
+      await getCoords(dataPath, 'E'),
+      await getStartPoints(formattedData),
+    ]);
     const results = await Promise.all([
       await findShortestPath(formattedData, start, end),
-      // await partTwo(formattedData),
+      await partTwo(formattedData, startArr, end),
     ]);
     return results;
   } catch (err) {
@@ -207,6 +228,7 @@ module.exports = {
   getPossibleMoves,
   generateGraph,
   findShortestPath,
+  getStartPoints,
   partTwo,
   runDay12,
 };

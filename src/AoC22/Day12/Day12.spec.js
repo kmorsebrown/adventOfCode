@@ -5,6 +5,7 @@ const {
   getPossibleMoves,
   generateGraph,
   findShortestPath,
+  getStartPoints,
   partTwo,
 } = require('./Day12.js');
 
@@ -102,22 +103,24 @@ describe('Day12', () => {
     it('Returns minimum number of steps to reach highest point', async () => {
       const start = 'x0y0';
       const end = 'x5y2';
-      const data = [
-        [1, 1, 2, 17, 16, 15, 14, 13],
-        [1, 2, 3, 18, 25, 24, 24, 12],
-        [1, 3, 3, 19, 26, 26, 24, 11],
-        [1, 3, 3, 20, 21, 22, 23, 10],
-        [1, 2, 4, 5, 6, 7, 8, 9],
-      ];
-      const actual = await findShortestPath(data, start, end);
-      expect(actual.distance).toEqual(31);
+      const actual = await findShortestPath(TEST_DATA, start, end);
+      expect(actual).toEqual(31);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('getStartPoints', () => {
+    it('Returns coordinates of all possible starting points', async () => {
+      const actual = await getStartPoints(TEST_DATA);
+      expect(actual).toEqual(['x0y0', 'x1y0', 'x0y1', 'x0y2', 'x0y3', 'x0y4']);
+    });
+  });
+  describe('partTwo', () => {
+    it('Gets shortest distance to end point', async () => {
+      const [startArr, end] = [
+        ['x0y0', 'x1y0', 'x0y1', 'x0y2', 'x0y3', 'x0y4'],
+        'x5y2',
+      ];
+      const actual = await partTwo(TEST_DATA, startArr, end);
+      expect(actual).toEqual(29);
     });
   });
 });
