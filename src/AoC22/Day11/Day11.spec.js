@@ -2,7 +2,6 @@ const path = require('path');
 const {
   formatData,
   getWorryWhileInspect,
-  getWorryNoDamagePtOne,
   getTestResult,
   partOne,
   getInspectedTotal,
@@ -76,16 +75,6 @@ describe('Day11', () => {
       expect(actual).toEqual(6241);
     });
   });
-  describe('getWorryNoDamagePtOne', () => {
-    it('Divides 1501 by 3, rounded down to the nearest integer', async () => {
-      const actual = await getWorryNoDamagePtOne(1501);
-      expect(actual).toEqual(500);
-    });
-    it('Divides 1862 by 3, rounded down to the nearest integer', async () => {
-      const actual = await getWorryNoDamagePtOne(1862);
-      expect(actual).toEqual(620);
-    });
-  });
   describe('getTestResult', () => {
     it('Returns isFalse when item is not divisible by test value', async () => {
       const monkey0 = monkeyTestMap.get('monkey0');
@@ -106,7 +95,7 @@ describe('Day11', () => {
       expect(actual).toEqual(10605);
     });
   });
-  describe.only('getInspectedTotal', () => {
+  describe.skip('getInspectedTotal', () => {
     const operator = '/';
     const operand = 1000;
     it('After round 1', async () => {
@@ -219,11 +208,11 @@ describe('Day11', () => {
       );
       expect(actual).toEqual([52166, 47830, 1938, 52013]);
     });
-    describe('partTwo', () => {
-      it('Gets monkey business level', async () => {
-        const actual = await partOne([52166, 47830, 1938, 52013]);
-        expect(actual).toEqual(2713310158);
-      });
+  });
+  describe('partTwo', () => {
+    it('Gets monkey business level', async () => {
+      const actual = await partTwo([52166, 47830, 1938, 52013]);
+      expect(actual).toEqual(2713310158);
     });
   });
 });
