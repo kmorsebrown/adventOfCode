@@ -6,6 +6,7 @@
   "scripts": {
     "2021": "rm -rf ./Results.txt && node src/AoC21/AoC2021solve.js",
     "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js",
+    "2023": "tsc && node dist/AoC23/AoC2023solve.js",
     "test": "jest"
   },
   "repository": {
@@ -21,6 +22,7 @@
   "devDependencies": {
     "eslint": "^8.26.0",
     "jest": "^29.3.1",
-    "prettier": "2.8.0"
+    "prettier": "2.8.0",
+    "typescript": "^5.3.2"
   }
 }
