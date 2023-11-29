@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getData } = require(path.join(
-  path.dirname(path.dirname(__dirname)),
-  'globalFunctions.js'
-));
+const { getData } = require('../../globalFunctions.js');
 
 async function formatData(filepath) {
   const data = await getData(filepath);
