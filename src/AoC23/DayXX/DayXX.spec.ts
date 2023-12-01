@@ -1,7 +1,7 @@
 const path = require('path');
-const { formatData, partOne, partTwo } = require('./DayXX');
+import { formatData, partOne, partTwo } from './DayXX';
 
-// npm test src/AoC22/DayXX/DayXX.spec.js
+// npm test src/AoC23/DayXX/DayXX.spec.js
 
 describe.skip('DayXX', () => {
   describe('formatData', () => {
