@@ -3,14 +3,13 @@ import * as path from 'path';
 
 // DAY=1 npm run 2023
 
-let day: string | undefined = process.env.DAY;
+let dayNum: string | undefined = process.env.DAY;
 
-if (day) {
-  if (day.length === 1) {
-    day = `0${day}`;
+if (dayNum) {
+  if (dayNum.length === 1) {
+    dayNum = `0${dayNum}`;
   }
-  const puzzle = require(`./Day${day}/Day${day}.js`);
-  puzzle;
+  require(`./Day${dayNum}/Day${dayNum}.js`);
 } else {
   const dayList = fs
     .readdirSync(__dirname)
@@ -19,7 +18,8 @@ if (day) {
     );
 
   dayList.forEach((day) => {
-    const dirPath = path.join(__dirname, day);
-    console.log(dirPath);
+    console.log(`${day}:`);
+    require(path.join(__dirname, path.join(day, `${day}.js`)));
+    console.log('\n');
   });
 }

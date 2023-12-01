@@ -1,24 +1,24 @@
 import * as path from 'path';
 
-const { getData } = require('../../globalFunctions.js');
+import { getData } from '../../globalFunctions.js';
 
-async function formatData(filepath: string) {
+export async function formatData(filepath: string) {
   const data = await getData(filepath);
   return data;
 }
 
 // Part One
 
-async function partOne(input: string) {
+export async function partOne(input) {
   return input;
 }
 
 // Part Two
-async function partTwo(input: string) {
+export async function partTwo(input) {
   return input;
 }
 
-async function runDayXX() {
+export async function solve() {
   const dataPath = path.join(__dirname, 'DayXXInput.txt');
 
   try {
@@ -27,15 +27,11 @@ async function runDayXX() {
       await partOne(formattedData),
       await partTwo(formattedData),
     ]);
+    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
 }
 
-module.exports = {
-  formatData,
-  partOne,
-  partTwo,
-  runDayXX,
-};
+solve();
