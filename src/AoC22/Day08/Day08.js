@@ -5,7 +5,7 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
-// https://adventofcode.com/2022/day/08
+// https://adventofcode.com/2022/day/8
 
 async function formatData(filepath) {
   const data = await getData(filepath);

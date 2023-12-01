@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { getData } from '../../globalFunctions.js';
 
+// https://adventofcode.com/2023/day/1
 export async function formatData(filepath: string): Promise<string[]> {
   const data = await getData(filepath);
   return data.split('\n').filter(String);

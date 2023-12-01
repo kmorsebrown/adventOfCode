@@ -2,6 +2,7 @@ import * as path from 'path';
 
 import { getData } from '../../globalFunctions.js';
 
+// https://adventofcode.com/2023/day/X
 export async function formatData(filepath: string) {
   const data = await getData(filepath);
   return data;

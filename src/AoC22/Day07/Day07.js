@@ -5,7 +5,7 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
-// https://adventofcode.com/2022/day/07
+// https://adventofcode.com/2022/day/7
 
 const DISC_SPACE = 70000000;
 const MIN_SPACE_NEEDED = 30000000;

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getData } = require('../../globalFunctions.js');
 
-// https://adventofcode.com/2022/day/06
+// https://adventofcode.com/2022/day/6
 
 async function formatData(filepath) {
   const data = await getData(filepath);

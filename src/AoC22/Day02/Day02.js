@@ -5,7 +5,7 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
-// https://adventofcode.com/2022/day/02
+// https://adventofcode.com/2022/day/2
 
 const shapePoints = {
   rock: 1,
