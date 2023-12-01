@@ -24,7 +24,9 @@ async function partTwo(input) {
 }
 
 async function runDay08() {
-  const dataPath = path.join(__dirname, 'Day08Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day08Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);

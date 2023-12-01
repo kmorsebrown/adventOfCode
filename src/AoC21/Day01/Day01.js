@@ -46,7 +46,9 @@ async function getSumIncreases(input) {
 }
 
 async function runDay01() {
-  const dataPath = path.join(__dirname, 'Day01Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day01Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);
