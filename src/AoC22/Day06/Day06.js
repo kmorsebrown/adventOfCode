@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { getData } = require('../../globalFunctions.js');
 
+// https://adventofcode.com/2022/day/06
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   return data;
@@ -44,7 +46,9 @@ async function getNumCharactersProcessed(input, markerType) {
 }
 
 async function runDay06() {
-  const dataPath = path.join(__dirname, 'Day06Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day06Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);

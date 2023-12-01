@@ -5,6 +5,8 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+// https://adventofcode.com/2022/day/05
+
 async function formatCratesData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n\n').filter(String);
@@ -102,7 +104,9 @@ async function getTopCrates(input) {
 }
 
 async function runDay05() {
-  const dataPath = path.join(__dirname, 'Day05Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day05Input.txt'
+  );
   try {
     const cratesArr = await formatCratesData(dataPath);
     const movesArr = await formatMovesData(dataPath);

@@ -5,6 +5,8 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+// https://adventofcode.com/2022/day/12
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   return data;
@@ -22,7 +24,9 @@ async function partTwo(input) {
 }
 
 async function runDay12() {
-  const dataPath = path.join(__dirname, 'Day12Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day12Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);
