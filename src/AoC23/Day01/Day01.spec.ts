@@ -4,6 +4,7 @@ import {
   extractNumbers,
   getCalibrationValues,
   partOne,
+  extractWordAndDigitNumbers,
   partTwo,
 } from './Day01';
 
@@ -12,14 +13,26 @@ import {
 describe('Day01', () => {
   describe('formatData', () => {
     it('Formats the data into an array of strings', async () => {
-      //const args = path.join(__dirname, 'Day01TestData.txt');
-      const args = require.resolve('./Day01TestData.txt');
+      const args = require.resolve('./Day01Pt1TestData.txt');
       const actual = await formatData(args);
       expect(actual).toEqual([
         '1abc2',
         'pqr3stu8vwx',
         'a1b2c3d4e5f',
         'treb7uchet',
+      ]);
+    });
+    it('Formats different data into an array of strings', async () => {
+      const args = require.resolve('./Day01Pt2TestData.txt');
+      const actual = await formatData(args);
+      expect(actual).toEqual([
+        'two1nine',
+        'eightwothree',
+        'abcone2threexyz',
+        'xtwone3four',
+        '4nineeightseven2',
+        'zoneight234',
+        '7pqrstsixteen',
       ]);
     });
   });
@@ -59,11 +72,29 @@ describe('Day01', () => {
       expect(actual).toEqual(142);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
+  describe('extractWordAndDigitNumbers', () => {
+    it('Converts spelled out numbers into digits', () => {
+      expect(extractWordAndDigitNumbers('two1nine')).toEqual('219');
+      expect(extractWordAndDigitNumbers('eightwothree')).toEqual('823');
+      expect(extractWordAndDigitNumbers('abcone2threexyz')).toEqual('123');
+      expect(extractWordAndDigitNumbers('xtwone3four')).toEqual('2134');
+      expect(extractWordAndDigitNumbers('4nineeightseven2')).toEqual('49872');
+      expect(extractWordAndDigitNumbers('zoneight234')).toEqual('18234');
+      expect(extractWordAndDigitNumbers('7pqrstsixteen')).toEqual('76');
+    });
+    it('return digit characters only if no spelled out numbers', () => {
+      expect(extractWordAndDigitNumbers('abc1dfg')).toEqual('1');
+      expect(extractWordAndDigitNumbers('123')).toEqual('123');
+    });
+    it('returns empty string if no digits or spelled out numbers', () => {
+      expect(extractWordAndDigitNumbers('abcdfg')).toEqual('');
+    });
+  });
+  describe('partTwo', () => {
+    it('returns sum of calibration values', async () => {
+      const args = await formatData(require.resolve('./Day01Pt2TestData.txt'));
       const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+      expect(actual).toEqual(281);
     });
   });
 });
