@@ -88,6 +88,7 @@ function generateGraph(input) {
 
 // Part One
 // modified from https://levelup.gitconnected.com/finding-the-shortest-path-in-javascript-dijkstras-algorithm-8d16451eea34
+// Incredibly slow
 
 const shortestDistancePosition = (distances, visited) => {
   // create a default value for shortest
@@ -182,6 +183,7 @@ const findShortestPath = (input, startPosition, endPosition) => {
 };
 
 // Part Two
+// DOES NOT WORK YET
 async function getStartPoints(input) {
   const startArr = [];
 
@@ -211,20 +213,23 @@ async function runDay12() {
 
   try {
     const formattedData = await formatData(dataPath);
-    const [start, end, startArr] = await Promise.all([
+    const [start, end /*startArr*/] = await Promise.all([
       await getCoords(dataPath, 'S'),
       await getCoords(dataPath, 'E'),
-      await getStartPoints(formattedData),
+      // await getStartPoints(formattedData),
     ]);
     const results = await Promise.all([
       await findShortestPath(formattedData, start, end),
-      await partTwo(formattedData, startArr, end),
+      // await partTwo(formattedData, startArr, end),
     ]);
+    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
 }
+
+runDay12();
 
 module.exports = {
   formatData,

@@ -18,10 +18,9 @@ const { runDay12 } = require('./Day12/Day12.js');
 
 async function printResult(title, filepath, resultsArr) {
   await appendFile(filepath, `\n\n${title}`);
-  await appendFile(filepath, `\n - Part One: ${JSON.stringify(resultsArr[0])}`);
-  await appendFile(filepath, `\n - Part Two: ${JSON.stringify(resultsArr[1])}`);
+  await appendFile(filepath, `\n - Part One: ${resultsArr[0]}`);
+  await appendFile(filepath, `\n - Part Two: ${resultsArr[1]}`);
 }
-
 async function writeReport() {
   const reportFilepath = path.join(
     path.dirname(path.dirname(__dirname)),
