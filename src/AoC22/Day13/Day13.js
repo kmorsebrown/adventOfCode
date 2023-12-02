@@ -7,6 +7,8 @@ const { getData, Queue } = require(path.join(
 
 // https://adventofcode.com/2022/day/13
 
+// Unifinished WIP
+
 // seperate packets into left and right
 async function formatData(filepath) {
   const data = await getData(filepath);

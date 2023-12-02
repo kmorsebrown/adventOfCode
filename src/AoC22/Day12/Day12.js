@@ -7,6 +7,8 @@ const { getData } = require(path.join(
 
 // https://adventofcode.com/2022/day/12
 
+// Unifinished WIP
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n').map((row) => {
