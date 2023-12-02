@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 
 // key consts
 const PART1_KEY = 'Part1';
