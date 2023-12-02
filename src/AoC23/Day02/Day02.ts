@@ -2,7 +2,8 @@ import * as path from 'path';
 
 import { getData } from '../../globalFunctions.js';
 
-// https://adventofcode.com/2023/day/X
+// https://adventofcode.com/2023/day/2
+
 export async function formatData(filepath: string) {
   const data = await getData(filepath);
   return data;
@@ -21,7 +22,7 @@ export async function partTwo(input) {
 
 export async function solve() {
   const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/DayXXInput.txt'
+    '../../../src/AoC23/puzzleInputs/Day02Input.txt'
   );
 
   try {
