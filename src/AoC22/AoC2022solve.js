@@ -11,7 +11,7 @@ const { runDay07 } = require('./Day07/Day07.js');
 const { runDay08 } = require('./Day08/Day08.js');
 const { runDay09 } = require('./Day09/Day09.js');
 const { runDay10 } = require('./Day10/Day10.js');
-// const { runDay11 } = require('./Day11/Day11.js');
+const { runDay11 } = require('./Day11/Day11.js');
 // const { runDay12 } = require('./Day12/Day12.js');
 // const { runDay13 } = require('./Day13/Day13.js');
 // const { runDay14 } = require('./Day14/Day14.js');
@@ -21,7 +21,6 @@ async function printResult(title, filepath, resultsArr) {
   await appendFile(filepath, `\n - Part One: ${resultsArr[0]}`);
   await appendFile(filepath, `\n - Part Two: ${resultsArr[1]}`);
 }
-
 async function writeReport() {
   const reportFilepath = path.join(
     path.dirname(path.dirname(__dirname)),
@@ -94,6 +93,12 @@ async function writeReport() {
   );
 
   // Run Day 11
+  const day11resultsArr = await runDay11();
+  await printResult(
+    'Day 11: Monkey in the Middle',
+    reportFilepath,
+    day11resultsArr
+  );
 
   // Run Day 12
   // const day12resultsArr = await runDay12();
