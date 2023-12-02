@@ -1,4 +1,4 @@
-const path = require('path');
+import * as path from 'path';
 import { formatData, partOne, partTwo } from './DayXX';
 
 // npm test src/AoC23/DayXX/DayXX.spec.js
@@ -6,7 +6,7 @@ import { formatData, partOne, partTwo } from './DayXX';
 describe.skip('DayXX', () => {
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = path.join(__dirname, 'DayXXTestData.txt');
+      const args = require.resolve('./DayXXTestData.txt');
       const actual = await formatData(args);
       expect(actual).toEqual([]);
     });
