@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { getData } = require(path.join(
-  path.dirname(path.dirname(__dirname)),
-  'globalFunctions.js'
-));
+const { getData } = require('../../globalFunctions.js');
+
+// https://adventofcode.com/2022/day/3
 
 async function formatData(filepath) {
   const data = await getData(filepath);
@@ -90,7 +89,9 @@ async function getBadges(rucksackGroups) {
 }
 
 async function runDay03() {
-  const dataPath = path.join(__dirname, 'Day03Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day03Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);

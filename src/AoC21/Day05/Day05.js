@@ -166,7 +166,9 @@ async function partTwo(coordinates) {
 }
 
 async function runDay05() {
-  const dataPath = path.join(__dirname, 'Day05Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day05Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);

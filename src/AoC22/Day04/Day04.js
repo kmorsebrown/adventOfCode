@@ -5,6 +5,8 @@ const { getData } = require(path.join(
   'globalFunctions.js'
 ));
 
+// https://adventofcode.com/2022/day/4
+
 async function formatData(filepath) {
   const data = await getData(filepath);
   const arrayOfStrings = data.split('\n').filter(String);
@@ -58,7 +60,9 @@ async function getNumOverlaps(input) {
 }
 
 async function runDay04() {
-  const dataPath = path.join(__dirname, 'Day04Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day04Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);

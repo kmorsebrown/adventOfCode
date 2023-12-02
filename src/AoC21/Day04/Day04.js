@@ -260,7 +260,9 @@ async function getTotalScore(boards, boardIndex) {
   return winningBoard.totalScore;
 }
 async function runDay04() {
-  const dataPath = path.join(__dirname, 'Day04Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day04Input.txt'
+  );
 
   try {
     const calledNumArr = await createCalledNumArr(dataPath);

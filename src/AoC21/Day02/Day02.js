@@ -77,7 +77,9 @@ async function getPositionMultiplierWithAim(input) {
 }
 
 async function runDay02() {
-  const dataPath = path.join(__dirname, 'Day02Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day02Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);
