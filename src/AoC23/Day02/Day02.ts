@@ -10,27 +10,9 @@ export type Game = {
 };
 
 export type Set = {
-  [Cube.Blue]?: number;
-  [Cube.Green]?: number;
-  [Cube.Red]?: number;
-};
-
-export type BlueSet = {
-  [Cube.Blue]: number;
-  [Cube.Green]?: number;
-  [Cube.Red]?: number;
-};
-
-export type RedSet = {
-  [Cube.Blue]?: number;
-  [Cube.Green]?: number;
   [Cube.Red]: number;
-};
-
-export type GreenSet = {
-  [Cube.Blue]?: number;
   [Cube.Green]: number;
-  [Cube.Red]?: number;
+  [Cube.Blue]: number;
 };
 export enum Cube {
   Blue = 'blue',
@@ -45,11 +27,27 @@ export function getId(str: string): number {
 export function getSet(str: string): Set {
   const setArr = str.split(',');
 
-  const obj = {};
+  const obj = {
+    [Cube.Red]: 0,
+    [Cube.Green]: 0,
+    [Cube.Blue]: 0,
+  };
   setArr.map((x) => {
     const color = x.replace(/\d+/g, '').trim();
     const numb = Number(x.replace(/\D/g, ''));
-    obj[color] = numb;
+    switch (color) {
+      case Cube.Red:
+        obj[Cube.Red] = numb;
+        break;
+      case Cube.Green:
+        obj[Cube.Green] = numb;
+        break;
+      case Cube.Blue:
+        obj[Cube.Blue] = numb;
+        break;
+      default:
+        break;
+    }
   });
   return obj;
 }
@@ -71,13 +69,37 @@ export async function formatData(filepath: string) {
   return dataArr;
 }
 
-const args = require.resolve('./Day02TestData.txt');
-formatData(args);
-
 // Part One
-
-export async function partOne(input) {
-  return input;
+export function checkIfGamePossible(
+  game: Game,
+  { redCubes = 0, greenCubes = 0, blueCubes = 0 }
+) {
+  let numPossibleSets = 0;
+  game.sets.forEach((set) => {
+    if (
+      set.red <= redCubes &&
+      set.green <= greenCubes &&
+      set.blue <= blueCubes
+    ) {
+      numPossibleSets += 1;
+    }
+  });
+  return numPossibleSets === game.sets.length;
+}
+export async function partOne(
+  input: Game[],
+  { redCubes = 0, greenCubes = 0, blueCubes = 0 }
+) {
+  const possibleGameIds: number[] = input.map((game) => {
+    if (checkIfGamePossible(game, { redCubes, greenCubes, blueCubes })) {
+      return game.id;
+    } else {
+      return 0;
+    }
+  });
+  if (possibleGameIds.length > 1) {
+    return possibleGameIds.reduce((a, b) => a + b);
+  }
 }
 
 // Part Two
@@ -93,8 +115,12 @@ export async function solve() {
   try {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
+      await partOne(formattedData, {
+        redCubes: 12,
+        greenCubes: 13,
+        blueCubes: 14,
+      }),
+      //await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
