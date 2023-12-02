@@ -160,7 +160,9 @@ async function getLifeSupportRating(input) {
 }
 
 async function runDay03() {
-  const dataPath = path.join(__dirname, 'Day03Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC21/puzzleInputs/Day01Input.txt'
+  );
 
   try {
     const input = await formatData(dataPath);

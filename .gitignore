@@ -106,3 +106,9 @@ dist
 
 # Ignore Results text file
 Results.txt
+
+# Exclude typescript compiled js
+dist
+
+# Ignore puzzle inputs
+src/**/puzzleInputs/*
