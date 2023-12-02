@@ -212,13 +212,15 @@ async function partTwo(inspectedTotalArr) {
 }
 
 async function runDay11() {
-  const dataPath = path.join(__dirname, 'Day11Input.txt');
+  const dataPath = require.resolve(
+    '../../../src/AoC22/puzzleInputs/Day11Input.txt'
+  );
 
   try {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
       await partOne(formattedData, 20),
-      await partTwo(formattedData),
+      // await partTwo(formattedData),
     ]);
     return results;
   } catch (err) {
