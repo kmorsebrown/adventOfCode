@@ -23,7 +23,7 @@ describe('Day04', () => {
   describe('getCountOfFullyContainedOverlaps', () => {
     it('Finds the number of pairs where one range is fully contained within the other', async () => {
       const args = [
-        ['20', '40', '60', '80'],
+        ['2', '4', '6', '8'],
         ['2', '3', '4', '5'],
         ['5', '7', '7', '9'],
         ['2', '8', '3', '7'],
