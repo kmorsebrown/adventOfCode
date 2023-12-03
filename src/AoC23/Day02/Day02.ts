@@ -103,8 +103,44 @@ export async function partOne(
 }
 
 // Part Two
-export async function partTwo(input) {
-  return input;
+export function getMinCubesForGame(game: Game): Set {
+  let minCubeSet: Set = {
+    [Cube.Red]: 0,
+    [Cube.Green]: 0,
+    [Cube.Blue]: 0,
+  };
+
+  game.sets.forEach((set) => {
+    if (set[Cube.Red] > minCubeSet[Cube.Red]) {
+      minCubeSet[Cube.Red] = set[Cube.Red];
+    }
+
+    if (set[Cube.Green] > minCubeSet[Cube.Green]) {
+      minCubeSet[Cube.Green] = set[Cube.Green];
+    }
+
+    if (set[Cube.Blue] > minCubeSet[Cube.Blue]) {
+      minCubeSet[Cube.Blue] = set[Cube.Blue];
+    }
+  });
+
+  return minCubeSet;
+}
+export function getMinCubeSetPower(set: Set): number {
+  if (
+    typeof set[Cube.Red] === 'number' &&
+    typeof set[Cube.Green] === 'number' &&
+    typeof set[Cube.Blue] === 'number'
+  ) {
+    return set[Cube.Red] * set[Cube.Green] * set[Cube.Blue];
+  } else {
+    return 0;
+  }
+}
+export async function partTwo(input: Game[]): Promise<number> {
+  const minCubeSets: Set[] = input.map((game) => getMinCubesForGame(game));
+  const setPowers: number[] = minCubeSets.map((set) => getMinCubeSetPower(set));
+  return setPowers.reduce((a, b) => a + b);
 }
 
 export async function solve() {
@@ -120,7 +156,7 @@ export async function solve() {
         greenCubes: 13,
         blueCubes: 14,
       }),
-      //await partTwo(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
