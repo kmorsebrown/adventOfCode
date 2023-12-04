@@ -1,9 +1,8 @@
-import * as path from 'path';
-
-import { getData } from '../../globalFunctions.js';
+const path = require('path');
+const { getData } = require('../../globalFunctions.js');
 
 // https://adventofcode.com/2023/day/X
-export async function formatData(filepath: string) {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data;
 }
@@ -38,3 +37,10 @@ export async function solve() {
 }
 
 solve();
+
+module.exports = {
+  formatData,
+  partOne,
+  partTwo,
+  solve,
+};
