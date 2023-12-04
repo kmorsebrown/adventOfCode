@@ -2,11 +2,12 @@ import * as path from 'path';
 import {
   formatData,
   isSymbol,
-  arrayFromRow,
   getSchematicNumbersFromRow,
   hasAdjacentSymbol,
   checkForAdjacentSymbols,
   partOne,
+  getGearsFromRow,
+  getAdjacentPartNumbers,
   partTwo,
 } from './Day03';
 
@@ -48,36 +49,7 @@ describe('Day03', () => {
       expect(isSymbol(6)).toEqual(false);
     });
   });
-  describe('arrayFromRow', () => {
-    it('returns array of numbers and strings from row', () => {
-      expect(arrayFromRow('467..114..')).toEqual([
-        4,
-        6,
-        7,
-        '.',
-        '.',
-        1,
-        1,
-        4,
-        '.',
-        '.',
-      ]);
-    });
-    it('returns array of strings from row with no digits', () => {
-      expect(arrayFromRow('......#...')).toEqual([
-        '.',
-        '.',
-        '.',
-        '.',
-        '.',
-        '.',
-        '#',
-        '.',
-        '.',
-        '.',
-      ]);
-    });
-  });
+
   describe('getSchematicNumbersFromRow', () => {
     it('gets schematic data from first row', () => {
       expect(getSchematicNumbersFromRow(formattedData[0], 0)).toEqual([
@@ -161,10 +133,483 @@ describe('Day03', () => {
       expect(actual).toEqual(4361);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
+  describe('getGearsFromRow', () => {
+    it('returns array of gears objects', () => {
+      expect(getGearsFromRow(formattedData)).toEqual([
+        {
+          coordinates: {
+            rowIdx: 1,
+            colIdx: 3,
+          },
+          adjCoords: [
+            {
+              rowIdx: 0,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 0,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 0,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 1,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 1,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 4,
+            },
+          ],
+          adjPartNums: [],
+        },
+        {
+          coordinates: {
+            rowIdx: 4,
+            colIdx: 3,
+          },
+          adjCoords: [
+            {
+              rowIdx: 3,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 3,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 3,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 4,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 4,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 4,
+            },
+          ],
+          adjPartNums: [],
+        },
+        {
+          coordinates: {
+            rowIdx: 8,
+            colIdx: 5,
+          },
+          adjCoords: [
+            {
+              rowIdx: 7,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 7,
+              colIdx: 5,
+            },
+            {
+              rowIdx: 7,
+              colIdx: 6,
+            },
+            {
+              rowIdx: 8,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 8,
+              colIdx: 6,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 5,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 6,
+            },
+          ],
+          adjPartNums: [],
+        },
+      ]);
+    });
+  });
+  describe('getAdjacentPartNumbers', () => {
+    const gearArr = [
+      {
+        coordinates: {
+          rowIdx: 1,
+          colIdx: 3,
+        },
+        adjCoords: [
+          {
+            rowIdx: 0,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 0,
+            colIdx: 3,
+          },
+          {
+            rowIdx: 0,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 1,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 1,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 2,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 2,
+            colIdx: 3,
+          },
+          {
+            rowIdx: 2,
+            colIdx: 4,
+          },
+        ],
+        adjPartNums: [],
+      },
+      {
+        coordinates: {
+          rowIdx: 4,
+          colIdx: 3,
+        },
+        adjCoords: [
+          {
+            rowIdx: 3,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 3,
+            colIdx: 3,
+          },
+          {
+            rowIdx: 3,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 4,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 4,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 5,
+            colIdx: 2,
+          },
+          {
+            rowIdx: 5,
+            colIdx: 3,
+          },
+          {
+            rowIdx: 5,
+            colIdx: 4,
+          },
+        ],
+        adjPartNums: [],
+      },
+      {
+        coordinates: {
+          rowIdx: 8,
+          colIdx: 5,
+        },
+        adjCoords: [
+          {
+            rowIdx: 7,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 7,
+            colIdx: 5,
+          },
+          {
+            rowIdx: 7,
+            colIdx: 6,
+          },
+          {
+            rowIdx: 8,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 8,
+            colIdx: 6,
+          },
+          {
+            rowIdx: 9,
+            colIdx: 4,
+          },
+          {
+            rowIdx: 9,
+            colIdx: 5,
+          },
+          {
+            rowIdx: 9,
+            colIdx: 6,
+          },
+        ],
+        adjPartNums: [],
+      },
+    ];
+    const schematicNumbers = [
+      {
+        number: 467,
+        coordinates: [
+          { rowIdx: 0, colIdx: 0 },
+          { rowIdx: 0, colIdx: 1 },
+          { rowIdx: 0, colIdx: 2 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 114,
+        coordinates: [
+          { rowIdx: 0, colIdx: 5 },
+          { rowIdx: 0, colIdx: 6 },
+          { rowIdx: 0, colIdx: 7 },
+        ],
+        adjacentSymbol: false,
+      },
+      {
+        number: 35,
+        coordinates: [
+          { rowIdx: 2, colIdx: 2 },
+          { rowIdx: 2, colIdx: 3 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 633,
+        coordinates: [
+          { rowIdx: 2, colIdx: 6 },
+          { rowIdx: 2, colIdx: 7 },
+          { rowIdx: 2, colIdx: 8 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 617,
+        coordinates: [
+          { rowIdx: 4, colIdx: 0 },
+          { rowIdx: 4, colIdx: 1 },
+          { rowIdx: 4, colIdx: 2 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 58,
+        coordinates: [
+          { rowIdx: 5, colIdx: 7 },
+          { rowIdx: 5, colIdx: 8 },
+        ],
+        adjacentSymbol: false,
+      },
+      {
+        number: 592,
+        coordinates: [
+          { rowIdx: 6, colIdx: 2 },
+          { rowIdx: 6, colIdx: 3 },
+          { rowIdx: 6, colIdx: 4 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 755,
+        coordinates: [
+          { rowIdx: 7, colIdx: 6 },
+          { rowIdx: 7, colIdx: 7 },
+          { rowIdx: 7, colIdx: 8 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 664,
+        coordinates: [
+          { rowIdx: 9, colIdx: 1 },
+          { rowIdx: 9, colIdx: 2 },
+          { rowIdx: 9, colIdx: 3 },
+        ],
+        adjacentSymbol: true,
+      },
+      {
+        number: 598,
+        coordinates: [
+          { rowIdx: 9, colIdx: 5 },
+          { rowIdx: 9, colIdx: 6 },
+          { rowIdx: 9, colIdx: 7 },
+        ],
+        adjacentSymbol: true,
+      },
+    ];
+    it('returns array of gears objects', () => {
+      expect(getAdjacentPartNumbers(gearArr, schematicNumbers)).toEqual([
+        {
+          coordinates: {
+            rowIdx: 1,
+            colIdx: 3,
+          },
+          adjCoords: [
+            {
+              rowIdx: 0,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 0,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 0,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 1,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 1,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 2,
+              colIdx: 4,
+            },
+          ],
+          adjPartNums: [467, 35],
+        },
+        {
+          coordinates: {
+            rowIdx: 4,
+            colIdx: 3,
+          },
+          adjCoords: [
+            {
+              rowIdx: 3,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 3,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 3,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 4,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 4,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 2,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 3,
+            },
+            {
+              rowIdx: 5,
+              colIdx: 4,
+            },
+          ],
+          adjPartNums: [617],
+        },
+        {
+          coordinates: {
+            rowIdx: 8,
+            colIdx: 5,
+          },
+          adjCoords: [
+            {
+              rowIdx: 7,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 7,
+              colIdx: 5,
+            },
+            {
+              rowIdx: 7,
+              colIdx: 6,
+            },
+            {
+              rowIdx: 8,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 8,
+              colIdx: 6,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 4,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 5,
+            },
+            {
+              rowIdx: 9,
+              colIdx: 6,
+            },
+          ],
+          adjPartNums: [755, 598],
+        },
+      ]);
+    });
+  });
+
+  describe('partTwo', () => {
+    it('Gets gear ratios', async () => {
+      const actual = await partTwo(formattedData);
       expect(actual).toEqual(467835);
     });
   });
