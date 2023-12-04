@@ -49,8 +49,68 @@ async function partOne(input) {
 }
 
 // Part Two
+function getWinningCards(input) {
+  let winningCards = new Map();
+
+  input.forEach((card, index) => {
+    let numMatches = 0;
+
+    card[0].forEach((num) => {
+      if (card[1].includes(num)) {
+        numMatches += 1;
+      }
+    });
+    if (numMatches > 0) {
+      winningCards.set(`Card ${index + 1}`, {
+        cardIndex: index,
+        numMatches: numMatches,
+      });
+    }
+  });
+  return winningCards;
+}
+
+function getCardStats(input) {
+  let cardsMap = new Map();
+
+  input.forEach((card, index) => {
+    cardsMap.set(`Card ${index + 1}`, 1);
+  });
+  return cardsMap;
+}
+
+function makeCopies(map, value, cardNum, numMatches) {
+  let newKey = `Card ${cardNum + 1}`;
+
+  if (map.has(newKey) && numMatches > 0) {
+    map.set(newKey, map.get(newKey) + value);
+
+    const newCardNum = cardNum + 1;
+    const remainingMatches = numMatches - 1;
+
+    makeCopies(map, value, newCardNum, remainingMatches);
+  } else {
+    return;
+  }
+}
+
+function getTotalCards(cardsMap, winningCards) {
+  for (const [key, value] of cardsMap) {
+    if (winningCards.has(key)) {
+      makeCopies(
+        cardsMap,
+        value,
+        winningCards.get(key).cardIndex + 1,
+        winningCards.get(key).numMatches
+      );
+    }
+  }
+}
 async function partTwo(input) {
-  return input;
+  const scratchCards = getCardStats(input);
+  const winningCards = getWinningCards(input);
+  getTotalCards(scratchCards, winningCards);
+  return Array.from(scratchCards.values()).reduce((a, b) => a + b);
 }
 
 async function solve() {
@@ -62,7 +122,7 @@ async function solve() {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
       await partOne(formattedData),
-      //await partTwo(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -78,6 +138,10 @@ module.exports = {
   getPoints,
   getMatchingNumbers,
   partOne,
+  getWinningCards,
+  getCardStats,
+  makeCopies,
+  getTotalCards,
   partTwo,
   solve,
 };

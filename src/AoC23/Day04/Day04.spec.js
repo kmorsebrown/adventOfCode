@@ -4,6 +4,10 @@ const {
   getPoints,
   getMatchingNumbers,
   partOne,
+  getWinningCards,
+  getCardStats,
+  makeCopies,
+  getTotalCards,
   partTwo,
 } = require('./Day04');
 
@@ -36,6 +40,12 @@ describe('Day04', () => {
       ['74', '77', '10', '23', '35', '67', '36', '11'],
     ],
   ];
+  const mockWinningCards = new Map([
+    ['Card 1', { cardIndex: 0, numMatches: 4 }],
+    ['Card 2', { cardIndex: 1, numMatches: 2 }],
+    ['Card 3', { cardIndex: 2, numMatches: 2 }],
+    ['Card 4', { cardIndex: 3, numMatches: 1 }],
+  ]);
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
       const args = require.resolve('./Day04TestData.txt');
@@ -81,11 +91,126 @@ describe('Day04', () => {
       expect(actual).toEqual(13);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('getWinningCards', () => {
+    it('gets winning cards', () => {
+      expect(getWinningCards(formattedData)).toEqual(mockWinningCards);
+    });
+  });
+  describe('getCardStats', () => {
+    const mockCardsMap = new Map([
+      ['Card 1', 1],
+      ['Card 2', 1],
+      ['Card 3', 1],
+      ['Card 4', 1],
+      ['Card 5', 1],
+      ['Card 6', 1],
+    ]);
+    it('Creates a map of all the cards', () => {
+      expect(getCardStats(formattedData)).toEqual(mockCardsMap);
+    });
+  });
+  describe('makeCopies', () => {
+    it('makes copies of Card 1', () => {
+      const mockCardsMapCopies = new Map([
+        ['Card 1', 1],
+        ['Card 2', 1],
+        ['Card 3', 1],
+        ['Card 4', 1],
+        ['Card 5', 1],
+        ['Card 6', 1],
+      ]);
+      makeCopies(
+        mockCardsMapCopies,
+        mockCardsMapCopies.get('Card 1'),
+        1,
+        mockWinningCards.get('Card 1').numMatches
+      );
+      expect(mockCardsMapCopies).toEqual(
+        new Map([
+          ['Card 1', 1],
+          ['Card 2', 2],
+          ['Card 3', 2],
+          ['Card 4', 2],
+          ['Card 5', 2],
+          ['Card 6', 1],
+        ])
+      );
+    });
+    it('makes copies of Card 4', () => {
+      const mockCardsMapCopies = new Map([
+        ['Card 1', 1],
+        ['Card 2', 2],
+        ['Card 3', 4],
+        ['Card 4', 8],
+        ['Card 5', 6],
+        ['Card 6', 1],
+      ]);
+      makeCopies(
+        mockCardsMapCopies,
+        mockCardsMapCopies.get('Card 4'),
+        4,
+        mockWinningCards.get('Card 4').numMatches
+      );
+      expect(mockCardsMapCopies).toEqual(
+        new Map([
+          ['Card 1', 1],
+          ['Card 2', 2],
+          ['Card 3', 4],
+          ['Card 4', 8],
+          ['Card 5', 14],
+          ['Card 6', 1],
+        ])
+      );
+    });
+    it('makes no copies of Card 5', () => {
+      const mockCardsMapCopies = new Map([
+        ['Card 1', 1],
+        ['Card 2', 2],
+        ['Card 3', 4],
+        ['Card 4', 8],
+        ['Card 5', 14],
+        ['Card 6', 1],
+      ]);
+      makeCopies(mockCardsMapCopies, mockCardsMapCopies.get('Card 5'), 5, 0);
+      expect(mockCardsMapCopies).toEqual(
+        new Map([
+          ['Card 1', 1],
+          ['Card 2', 2],
+          ['Card 3', 4],
+          ['Card 4', 8],
+          ['Card 5', 14],
+          ['Card 6', 1],
+        ])
+      );
+    });
+  });
+  describe('getTotalCards', () => {
+    const mockCardsMap = new Map([
+      ['Card 1', 1],
+      ['Card 2', 1],
+      ['Card 3', 1],
+      ['Card 4', 1],
+      ['Card 5', 1],
+      ['Card 6', 1],
+    ]);
+    it('Sets total cards in map', () => {
+      getTotalCards(mockCardsMap, mockWinningCards);
+      expect(mockCardsMap).toEqual(
+        new Map([
+          ['Card 1', 1],
+          ['Card 2', 2],
+          ['Card 3', 4],
+          ['Card 4', 8],
+          ['Card 5', 14],
+          ['Card 6', 1],
+        ])
+      );
+    });
+  });
+  describe('partTwo', () => {
+    it('Get total number of scratch cards', async () => {
+      const actual = await partTwo(formattedData);
+      expect(actual).toEqual(30);
     });
   });
 });
