@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { appendFile } = require('../globalFunctions.js');
+const { appendFile } = require('../Utils/globalFunctions.js');
 const { runDay01 } = require('./Day01/Day01.js');
 const { runDay02 } = require('./Day02/Day02.js');
 const { runDay03 } = require('./Day03/Day03.js');

@@ -117,9 +117,18 @@ class Queue {
   }
 }
 
+function parseStringOfInts(str, seperator) {
+  return str
+    .trim()
+    .split(seperator)
+    .map((n) => parseInt(n, 10))
+    .filter((r) => !isNaN(r));
+}
+
 module.exports = {
   getData,
   appendFile,
+  parseStringOfInts,
   PART1_KEY,
   PART2_KEY,
   Graph,

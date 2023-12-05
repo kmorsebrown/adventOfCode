@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { getData } from '../../globalFunctions.js';
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2023/day/2
 

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getData } = require('../../globalFunctions.js');
+const { getData } = require('../../Utils/globalFunctions.js');
 
 // https://adventofcode.com/2022/day/6
 

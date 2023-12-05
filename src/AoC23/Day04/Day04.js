@@ -1,5 +1,5 @@
 const path = require('path');
-const { getData } = require('../../globalFunctions.js');
+const { getData } = require('../../Utils/globalFunctions.js');
 
 // https://adventofcode.com/2023/day/4
 
@@ -145,3 +145,35 @@ module.exports = {
   partTwo,
   solve,
 };
+
+/* Kevin Talley's answer that I want to remember b/c it's got lots of neat l'il tidbits in it
+
+  let input = data.split('\n')
+
+  let total = 0;
+
+  let cardCount = {};
+  for (let i = 1; i <= input.length; i++) {
+    cardCount[i] = 1;
+  }
+
+  input.forEach(card => {
+    let [cardId, numbers] = card.split(':');
+    let [winners, drawn] = numbers.split('|');
+
+    cardId = parseInt(cardId.replace(/Card\s/, ''), 10);
+    winners = winners.trim().split(' ').map(n => parseInt(n, 10)).filter(r => !isNaN(r));
+    drawn = drawn.trim().split(' ').map(n => parseInt(n, 10)).filter(r => !isNaN(r));
+    const matches = winners.filter(n => drawn.includes(n));
+
+    if (matches.length) {
+      total += Math.pow(2, matches.length - 1);
+
+      for (let t = 0; t < cardCount[cardId]; t++) {
+        for (let i = cardId; i < cardId + matches.length; i++) {
+          cardCount[i + 1] += 1;
+        }
+      }
+    }
+  });
+*/

@@ -1,5 +1,5 @@
 const path = require('path');
-const { getData } = require('../../globalFunctions.js');
+const { getData } = require('../../Utils/globalFunctions.js');
 
 // https://adventofcode.com/2023/day/X
 export async function formatData(filepath) {
