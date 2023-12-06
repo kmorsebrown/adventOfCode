@@ -1,46 +1,38 @@
-const path = require('path');
 const { getData } = require('../../Utils/globalFunctions.js');
 
 // https://adventofcode.com/2023/day/X
-export async function formatData(filepath) {
+exports.formatData = async (filepath) => {
   const data = await getData(filepath);
   return data;
-}
+};
 
 // Part One
 
-export async function partOne(input) {
+exports.partOne = async (input) => {
   return input;
-}
+};
 
 // Part Two
-export async function partTwo(input) {
+exports.partTwo = async (input) => {
   return input;
-}
+};
 
-export async function solve() {
+exports.solve = async () => {
   const dataPath = require.resolve(
     '../../../src/AoC23/puzzleInputs/DayXXInput.txt'
   );
 
   try {
-    const formattedData = await formatData(dataPath);
+    const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
+      await exports.partOne(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-}
-
-solve();
-
-module.exports = {
-  formatData,
-  partOne,
-  partTwo,
-  solve,
 };
+
+exports.solve();
