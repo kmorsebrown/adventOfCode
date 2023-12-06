@@ -7,8 +7,8 @@ exports.formatData = async (filepath) => {
   let data = await getData(filepath);
   data = data.split('\n');
 
-  const milliseconds = parseStringOfInts(data[0].replace('Time:', ''), ' ');
-  const millimeters = parseStringOfInts(data[1].replace('Time:', ''), ' ');
+  const milliseconds = parseStringOfInts(data[0], ' ');
+  const millimeters = parseStringOfInts(data[1], ' ');
 
   return milliseconds.map((time, index) => {
     return {
@@ -18,36 +18,48 @@ exports.formatData = async (filepath) => {
   });
 };
 
-// Part One
+exports.getMinMaxHoldTimeToWin = (race) => {
+  const { time, recordDist } = race;
 
-// exports.getDistance = (maxRaceTime, milSecButtonHeld) => {
-//   const remainingTime = maxRaceTime - milSecButtonHeld;
-//   const distTravelled = milSecButtonHeld * remainingTime;
-//   return distTravelled;
-// };
-
-exports.getButtonHeldFromDistance = (time, dist) => {
   // I had to look up quadratic equations for the first time since high school
   // how dare you Advent of Code
 
-  const resultA = Math.abs(
-    (-1 * time + Math.sqrt(Math.pow(time, 2) - 4 * dist)) / 2
-  );
-  const resultB = Math.abs(
-    (-1 * time - Math.sqrt(Math.pow(time, 2) - 4 * dist)) / 2
-  );
-  return [resultA, resultB];
+  return [
+    // get the shorter button hold time for the record distance, round down, then add one
+    Math.floor(
+      Math.abs((-1 * time + Math.sqrt(Math.pow(time, 2) - 4 * recordDist)) / 2)
+    ) + 1,
+    // get the longer button hold time for the record distance, round up, then subtract one
+    Math.ceil(
+      Math.abs((-1 * time - Math.sqrt(Math.pow(time, 2) - 4 * recordDist)) / 2)
+    ) - 1,
+  ];
 };
 
-exports.getNumDiffWaysToWin = (raceObj) => {};
-
 exports.partOne = async (input) => {
-  return input;
+  // Determine the number of ways you can beat the record in each race
+  let numWaysToWin = [];
+  input.forEach((race) => {
+    let [min, max] = exports.getMinMaxHoldTimeToWin(race);
+    numWaysToWin.push(max - min + 1);
+  });
+  // What do you get if you multiply these numbers together?
+  return numWaysToWin.reduce((a, b) => a * b);
 };
 
 // Part Two
+exports.formatDataPart2 = async (filepath) => {
+  let data = await getData(filepath);
+  data = data.split('\n');
+  return {
+    time: parseInt(data[0].replace(/\D/g, '')),
+    recordDist: parseInt(data[1].replace(/\D/g, '')),
+  };
+};
+
 exports.partTwo = async (input) => {
-  return input;
+  let [min, max] = exports.getMinMaxHoldTimeToWin(input);
+  return max - min + 1;
 };
 
 exports.solve = async () => {
@@ -57,9 +69,10 @@ exports.solve = async () => {
 
   try {
     const formattedData = await exports.formatData(dataPath);
+    const formattedDataPart2 = await exports.formatDataPart2(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await exports.partTwo(formattedDataPart2),
     ]);
     console.log(results);
     return results;

@@ -1,7 +1,7 @@
 const {
   formatData,
-  getButtonHeldFromDistance,
-  getNumDiffWaysToWin,
+  getMinMaxHoldTimeToWin,
+  formatDataPart2,
   partOne,
   partTwo,
 } = require('./Day06');
@@ -9,7 +9,7 @@ const {
 // npm test -- src/AoC23/Day06/Day06.spec.js
 
 describe('Day06', () => {
-  const formattedData = [
+  const formattedDataPartOne = [
     {
       time: 7,
       recordDist: 9,
@@ -23,49 +23,45 @@ describe('Day06', () => {
       recordDist: 200,
     },
   ];
+  const formattedDataPartTwo = {
+    time: 71530,
+    recordDist: 940200,
+  };
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
       const args = require.resolve('./Day06TestData.txt');
       const actual = await formatData(args);
-      expect(actual).toEqual(formattedData);
+      expect(actual).toEqual(formattedDataPartOne);
     });
   });
-  describe('getButtonHeldFromDistance', () => {
-    it('button held for 0 or 7 milSec to travel 0 milMtr in 7 milSec race', () => {
-      expect(getButtonHeldFromDistance(7, 0)).toEqual([0, 7]);
+  describe('getMinMaxHoldTimeToWin', () => {
+    it('Hold button for at least 2 ms and no more than 5 ms to beat 9 mm record in 7 ms race', () => {
+      expect(getMinMaxHoldTimeToWin(formattedDataPartOne[0])).toEqual([2, 5]);
     });
-    it('button held for 1 or 6 milSec to travel 1 milMtr in 7 milSec race', () => {
-      expect(getButtonHeldFromDistance(7, 6)).toEqual([1, 6]);
+    it('Hold button for at least 4 ms and no more than 11 ms to beat 40 mm record in 15 ms race', () => {
+      expect(getMinMaxHoldTimeToWin(formattedDataPartOne[1])).toEqual([4, 11]);
     });
-    it('button held for 2 or 5 milSec to travel 10 milMtr in 7 milSec race', () => {
-      expect(getButtonHeldFromDistance(7, 10)).toEqual([2, 5]);
-    });
-    it('button held for 3 or 4 milSec to travel 12 milMtr in 7 milSec race', () => {
-      expect(getButtonHeldFromDistance(7, 12)).toEqual([3, 4]);
+    it('Hold button for at least 11 ms and no more than 19 ms to beat 200 mm record in 30 ms race', () => {
+      expect(getMinMaxHoldTimeToWin(formattedDataPartOne[2])).toEqual([11, 19]);
     });
   });
-  // describe('getNumDiffWaysToWin', () => {
-  //   it('returns 4 diff ways to win for 7 milSec race with 9 milMtr record', () => {
-  //     expect(getNumDiffWaysToWin(formattedData[0])).toEqual(4);
-  //   });
-  //   it('returns 4 diff ways to win for 7 milSec race with 9 milMtr record', () => {
-  //     expect(getNumDiffWaysToWin(formattedData[1])).toEqual(8);
-  //   });
-  //   it('returns 4 diff ways to win for 7 milSec race with 9 milMtr record', () => {
-  //     expect(getNumDiffWaysToWin(formattedData[2])).toEqual(9);
-  //   });
-  // });
-  describe.skip('partOne', () => {
-    it('TK', async () => {
-      const actual = await partOne(formattedData);
+  describe('partOne', () => {
+    it('multiply the number of ways you can beat the record in each race together', async () => {
+      const actual = await partOne(formattedDataPartOne);
       expect(actual).toEqual(288);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('formatDataPart2', () => {
+    it('formats data for part 2', async () => {
+      const args = require.resolve('./Day06TestData.txt');
+      const actual = await formatDataPart2(args);
+      expect(actual).toEqual(formattedDataPartTwo);
+    });
+  });
+  describe('partTwo', () => {
+    it('Get number of ways to win a race', async () => {
+      const actual = await partTwo(formattedDataPartTwo);
+      expect(actual).toEqual(71503);
     });
   });
 });
