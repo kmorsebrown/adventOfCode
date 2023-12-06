@@ -1,4 +1,3 @@
-const path = require('path');
 const { formatData, partOne, partTwo } = require('./DayXX');
 
 // npm test -- src/AoC23/DayXX/DayXX.spec.js
