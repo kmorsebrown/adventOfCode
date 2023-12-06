@@ -1,5 +1,13 @@
 const path = require('path');
-const { formatData, getMappedNum, partOne, partTwo } = require('./Day05');
+const {
+  formatData,
+  getMappedNum,
+  partOne,
+  getSeedRanges,
+  getLocationNum,
+  getLowestLocationNumberInRange,
+  partTwo,
+} = require('./Day05');
 
 // npm test -- src/AoC23/Day05/Day05.spec.js
 
@@ -90,11 +98,33 @@ describe('Day05', () => {
       expect(actual).toEqual(35);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('getSeedRanges', () => {
+    it('Creates seed range from array', () => {
+      expect(getSeedRanges(formattedData.get('seeds'))).toEqual([
+        [79, 14],
+        [55, 13],
+      ]);
+    });
+  });
+  describe('getLocationNum', () => {
+    it('gets location number for seed 79', () => {
+      expect(getLocationNum(79, formattedData)).toEqual(82);
+    });
+    it('gets location number for seed 79', () => {
+      expect(getLocationNum(55, formattedData)).toEqual(86);
+    });
+  });
+  describe('getLowestLocationNumberInRange', () => {
+    it('Returns the lowest location number in a given range', () => {
+      expect(getLowestLocationNumberInRange([79, 14], formattedData)).toEqual(
+        46
+      );
+    });
+  });
+  describe('partTwo', () => {
+    it('Returns lowest location number that corresponds to any of numbers in the initial seed ranges', async () => {
+      const actual = await partTwo(formattedData);
+      expect(actual).toEqual(46);
     });
   });
 });

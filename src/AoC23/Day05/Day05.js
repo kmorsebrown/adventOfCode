@@ -67,8 +67,72 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+
+exports.getSeedRanges = (array) => {
+  const seedRanges = [];
+
+  for (let i = 0; i < array.length; i += 2) {
+    seedRanges.push([array[i], array[i + 1]]);
+  }
+
+  // function* range(start, length) {
+  //   const end = start + (length - 1);
+  //   yield start;
+  //   if (start === end) return;
+  //   yield* range(start + 1, length - 1);
+  // }
+
+  return seedRanges;
+  //.map((pair) => [...range(pair[0], pair[1])]).flat();
+};
+
+exports.getLocationNum = (startNum, input) => {
+  let currentNum = startNum;
+  for (let [key, value] of input) {
+    if (key !== 'seeds') {
+      currentNum = exports.getMappedNum(currentNum, value, 0);
+    }
+  }
+  return currentNum;
+};
+
+exports.getLowestLocationNumberInRange = (range, input) => {
+  let [seedId, length] = range;
+
+  let lowestLocationNum;
+  let currentSeed = seedId;
+
+  do {
+    const locationNum = exports.getLocationNum(currentSeed, input);
+    if (
+      typeof lowestLocationNum === 'undefined' ||
+      locationNum < lowestLocationNum
+    ) {
+      lowestLocationNum = locationNum;
+    }
+    currentSeed++;
+  } while (currentSeed < seedId + length);
+
+  return lowestLocationNum;
+};
+
 exports.partTwo = async (input) => {
-  return input;
+  const seedRanges = exports.getSeedRanges(input.get('seeds'));
+
+  let lowestLocationNum;
+  seedRanges.forEach((range) => {
+    let lowestLocationNumInRange = exports.getLowestLocationNumberInRange(
+      range,
+      input
+    );
+    if (
+      typeof lowestLocationNum === 'undefined' ||
+      lowestLocationNumInRange < lowestLocationNum
+    ) {
+      lowestLocationNum = lowestLocationNumInRange;
+    }
+  });
+  return lowestLocationNum;
 };
 
 exports.solve = async () => {
@@ -80,7 +144,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
