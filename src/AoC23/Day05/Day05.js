@@ -37,10 +37,33 @@ exports.formatData = async (filepath) => {
   return dataMap;
 };
 
-// Part One
+exports.getMappedNum = (srcNum, numArr, index) => {
+  const { destRngStrt, srcRngStrt, rngLngth } = numArr[index];
+  if (srcNum >= srcRngStrt && srcNum < srcRngStrt + rngLngth) {
+    return destRngStrt + (srcNum - srcRngStrt);
+  } else if (index < numArr.length - 1) {
+    return exports.getMappedNum(srcNum, numArr, index + 1);
+  } else {
+    return srcNum;
+  }
+};
 
+// Part One
 exports.partOne = async (input) => {
-  return input;
+  let i = 0;
+  let mappedNums = [];
+
+  for (let [key, value] of input) {
+    if (key === 'seeds') {
+      mappedNums.push(value);
+    } else {
+      mappedNums.push(
+        mappedNums[i].map((num) => exports.getMappedNum(num, value, 0))
+      );
+      i += 1;
+    }
+  }
+  return Math.min(...mappedNums.pop());
 };
 
 // Part Two
@@ -52,7 +75,6 @@ exports.solve = async () => {
   const dataPath = require.resolve(
     '../../../src/AoC23/puzzleInputs/Day05Input.txt'
   );
-  // const dataPath = require.resolve('./Day05TestData.txt');
 
   try {
     const formattedData = await exports.formatData(dataPath);

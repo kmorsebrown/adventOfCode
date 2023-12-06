@@ -1,5 +1,5 @@
 const path = require('path');
-const { formatData, partOne, partTwo } = require('./Day05');
+const { formatData, getMappedNum, partOne, partTwo } = require('./Day05');
 
 // npm test -- src/AoC23/Day05/Day05.spec.js
 
@@ -67,10 +67,26 @@ describe('Day05', () => {
       expect(actual).toEqual(formattedData);
     });
   });
-  describe.skip('partOne', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partOne(args);
+  describe('getMappedNum', () => {
+    it('Gets the mapped soil number when the seed is in the first range', () => {
+      expect(getMappedNum(55, formattedData.get('seed-to-soil'), 0)).toEqual(
+        57
+      );
+    });
+    it('Gets the mapped soil number when the seed is in the second range', () => {
+      expect(getMappedNum(79, formattedData.get('seed-to-soil'), 0)).toEqual(
+        81
+      );
+    });
+    it('Gets the mapped soil number when the seed is not in any ranges', () => {
+      expect(getMappedNum(14, formattedData.get('seed-to-soil'), 0)).toEqual(
+        14
+      );
+    });
+  });
+  describe('partOne', () => {
+    it('Returns lowest location number', async () => {
+      const actual = await partOne(formattedData);
       expect(actual).toEqual(35);
     });
   });
