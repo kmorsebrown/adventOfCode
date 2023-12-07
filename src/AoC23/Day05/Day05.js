@@ -30,6 +30,13 @@ exports.formatData = async (filepath) => {
           rngLngth: rngLngth,
         };
       });
+
+      /* Code from Eli's solve for future reference
+        In addition to above code:
+
+        value = value.map(m => m.sort((a, b) => a.srcRngStrt - b.srcRngStrt));
+
+      */
     }
     dataMap.set(key, value);
   });
@@ -46,6 +53,17 @@ exports.getMappedNum = (srcNum, numArr, index) => {
   } else {
     return srcNum;
   }
+
+  /* From Eli's solve for future reference, no longer needs index arg
+
+  for (let range of numArr) {
+    if (srcNum >= range.srcRngStrt && srcNum < range.srcRngStrt + range.rngLngth) {
+      return range.destRngStrt + (srcNum - range.srcRngStrt);
+    }
+  }
+
+  return srcNum
+  */
 };
 
 // Part One
@@ -61,9 +79,24 @@ exports.partOne = async (input) => {
         mappedNums[i].map((num) => exports.getMappedNum(num, value, 0))
       );
       i += 1;
+      /* Alt code from Eli's solve for future reference
+        Get rid of let i=0 up top and replace contents of this else block with below code
+
+        mappedNums = mappedNums.map(n8m => exports.getMappedNum(num, value))
+      */
     }
   }
   return Math.min(...mappedNums.pop());
+
+  /* Alt code from Eli's solve for future reference
+
+    return mappedNums.sort((a, b) {
+      if(a < b) { return -1; }
+      if(a > b) { return  1; }
+      return 0;
+    })
+
+  */
 };
 
 // Part Two
@@ -154,3 +187,6 @@ exports.solve = async () => {
 };
 
 exports.solve();
+
+// revisit Eli's solution later & see what I can learn from it
+// https://github.com/dispatchrabbi/advent-of-code/blob/main/puzzles/2023/5/puzzle.js
