@@ -3,6 +3,8 @@ const {
   getHandType,
   compareHandStrengthPartOne,
   partOne,
+  getHandTypeWithJokers,
+  compareHandStrengthWithJokers,
   partTwo,
 } = require('./Day07');
 
@@ -113,7 +115,6 @@ describe('Day07', () => {
       };
       expect(compareHandStrengthPartOne(a, b)).toEqual(-1);
     });
-
     it('returns 0 when A and B are identical', () => {
       const a = {
         hand: 'T55J5',
@@ -132,7 +133,107 @@ describe('Day07', () => {
       expect(actual).toEqual(6440);
     });
   });
-  describe.skip('partTwo', () => {
+  describe('getHandTypeWithJokers', () => {
+    it('returns five of a kind for 5:0 hand', () => {
+      expect(getHandTypeWithJokers('AAAAA')).toEqual(FIVE_OF_A_KIND);
+      expect(getHandTypeWithJokers('JJJJJ')).toEqual(FIVE_OF_A_KIND);
+    });
+    it('returns five of a kind for 4:1 ratio w/Js', () => {
+      expect(getHandTypeWithJokers('AAAAJ')).toEqual(FIVE_OF_A_KIND);
+      expect(getHandTypeWithJokers('JJJJA')).toEqual(FIVE_OF_A_KIND);
+    });
+    it('returns five of a kind for 3:2 ratio w/Js', () => {
+      expect(getHandTypeWithJokers('AAAJJ')).toEqual(FIVE_OF_A_KIND);
+      expect(getHandTypeWithJokers('JJJAA')).toEqual(FIVE_OF_A_KIND);
+    });
+    it('returns four of a kind for 3:1:1 ratio w/ Js', () => {
+      expect(getHandTypeWithJokers('AAAJ8')).toEqual(FOUR_OF_A_KIND);
+      expect(getHandTypeWithJokers('JJJA8')).toEqual(FOUR_OF_A_KIND);
+    });
+    it('returns four of a kind for 2:2:1 ratio w/ 2 Js', () => {
+      expect(getHandTypeWithJokers('JJAA8')).toEqual(FOUR_OF_A_KIND);
+    });
+    it('returns full house for 2:2:1 ratio w/ 1 J', () => {
+      expect(getHandTypeWithJokers('88AAJ')).toEqual(FULL_HOUSE);
+    });
+    it('returns three of a kind for 3:1:1 ratio w/o Js', () => {
+      expect(getHandTypeWithJokers('AAAT8')).toEqual(THREE_OF_A_KIND);
+    });
+    it('returns two pair for 2:2:1 ratio w/o Js', () => {
+      expect(getHandTypeWithJokers('TTAA8')).toEqual(TWO_PAIR);
+    });
+    it('returns three of a kind for 2:1:1:1 ratio w/ Js', () => {
+      expect(getHandTypeWithJokers('AAJT8')).toEqual(THREE_OF_A_KIND);
+      expect(getHandTypeWithJokers('JJAT8')).toEqual(THREE_OF_A_KIND);
+    });
+    it('returns one pair for 2:1:1:1 ratio w/o Js', () => {
+      expect(getHandTypeWithJokers('AA3T8')).toEqual(ONE_PAIR);
+    });
+    it('returns one pair for 1:1:1:1 ratio w/ Js', () => {
+      expect(getHandTypeWithJokers('JA3T8')).toEqual(ONE_PAIR);
+    });
+    it('returns high card for 1:1:1:1 ratio w/0 Js', () => {
+      expect(getHandTypeWithJokers('6A3T8')).toEqual(HIGH_CARD);
+    });
+  });
+  describe('compareHandStrengthWithJokers', () => {
+    it('returns 1 when A is two pair and B is full house w/joker', () => {
+      const a = {
+        hand: 'KK776',
+        bid: 28,
+      };
+      const b = {
+        hand: '23J32',
+        bid: 765,
+      };
+      expect(compareHandStrengthWithJokers(a, b)).toEqual(1);
+    });
+    it('returns 1 when A and B are both four of a kind but B is stronger', () => {
+      const b = {
+        hand: 'QQQJA',
+        bid: 483,
+      };
+      const a = {
+        hand: 'JJTTK',
+        bid: 220,
+      };
+      expect(compareHandStrengthWithJokers(a, b)).toEqual(1);
+    });
+    it('returns - 1 when A & B are both four of a kind but A is stronger', () => {
+      const a = {
+        hand: 'QQQJA',
+        bid: 483,
+      };
+      const b = {
+        hand: 'JJTTK',
+        bid: 220,
+      };
+      expect(compareHandStrengthWithJokers(a, b)).toEqual(-1);
+    });
+    it('returns -1 when A is three of a kind and B is two pair', () => {
+      const a = {
+        hand: 'QQDJA',
+        bid: 483,
+      };
+      const b = {
+        hand: 'KK677',
+        bid: 28,
+      };
+      expect(compareHandStrengthWithJokers(a, b)).toEqual(-1);
+    });
+    it('returns 0 when A and B are identical', () => {
+      const a = {
+        hand: 'T55J5',
+        bid: 684,
+      };
+      const b = {
+        hand: 'T55J5',
+        bid: 684,
+      };
+      expect(compareHandStrengthWithJokers(a, b)).toEqual(0);
+    });
+  });
+  describe('partTwo', () => {
     it('Sum winnings with Jokers', async () => {
       const actual = await partTwo(mockData);
       expect(actual).toEqual(5905);
