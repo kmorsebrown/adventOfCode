@@ -3,6 +3,8 @@ const {
   getLastStepHistory,
   getNextNumberInSequence,
   partOne,
+  getFirstStepHistory,
+  getPrevNumberInSequence,
   partTwo,
 } = require('./Day09');
 
@@ -45,17 +47,40 @@ describe('Day09', () => {
       expect(getNextNumberInSequence([45, 15, 6, 2, 0])).toEqual(68);
     });
   });
+  describe('getFirstStepHistory', () => {
+    it('returns array with the last step in history of first sequence until 0', () => {
+      expect(getFirstStepHistory([0, 3, 6, 9, 12, 15])).toEqual([0, 3, 0]);
+    });
+    it('returns array with the last step in history of first second until 0', () => {
+      expect(getFirstStepHistory([1, 3, 6, 10, 15, 21])).toEqual([1, 2, 1, 0]);
+    });
+    it('returns array with the last step in history of third second until 0', () => {
+      expect(getFirstStepHistory([10, 13, 16, 21, 30, 45])).toEqual([
+        10, 3, 0, 2, 0,
+      ]);
+    });
+  });
+  describe('getPrevNumberInSequence', () => {
+    it('returns array of the first number history in first sequence', () => {
+      expect(getPrevNumberInSequence([0, 3, 0])).toEqual(-3);
+    });
+    it('returns array of the first number history in second sequence', () => {
+      expect(getPrevNumberInSequence([1, 2, 1, 0])).toEqual(0);
+    });
+    it('returns array of the first number history in third sequence', () => {
+      expect(getPrevNumberInSequence([10, 3, 0, 2, 0])).toEqual(5);
+    });
+  });
   describe('partOne', () => {
     it('returns the sum of the next step in every sequence', async () => {
       const actual = await partOne(mockData);
       expect(actual).toEqual(114);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('returns the sum of the previous step in every sequence', async () => {
+      const actual = await partTwo(mockData);
+      expect(actual).toEqual(2);
     });
   });
 });

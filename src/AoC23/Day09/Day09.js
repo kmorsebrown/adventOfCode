@@ -51,8 +51,40 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+
+exports.getFirstStepHistory = (sequence) => {
+  let output = [sequence[0]];
+
+  const getPrevHistory = (seq) => {
+    let newSeq = [];
+    for (let i = 1; i < seq.length; i++) {
+      newSeq.push(seq[i] - seq[i - 1]);
+    }
+    output.push(newSeq[0]);
+
+    if (newSeq[newSeq.length - 1] === 0) {
+      return;
+    } else {
+      getPrevHistory(newSeq);
+    }
+  };
+  getPrevHistory(sequence);
+  return output;
+};
+exports.getPrevNumberInSequence = (history) => {
+  let revHist = history.reverse();
+  let prevNum = 0;
+  while (revHist.length > 0) {
+    prevNum = revHist.shift() - prevNum;
+  }
+  return prevNum;
+};
 exports.partTwo = async (input) => {
-  return input;
+  let firstStepHist = input.map((seq) => exports.getFirstStepHistory(seq));
+  let prevNums = firstStepHist.map((his) =>
+    exports.getPrevNumberInSequence(his)
+  );
+  return sum(prevNums);
 };
 
 exports.solve = async () => {
@@ -64,7 +96,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
