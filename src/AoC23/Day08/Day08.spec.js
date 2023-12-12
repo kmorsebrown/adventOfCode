@@ -1,4 +1,10 @@
-const { getDirections, formatData, partOne, partTwo } = require('./Day08');
+const {
+  getDirections,
+  formatData,
+  partOne,
+  calculateLcmForAll,
+  partTwo,
+} = require('./Day08');
 
 // npm test -- src/AoC23/Day08/Day08.spec.js
 
@@ -18,6 +24,17 @@ describe('Day08', () => {
     AAA: { L: 'BBB', R: 'BBB' },
     BBB: { L: 'AAA', R: 'ZZZ' },
     ZZZ: { R: 'ZZZ', L: 'ZZZ' },
+  };
+  const mockInstruxC = 'LR';
+  const mockNodesC = {
+    '11A': { L: '11B', R: 'XXX' },
+    '11B': { L: 'XXX', R: '11Z' },
+    '11Z': { L: '11B', R: 'XXX' },
+    '22A': { L: '22B', R: 'XXX' },
+    '22B': { L: '22C', R: '22C' },
+    '22C': { L: '22Z', R: '22Z' },
+    '22Z': { L: '22B', R: '22B' },
+    XXX: { L: 'XXX', R: 'XXX' },
   };
   describe('getDirections', () => {
     it('Returns directions RL', async () => {
@@ -53,11 +70,24 @@ describe('Day08', () => {
       expect(actual).toEqual(6);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('calculateLcmForAll', () => {
+    it('returns lcm for 2 numbers', () => {
+      let args = [2, 3];
+      expect(calculateLcmForAll(args)).toEqual(6);
+    });
+    it('returns lcm for 4 numbers', () => {
+      let args = [5, 10, 15, 25];
+      expect(calculateLcmForAll(args)).toEqual(150);
+    });
+    it('returns lcm for 6 numbers', () => {
+      let args = [12, 18, 7, 15, 20, 24, 28];
+      expect(calculateLcmForAll(args)).toEqual(2520);
+    });
+  });
+  describe('partTwo', () => {
+    it('Returns the number of steps it takes to end up entirely on nodes that end with Z', async () => {
+      const actual = await partTwo(mockInstruxC, mockNodesC);
+      expect(actual).toEqual(6);
     });
   });
 });
