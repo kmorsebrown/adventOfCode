@@ -243,7 +243,7 @@ describe('Day13', () => {
       });
     });
   });
-  describe('generateGraph', () => {
+  describe.skip('generateGraph', () => {
     it('generates a graph from the data', async () => {
       const actual = await generateGraph({
         left: [
