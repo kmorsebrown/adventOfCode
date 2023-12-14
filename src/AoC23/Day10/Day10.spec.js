@@ -4,6 +4,7 @@ const {
   getPipeFromDir,
   checkConnection,
   getStartingPipe,
+  getNextStep,
   partOne,
   partTwo,
 } = require('./Day10');
@@ -149,12 +150,62 @@ describe('Day10', () => {
       });
     });
   });
-  describe.skip('partOne', () => {
-    it('TK', async () => {
+  describe('getNextStep', () => {
+    it('gets next step for F pipe connecting east to - pipe', () => {
+      const mockStep = {
+        direction: EAST,
+        pipe: {
+          type: 'F',
+          coords: { xIdx: 1, yIdx: 1 },
+        },
+      };
+      expect(getNextStep(mockDataA, mockStep)).toEqual({
+        direction: EAST,
+        pipe: {
+          type: '-',
+          coords: { xIdx: 2, yIdx: 1 },
+        },
+      });
+    });
+    it('gets next step for - pipe connecting east to 7 pipe', () => {
+      const mockStep = {
+        direction: EAST,
+        pipe: {
+          type: '-',
+          coords: { xIdx: 2, yIdx: 1 },
+        },
+      };
+      expect(getNextStep(mockDataA, mockStep)).toEqual({
+        direction: SOUTH,
+        pipe: {
+          type: '7',
+          coords: { xIdx: 3, yIdx: 1 },
+        },
+      });
+    });
+    it('gets next step for | pipe connecting south to J pipe', () => {
+      const mockStep = {
+        direction: SOUTH,
+        pipe: {
+          type: '|',
+          coords: { xIdx: 3, yIdx: 2 },
+        },
+      };
+      expect(getNextStep(mockDataA, mockStep)).toEqual({
+        direction: WEST,
+        pipe: {
+          type: 'J',
+          coords: { xIdx: 3, yIdx: 3 },
+        },
+      });
+    });
+  });
+  describe('partOne', () => {
+    it('Returns the number of steps to get to point in loop farthest from start data A', async () => {
       const actual = await partOne(mockDataA);
       expect(actual).toEqual(4);
     });
-    it('TK', async () => {
+    it('Returns the number of steps to get to point in loop farthest from start data B', async () => {
       const actual = await partOne(mockDataB);
       expect(actual).toEqual(8);
     });

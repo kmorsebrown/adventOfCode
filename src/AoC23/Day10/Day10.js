@@ -33,6 +33,13 @@ const CONNECTIONS = {
   [WEST]: ['-', 'J', '7'], // pipes that connect to west
 };
 
+const RECIPROCAL_CONNECTIONS = {
+  [NORTH]: SOUTH, // to connect north, northern pipe must connects south
+  [SOUTH]: NORTH, // to connect south, southern pipe must connect north
+  [EAST]: WEST, // to connect east, eastern pipe must connect west
+  [WEST]: EAST, // to connect west, western pipe must connect east
+};
+
 // Part One
 
 /* 
@@ -118,39 +125,32 @@ exports.getPipeFromDir = (data, coordinates, directionFromCurrent) => {
 };
 
 exports.checkConnection = (pipe, directionFromCurrent) => {
-  const reciprocalConnectionsMap = {
-    [NORTH]: SOUTH, // to connect north, northern pipe must connects south
-    [SOUTH]: NORTH, // to connect south, southern pipe must connect north
-    [EAST]: WEST, // to connect east, eastern pipe must connect west
-    [WEST]: EAST, // to connect west, western pipe must connect east
-  };
-
-  const reciprocalConnection = reciprocalConnectionsMap[directionFromCurrent];
+  const reciprocalConnection = RECIPROCAL_CONNECTIONS[directionFromCurrent];
   const possibleConnections = CONNECTIONS[reciprocalConnection];
 
   return possibleConnections.includes(pipe);
 };
 
 exports.getStartingPipe = (data) => {
-  const coordinates = this.getStartCoordinates(data);
+  const coordinates = exports.getStartCoordinates(data);
 
-  const pipeToNorth = this.getPipeFromDir(data, coordinates, NORTH);
-  const pipeToSouth = this.getPipeFromDir(data, coordinates, SOUTH);
-  const pipeToEast = this.getPipeFromDir(data, coordinates, EAST);
-  const pipeToWest = this.getPipeFromDir(data, coordinates, WEST);
+  const pipeToNorth = exports.getPipeFromDir(data, coordinates, NORTH);
+  const pipeToSouth = exports.getPipeFromDir(data, coordinates, SOUTH);
+  const pipeToEast = exports.getPipeFromDir(data, coordinates, EAST);
+  const pipeToWest = exports.getPipeFromDir(data, coordinates, WEST);
 
   let validConnections = [];
 
-  if (pipeToNorth && this.checkConnection(pipeToNorth.type, NORTH)) {
+  if (pipeToNorth && exports.checkConnection(pipeToNorth.type, NORTH)) {
     validConnections.push(NORTH);
   }
-  if (pipeToSouth && this.checkConnection(pipeToSouth.type, SOUTH)) {
+  if (pipeToSouth && exports.checkConnection(pipeToSouth.type, SOUTH)) {
     validConnections.push(SOUTH);
   }
-  if (pipeToEast && this.checkConnection(pipeToEast.type, EAST)) {
+  if (pipeToEast && exports.checkConnection(pipeToEast.type, EAST)) {
     validConnections.push(EAST);
   }
-  if (pipeToWest && this.checkConnection(pipeToWest.type, WEST)) {
+  if (pipeToWest && exports.checkConnection(pipeToWest.type, WEST)) {
     validConnections.push(WEST);
   }
 
@@ -165,31 +165,55 @@ exports.getStartingPipe = (data) => {
     coords: coordinates,
   };
 };
+exports.getNextStep = (data, currentStep) => {
+  const { direction, pipe } = currentStep;
 
+  const nextPipe = exports.getPipeFromDir(data, pipe.coords, direction);
+  const nextDirection = PIPES[nextPipe.type]
+    .filter((d) => d !== RECIPROCAL_CONNECTIONS[direction])
+    .toString();
+
+  return {
+    direction: nextDirection,
+    pipe: nextPipe,
+  };
+};
 exports.partOne = async (input) => {
   let steps = 0;
-  let startingPipe = this.getStartingPipe(input);
-  let currentPipes = {
-    branchA: JSON.parse(JSON.stringify(startingPipe)),
-    branchB: JSON.parse(JSON.stringify(startingPipe)),
+  let startingPipe = exports.getStartingPipe(input);
+  let startingDirections = PIPES[startingPipe.type];
+  let currentStep = {
+    branchA: {
+      direction: startingDirections[0], // SOUTH
+      pipe: startingPipe, // { type: 'F', coords: { xIdx: 1, yIdx: 1 } }
+    },
+    branchB: {
+      direction: startingDirections[1], // EAST
+      pipe: startingPipe, // { type: 'F', coords: { xIdx: 1, yIdx: 1 } }
+    },
   };
-  let prevPipes = {
+  let prevStep = {
     branchA: {},
     branchB: {},
   };
 
   // count steps until both branches are on the same coordiantes again
   do {
-    prevPipes.branchA = currentPipes.branchA;
-    prevPipes.branchB = currentPipes.branchB;
+    let nextStep = {
+      branchA: exports.getNextStep(input, currentStep.branchA),
+      branchB: exports.getNextStep(input, currentStep.branchB),
+    };
+    prevStep.branchA = currentStep.branchA;
+    prevStep.branchB = currentStep.branchB;
+    currentStep = nextStep;
     steps++;
   } while (
-    !_.isEqual(currentPipes.branchA, currentPipes.branchB) &&
-    !_.isEqual(startingPipe, currentPipes.branchA)
+    !_.isEqual(currentStep.branchA.pipe, currentStep.branchB.pipe) &&
+    !_.isEqual(startingPipe, currentStep.branchA.pipe)
   );
 
   // count steps until coordinates for both branches are equal
-  return input;
+  return steps;
 };
 
 // Part Two
@@ -205,10 +229,10 @@ exports.solve = async () => {
   try {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
-      // await exports.partOne(formattedData),
+      await exports.partOne(formattedData),
       // await exports.partTwo(formattedData),
     ]);
-    // console.log(results);
+    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
@@ -216,3 +240,6 @@ exports.solve = async () => {
 };
 
 exports.solve();
+
+// const mockDataA = ['-L|F7', '7S-7|', 'L|7||', '-L-J|', 'L|-JF'];
+// this.partOne(mockDataA);
