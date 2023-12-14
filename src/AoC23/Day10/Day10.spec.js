@@ -3,6 +3,7 @@ const {
   getStartCoordinates,
   getPipeFromDir,
   checkConnection,
+  getStartingPipe,
   partOne,
   partTwo,
 } = require('./Day10');
@@ -80,15 +81,15 @@ describe('Day10', () => {
         getPipeFromDir(mockDataA, coordinates, directionFromCurrent)
       ).toBeUndefined();
     });
-    it('returns undefined when getting pipe to east and current is first column', () => {
-      const coordinates = { xIdx: 0, yIdx: 0 };
+    it('returns undefined when getting pipe to east and current is last column', () => {
+      const coordinates = { xIdx: 4, yIdx: 4 };
       const directionFromCurrent = EAST;
       expect(
         getPipeFromDir(mockDataA, coordinates, directionFromCurrent)
       ).toBeUndefined();
     });
-    it('returns undefined when getting pipe to west and current is last column', () => {
-      const coordinates = { xIdx: 4, yIdx: 4 };
+    it('returns undefined when getting pipe to west and current is first column', () => {
+      const coordinates = { xIdx: 0, yIdx: 0 };
       const directionFromCurrent = WEST;
       expect(
         getPipeFromDir(mockDataA, coordinates, directionFromCurrent)
@@ -132,6 +133,20 @@ describe('Day10', () => {
     it('returns false if connecting to west and western pipe does not connect east', () => {
       expect(checkConnection('|', WEST)).toEqual(false);
       expect(checkConnection('J', WEST)).toEqual(false);
+    });
+  });
+  describe('getStartingPipe', () => {
+    it('returns the starting pipe type for mock data A', () => {
+      expect(getStartingPipe(mockDataA)).toEqual({
+        type: 'F',
+        coords: { xIdx: 1, yIdx: 1 },
+      });
+    });
+    it('returns the starting pipe type for mock data B', () => {
+      expect(getStartingPipe(mockDataB)).toEqual({
+        type: 'F',
+        coords: { xIdx: 0, yIdx: 2 },
+      });
     });
   });
   describe.skip('partOne', () => {

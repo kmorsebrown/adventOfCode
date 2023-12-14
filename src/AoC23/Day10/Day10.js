@@ -26,6 +26,13 @@ const PIPES = {
   [START]: START, // the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has
 };
 
+const CONNECTIONS = {
+  [NORTH]: ['|', 'L', 'J'], // pipes that connect to north
+  [SOUTH]: ['|', '7', 'F'], // pipes that connect to south
+  [EAST]: ['-', 'L', 'F'], // pipes that connect to east
+  [WEST]: ['-', 'J', '7'], // pipes that connect to west
+};
+
 // Part One
 
 /* 
@@ -82,13 +89,13 @@ exports.getPipeFromDir = (data, coordinates, directionFromCurrent) => {
       }
       break;
     case EAST:
-      if (!isFirstCol) {
+      if (!isLastCol) {
         new_xIdx = xIdx + 1;
         new_yIdx = yIdx;
       }
       break;
     case WEST:
-      if (!isLastCol) {
+      if (!isFirstCol) {
         new_xIdx = xIdx - 1;
         new_yIdx = yIdx;
       }
@@ -118,39 +125,67 @@ exports.checkConnection = (pipe, directionFromCurrent) => {
     [WEST]: EAST, // to connect west, western pipe must connect east
   };
 
-  const pipesByConnectionType = {
-    [NORTH]: ['|', 'L', 'J'], // pipes that connect to north
-    [SOUTH]: ['|', '7', 'F'], // pipes that connect to south
-    [EAST]: ['-', 'L', 'F'], // pipes that connect to east
-    [WEST]: ['-', 'J', '7'], // pipes that connect to west
-  };
-
   const reciprocalConnection = reciprocalConnectionsMap[directionFromCurrent];
-  const possibleConnections = pipesByConnectionType[reciprocalConnection];
+  const possibleConnections = CONNECTIONS[reciprocalConnection];
 
   return possibleConnections.includes(pipe);
 };
 
+exports.getStartingPipe = (data) => {
+  const coordinates = this.getStartCoordinates(data);
+
+  const pipeToNorth = this.getPipeFromDir(data, coordinates, NORTH);
+  const pipeToSouth = this.getPipeFromDir(data, coordinates, SOUTH);
+  const pipeToEast = this.getPipeFromDir(data, coordinates, EAST);
+  const pipeToWest = this.getPipeFromDir(data, coordinates, WEST);
+
+  let validConnections = [];
+
+  if (pipeToNorth && this.checkConnection(pipeToNorth.type, NORTH)) {
+    validConnections.push(NORTH);
+  }
+  if (pipeToSouth && this.checkConnection(pipeToSouth.type, SOUTH)) {
+    validConnections.push(SOUTH);
+  }
+  if (pipeToEast && this.checkConnection(pipeToEast.type, EAST)) {
+    validConnections.push(EAST);
+  }
+  if (pipeToWest && this.checkConnection(pipeToWest.type, WEST)) {
+    validConnections.push(WEST);
+  }
+
+  // should only ever have 2 possible connections in data set
+  const potentialPipesA = CONNECTIONS[validConnections[0]];
+  const potentialPipesB = CONNECTIONS[validConnections[1]];
+
+  const startPipe = _.intersection(potentialPipesA, potentialPipesB).toString();
+
+  return {
+    type: startPipe,
+    coords: coordinates,
+  };
+};
+
 exports.partOne = async (input) => {
   let steps = 0;
-  let startCoordinates = exports.getStartCoordinates(input);
-  let currentCoords = {
-    branchA: JSON.parse(JSON.stringify(startCoordinates)),
-    branchB: JSON.parse(JSON.stringify(startCoordinates)),
+  let startingPipe = this.getStartingPipe(input);
+  let currentPipes = {
+    branchA: JSON.parse(JSON.stringify(startingPipe)),
+    branchB: JSON.parse(JSON.stringify(startingPipe)),
   };
-  let prevCoords = {
+  let prevPipes = {
     branchA: {},
     branchB: {},
   };
 
   // count steps until both branches are on the same coordiantes again
   do {
-    prevCoords.branchA = currentCoords.branchA;
-    prevCoords.branchB = currentCoords.branchB;
+    prevPipes.branchA = currentPipes.branchA;
+    prevPipes.branchB = currentPipes.branchB;
     steps++;
   } while (
-    !_.isEqual(currentCoords.branchA, currentCoords.branchB) &&
-    !_.isEqual(startCoordinates, currentCoords.branchA)
+    !_.isEqual(currentPipes.branchA, currentPipes.branchB) &&
+    !_.isEqual(startingPipe, currentPipes.branchA)
   );
 
   // count steps until coordinates for both branches are equal
@@ -170,10 +205,10 @@ exports.solve = async () => {
   try {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      // await exports.partOne(formattedData),
+      // await exports.partTwo(formattedData),
     ]);
-    console.log(results);
+    // console.log(results);
     return results;
   } catch (err) {
     console.log(err);
