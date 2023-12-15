@@ -3,8 +3,7 @@ const {
   getGalaxyCoords,
   expandUniverse,
   getDistance,
-  partOne,
-  partTwo,
+  getSumOfDistancesBetweenAllGalaxies,
 } = require('./Day11');
 
 // npm test -- src/AoC23/Day11/Day11.spec.js
@@ -72,17 +71,18 @@ describe('Day11', () => {
       expect(getDistance(mockGalaxiesPostExpansion, 8, 9)).toEqual(5);
     });
   });
-  describe('partOne', () => {
-    it('Returns sum of lengths between all pairs of galaxies', async () => {
-      const actual = await partOne(mockData);
+  describe('getSumOfDistancesBetweenAllGalaxies', () => {
+    it('Returns sum of lengths between all pairs of galaxies when empty rows/columns are expanding 2x', async () => {
+      const actual = await getSumOfDistancesBetweenAllGalaxies(mockData, 2);
       expect(actual).toEqual(374);
     });
-  });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+    it('Returns sum of lengths between all pairs of galaxies when empty rows/columns are expanding 10x', async () => {
+      const actual = await getSumOfDistancesBetweenAllGalaxies(mockData, 10);
+      expect(actual).toEqual(1030);
+    });
+    it('Returns sum of lengths between all pairs of galaxies when empty rows/columns are expanding 100x', async () => {
+      const actual = await getSumOfDistancesBetweenAllGalaxies(mockData, 100);
+      expect(actual).toEqual(8410);
     });
   });
 });

@@ -8,8 +8,6 @@ exports.formatData = async (filepath) => {
   return data.split('\n');
 };
 
-// Part One
-
 exports.getGalaxyCoords = (data) => {
   let galaxies = new Map();
 
@@ -71,8 +69,21 @@ exports.getDistance = (map, keyA, keyB) => {
 
   return horizDist + vertDist;
 };
-exports.partOne = async (input) => {
-  let galaxy = exports.expandUniverse(input, 1);
+
+/* 
+  The only changes I needed to make for Part 2 were to my "partOne" function,
+  which I'm preserving in comments because I'm very proud of myself for 
+  correctly guessing the Part 2 twist
+*/
+exports.getSumOfDistancesBetweenAllGalaxies = async (input, expansion) => {
+  // part 1 version of function did not have the "expansion" arg
+
+  // remove the row/col that already exists from the amount the indexes will be increased
+  const increase = expansion - 1;
+  // above line new for part 2
+
+  let galaxy = exports.expandUniverse(input, increase);
+  // part 1 version of expandUniverse() callback had args set as (input, 1)
 
   let galaxyKeys = Array.from([...galaxy.keys()]);
 
@@ -88,11 +99,6 @@ exports.partOne = async (input) => {
   return sum(distances);
 };
 
-// Part Two
-exports.partTwo = async (input) => {
-  return input;
-};
-
 exports.solve = async () => {
   const dataPath = require.resolve(
     '../../../src/AoC23/puzzleInputs/Day11Input.txt'
@@ -101,8 +107,8 @@ exports.solve = async () => {
   try {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.getSumOfDistancesBetweenAllGalaxies(formattedData, 2),
+      await exports.getSumOfDistancesBetweenAllGalaxies(formattedData, 1000000),
     ]);
     console.log(results);
     return results;
