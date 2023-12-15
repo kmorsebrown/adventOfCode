@@ -1,4 +1,11 @@
-const { sum, gcd, lcm, lcmAll } = require('./maths.js');
+const {
+  sum,
+  sortDescending,
+  sortAscending,
+  gcd,
+  lcm,
+  lcmAll,
+} = require('./maths.js');
 // npm test -- src/Utils/maths.spec.js
 
 describe('maths', () => {
@@ -8,6 +15,16 @@ describe('maths', () => {
     });
     it('sums an array of strings', () => {
       expect(sum(['01', ' 2', '3', '4', 'a'])).toEqual(10);
+    });
+  });
+  describe('sortDescending', () => {
+    it('returns array of numbers sorted in descending order', () => {
+      expect(sortDescending([104, 140000, 99])).toEqual([140000, 104, 99]);
+    });
+  });
+  describe('sortAscending', () => {
+    it('returns array of numbers sorted in descending order', () => {
+      expect(sortAscending([104, 140000, 99])).toEqual([99, 104, 140000]);
     });
   });
   describe('gcd', () => {
