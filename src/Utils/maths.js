@@ -3,6 +3,18 @@ exports.sum = (arr) => {
   return arr.reduce((a, b) => a + b);
 };
 
+exports.sortDescending = (arr) => {
+  return arr.sort(function (a, b) {
+    return b - a;
+  });
+};
+
+exports.sortAscending = (arr) => {
+  return arr.sort(function (a, b) {
+    return a - b;
+  });
+};
+
 // gcd, lcm, and lcmAll code from Kevin Talley's AoC 2023 Day 09 solution
 
 exports.gcd = (a, b) => (b == 0 ? a : exports.gcd(b, a % b));
