@@ -62,8 +62,30 @@ exports.expandUniverse = (data, increase) => {
   return galaxies;
 };
 
+exports.getDistance = (map, keyA, keyB) => {
+  const galaxyA = map.get(keyA);
+  const galaxyB = map.get(keyB);
+
+  const horizDist = Math.abs(galaxyA.x - galaxyB.x);
+  const vertDist = Math.abs(galaxyA.y - galaxyB.y);
+
+  return horizDist + vertDist;
+};
 exports.partOne = async (input) => {
-  return input;
+  let galaxy = exports.expandUniverse(input, 1);
+
+  let galaxyKeys = Array.from([...galaxy.keys()]);
+
+  let distances = [];
+
+  while (galaxyKeys.length > 1) {
+    let keyA = galaxyKeys.shift();
+    for (const key of galaxyKeys) {
+      distances.push(exports.getDistance(galaxy, keyA, key));
+    }
+  }
+
+  return sum(distances);
 };
 
 // Part Two
@@ -79,7 +101,7 @@ exports.solve = async () => {
   try {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
-      //await exports.partOne(formattedData),
+      await exports.partOne(formattedData),
       //await exports.partTwo(formattedData),
     ]);
     console.log(results);

@@ -2,6 +2,7 @@ const {
   formatData,
   getGalaxyCoords,
   expandUniverse,
+  getDistance,
   partOne,
   partTwo,
 } = require('./Day11');
@@ -60,10 +61,20 @@ describe('Day11', () => {
       expect(expandUniverse(mockData, 1)).toEqual(mockGalaxiesPostExpansion);
     });
   });
-  describe.skip('partOne', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partOne(args);
+  describe('getDistance', () => {
+    it('returns the steps between galaxies 1 and 7', () => {
+      expect(getDistance(mockGalaxiesPostExpansion, 1, 7)).toEqual(15);
+    });
+    it('returns the steps between galaxies 3 and 6', () => {
+      expect(getDistance(mockGalaxiesPostExpansion, 3, 6)).toEqual(17);
+    });
+    it('returns the steps between galaxies 8 and 9', () => {
+      expect(getDistance(mockGalaxiesPostExpansion, 8, 9)).toEqual(5);
+    });
+  });
+  describe('partOne', () => {
+    it('Returns sum of lengths between all pairs of galaxies', async () => {
+      const actual = await partOne(mockData);
       expect(actual).toEqual(374);
     });
   });
