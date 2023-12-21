@@ -26,8 +26,52 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+
+exports.runHASHMAP = (map, str) => {
+  const label = str.replace(/[^A-Z]+/gi, '');
+  const operator = str.replace(/[^=-]+/gi, '');
+  const focalLength = Number(str.replace(/[^0-9]+/gi, ''));
+  const box = exports.runHASH(label);
+
+  let boxContents = [];
+  let boxLenses = [];
+
+  if (map.has(box)) {
+    boxContents = map.get(box);
+    boxLenses = boxContents.map((x) => x[0]);
+  }
+
+  if (operator === '=') {
+    if (boxLenses.includes(label)) {
+      const lensIdx = boxLenses.indexOf(label);
+      boxContents[lensIdx][1] = focalLength;
+    } else {
+      boxContents.push([label, focalLength]);
+    }
+  }
+
+  if (operator === '-' && boxLenses.includes(label)) {
+    const lensIdx = boxLenses.indexOf(label);
+    if (lensIdx > -1) {
+      boxContents.splice(lensIdx, 1);
+    }
+  }
+  map.set(box, boxContents);
+};
 exports.partTwo = async (input) => {
-  return input;
+  let map = new Map();
+
+  input.forEach((str) => exports.runHASHMAP(map, str));
+
+  let focusingPower = 0;
+  for (const [key, value] of map) {
+    value.forEach((lens, idx) => {
+      if (value.length > 0) {
+        focusingPower += (key + 1) * (idx + 1) * lens[1];
+      }
+    });
+  }
+  return focusingPower;
 };
 
 exports.solve = async () => {
@@ -39,7 +83,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      // await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
