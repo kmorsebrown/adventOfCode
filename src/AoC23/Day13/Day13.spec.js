@@ -3,6 +3,8 @@ const {
   getReflectionData,
   partOne,
   findDifferenceIndexes,
+  getSmudgeReflectionIndex,
+  getReflectionDataWithSmudges,
   partTwo,
 } = require('./Day13');
 
@@ -77,10 +79,63 @@ describe('Day13', () => {
       expect(findDifferenceIndexes('..##..###', '..##..###')).toEqual([]);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
+  describe('getSmudgeReflectionIndex', () => {
+    it('returns 3 when fixing smudge causes new reflection line to be between indexes 2 and 3', () => {
+      expect(getSmudgeReflectionIndex(mockData[0])).toEqual(3);
+    });
+    it('returns 1 when fixing smudge causes new reflection line to be between indexes 0 and 1', () => {
+      expect(getSmudgeReflectionIndex(mockData[1])).toEqual(1);
+    });
+    it('returns 4 when fixing smudge causes new reflection line to be between indexes 3 and 4', () => {
+      const mockGrid = [
+        '#.#.##.#.',
+        '..##..##.',
+        '..#.##.#.',
+        '##....#.#',
+        '##......#',
+        '..#.##.#.',
+        '..##..##.',
+      ];
+      expect(getSmudgeReflectionIndex(mockGrid)).toEqual(4);
+    });
+    it('returns undefined when no smudges to fix', () => {
+      const mockGrid = [
+        '###.##.#.',
+        '..##..##.',
+        '.##.##.#.',
+        '##...#..#',
+        '##......#',
+        '..#.##.#.',
+        '..##..##.',
+      ];
+      expect(getSmudgeReflectionIndex(mockGrid)).toBeUndefined();
+    });
+  });
+  describe('getReflectionDataWithSmudges', () => {
+    it('returns data for grid where fixing smudge results in a horiz relfection line between row indexes 2 and 3', () => {
+      expect(getReflectionDataWithSmudges(mockData[0])).toHaveProperty(
+        'reflectionAxis',
+        'horiz'
+      );
+      expect(getReflectionDataWithSmudges(mockData[0])).toHaveProperty(
+        'reflectionIdx',
+        [2, 3]
+      );
+    });
+    it('returns data for grid where fixing smudge results in a horiz relfection line between row indexes 0 and 1', () => {
+      expect(getReflectionDataWithSmudges(mockData[1])).toHaveProperty(
+        'reflectionAxis',
+        'horiz'
+      );
+      expect(getReflectionDataWithSmudges(mockData[1])).toHaveProperty(
+        'reflectionIdx',
+        [0, 1]
+      );
+    });
+  });
+  describe('partTwo', () => {
+    it('Returns the number of columns to the left of vert reflections plus 100 * the number of rows above horizontal reflections when accounting for smudges', async () => {
+      const actual = await partTwo(mockData);
       expect(actual).toEqual(400);
     });
   });
