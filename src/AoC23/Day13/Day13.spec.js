@@ -2,8 +2,8 @@ const {
   formatData,
   getReflectionData,
   partOne,
-  findDifferenceIndexes,
-  getSmudgeReflectionIndex,
+  findNumCharDiffs,
+  getReflectionIdxWithSmudge,
   getReflectionDataWithSmudges,
   partTwo,
 } = require('./Day13');
@@ -66,25 +66,28 @@ describe('Day13', () => {
       expect(actual).toEqual(405);
     });
   });
-  describe('findDifferenceIndexes', () => {
-    it('returns array with one index when comparing strings with only 1 difference', () => {
-      expect(findDifferenceIndexes('..##..##.', '#.##..##.')).toEqual([0]);
+  describe('findNumCharDiffs', () => {
+    it('returns 1 when only 1 character is different between two strings', () => {
+      expect(
+        findNumCharDiffs(
+          '.#......#..#.##.#...##..##.',
+          '##......#..#.##.#...##..##.'
+        )
+      ).toEqual(1);
     });
-    it('returns array with 5 indexes when comparing strings with 5 differences', () => {
-      expect(findDifferenceIndexes('..##..###', '#....#..#')).toEqual([
-        0, 2, 3, 5, 6, 7,
-      ]);
+    it('returns 5 when 5 characters are different between two strings', () => {
+      expect(findNumCharDiffs('#.#.##.#.', '..##..##.')).toEqual(5);
     });
-    it('returns empty array when comparing identical strings', () => {
-      expect(findDifferenceIndexes('..##..###', '..##..###')).toEqual([]);
+    it('returns 0 array when comparing identical strings', () => {
+      expect(findNumCharDiffs('..##..###', '..##..###')).toEqual(0);
     });
   });
-  describe('getSmudgeReflectionIndex', () => {
+  describe('getReflectionIdxWithSmudge', () => {
     it('returns 3 when fixing smudge causes new reflection line to be between indexes 2 and 3', () => {
-      expect(getSmudgeReflectionIndex(mockData[0])).toEqual(3);
+      expect(getReflectionIdxWithSmudge(mockData[0])).toEqual(3);
     });
     it('returns 1 when fixing smudge causes new reflection line to be between indexes 0 and 1', () => {
-      expect(getSmudgeReflectionIndex(mockData[1])).toEqual(1);
+      expect(getReflectionIdxWithSmudge(mockData[1])).toEqual(1);
     });
     it('returns 4 when fixing smudge causes new reflection line to be between indexes 3 and 4', () => {
       const mockGrid = [
@@ -96,7 +99,7 @@ describe('Day13', () => {
         '..#.##.#.',
         '..##..##.',
       ];
-      expect(getSmudgeReflectionIndex(mockGrid)).toEqual(4);
+      expect(getReflectionIdxWithSmudge(mockGrid)).toEqual(4);
     });
     it('returns undefined when no smudges to fix', () => {
       const mockGrid = [
@@ -108,7 +111,7 @@ describe('Day13', () => {
         '..#.##.#.',
         '..##..##.',
       ];
-      expect(getSmudgeReflectionIndex(mockGrid)).toBeUndefined();
+      expect(getReflectionIdxWithSmudge(mockGrid)).toBeUndefined();
     });
   });
   describe('getReflectionDataWithSmudges', () => {

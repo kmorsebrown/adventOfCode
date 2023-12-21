@@ -67,51 +67,41 @@ exports.partOne = async (input) => {
 
 // Part Two
 
-exports.findDifferenceIndexes = (stringA, stringB) => {
-  let diffs = [];
+exports.findNumCharDiffs = (stringA, stringB) => {
+  let numDiffs = 0;
   for (let i = 0; i < stringA.length; i++) {
     if (stringA[i] !== stringB[i]) {
-      diffs.push(i);
+      numDiffs++;
     }
   }
-  return diffs;
+  console.log(numDiffs);
+  return numDiffs;
 };
 
-exports.getSmudgeReflectionIndex = (grid) => {
+exports.getReflectionIdxWithSmudge = (grid) => {
   console.log('input:\n', grid);
 
-  // loop through every row in the grid
   for (let i = 0; i < grid.length; i++) {
-    // compare it to every other row in the grid (that it  hasn't already been compared to)
-    for (let j = i + 1; j < grid.length; j++) {
-      // get the indexes of all characters that are different between the rows
-      let diffs = exports.findDifferenceIndexes(grid[i], grid[j]);
-      // if there's only one character difference, then we've got a potential smudge!
-      if (diffs.length === 1) {
-        let newGrid = grid.map((x) => x);
+    const maxReflectionSize = Math.min(i, grid.length - i);
 
-        // replace character in string with opposite
-        let rowArr = Array.from(newGrid[i]);
-        rowArr[diffs[0]] = rowArr[diffs[0]] === '#' ? '.' : '#';
-        newGrid[i] = rowArr.join('');
+    let topHalf = grid
+      .slice(0, i)
+      .reverse()
+      .slice(0, maxReflectionSize)
+      .join('');
+    let bottomHalf = grid.slice(i).slice(0, maxReflectionSize).join('');
 
-        // check for reflection with new grid
-        for (let idx = 1; idx < newGrid.length; idx++) {
-          if (exports.checkForReflection(newGrid, idx)) {
-            return idx;
-          }
-        }
-      }
+    if (exports.findNumCharDiffs(topHalf, bottomHalf) === 1) {
+      return i;
     }
   }
 };
 
 exports.getReflectionDataWithSmudges = (grid) => {
   const transposedGrid = transposeArrStr(grid);
-  console.log('Starting grid:\n', grid);
 
   // check for horizontal reflection w/smudges
-  const horizSmudgeIdx = exports.getSmudgeReflectionIndex(grid);
+  const horizSmudgeIdx = exports.getReflectionIdxWithSmudge(grid);
   if (horizSmudgeIdx >= 0) {
     return {
       reflectionAxis: 'horiz',
@@ -120,33 +110,12 @@ exports.getReflectionDataWithSmudges = (grid) => {
   }
 
   // check for vertical reflection w/smudges (using transposed grid)
-  const vertSmudgeIdx = exports.getSmudgeReflectionIndex(transposedGrid);
+  const vertSmudgeIdx = exports.getReflectionIdxWithSmudge(transposedGrid);
   if (vertSmudgeIdx >= 0) {
     return {
       reflectionAxis: 'vert',
       reflectionIdx: [vertSmudgeIdx - 1, vertSmudgeIdx],
     };
-  }
-
-  // check for horizontal reflection w/o smudges
-
-  for (let i = 1; i < grid.length; i++) {
-    if (exports.checkForReflection(grid, i)) {
-      return {
-        reflectionAxis: 'horiz',
-        reflectionIdx: [i - 1, i],
-      };
-    }
-  }
-
-  // check for vertical reflection w/o smudges (using transposed grid)
-  for (let i = 1; i < transposedGrid.length; i++) {
-    if (exports.checkForReflection(transposedGrid, i)) {
-      return {
-        reflectionAxis: 'vert',
-        reflectionIdx: [i - 1, i],
-      };
-    }
   }
 };
 
