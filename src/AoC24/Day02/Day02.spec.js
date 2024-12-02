@@ -31,11 +31,11 @@ describe('Day02', () => {
     });
     it('Returns false when two levels are decreasing by 5', () => {
       const actual = isSafe([1, 2, 7, 8, 9]);
-      expect(actual).toEqual({ isSafe: false, badLevels: new Set([1]) });
+      expect(actual).toEqual({ isSafe: false, badLevels: new Set([1, 2]) });
     });
     it('Returns false when two levels are decreasing by 4', () => {
       const actual = isSafe([9, 7, 6, 2, 1]);
-      expect(actual).toEqual({ isSafe: false, badLevels: new Set([2]) });
+      expect(actual).toEqual({ isSafe: false, badLevels: new Set([2, 3]) });
     });
     it('Returns false when some levels are decreasing and others are increasing', () => {
       const actual = isSafe([1, 3, 2, 4, 5]);
@@ -69,11 +69,11 @@ describe('Day02', () => {
       const actual = isSafePtTwo([9, 7, 6, 2, 1]);
       expect(actual).toEqual(false);
     });
-    it('Returns true when only one level is bad levels are decreasing and others are increasing', () => {
+    it('Returns true when level with too high increase is removed causing a decrease in an otherwise increasing sequence', () => {
       const actual = isSafePtTwo([1, 3, 2, 4, 5]);
       expect(actual).toEqual(true);
     });
-    it('Returns true when only two adjacent levels are the same', () => {
+    it('Returns true when removing either of two adjacent levels renders the report safe', () => {
       const actual = isSafePtTwo([8, 6, 4, 4, 1]);
       expect(actual).toEqual(true);
     });
@@ -81,8 +81,12 @@ describe('Day02', () => {
       const actual = isSafePtTwo([1, 3, 6, 7, 9]);
       expect(actual).toEqual(true);
     });
-    it('Returns true when one level is removed', () => {
+    it('Returns true when removing level prior to bad level causes record to be safe', () => {
       const actual = isSafePtTwo([64, 63, 64, 66, 67]);
+      expect(actual).toEqual(true);
+    });
+    it('Returns true when decreasing level is removed in an otherwise increasing sequence', () => {
+      const actual = isSafePtTwo([62, 63, 60, 65, 67]);
       expect(actual).toEqual(true);
     });
   });

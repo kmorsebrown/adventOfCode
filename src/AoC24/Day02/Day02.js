@@ -92,16 +92,25 @@ const checkDiff = (a, b) => {
 exports.isSafePtTwo = (array) => {
   const initialEval = exports.isSafe(array);
 
+  // if report is safe without modification, return true
   if (initialEval.isSafe) {
     return true;
   } else {
+    // if report is not safe, iterate through each level
     for (let i = 0; i < array.length - 1; i++) {
+      // remove the current level from the report
       const arrayWithoutOneLevel = array.slice(0, i).concat(array.slice(i + 1));
+
+      // check if the report is now safe without the current level
       const newEval = exports.isSafe(arrayWithoutOneLevel);
+
+      // if removing the current level makes the report safe, return true
       if (newEval.isSafe) {
         return true;
       }
     }
+
+    // if report is still unsafe, return false
     return false;
   }
 };
