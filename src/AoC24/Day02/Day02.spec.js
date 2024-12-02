@@ -89,6 +89,10 @@ describe('Day02', () => {
       const actual = isSafePtTwo([62, 63, 60, 65, 67]);
       expect(actual).toEqual(true);
     });
+    it('Returns true when removing last level of unsafe report causes report to be save', () => {
+      const actual = isSafePtTwo([7, 6, 4, 2, 1, 3]);
+      expect(actual).toEqual(true);
+    });
   });
   describe('partTwo', () => {
     it('Returns the number of safe reports', async () => {

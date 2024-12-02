@@ -97,7 +97,7 @@ exports.isSafePtTwo = (array) => {
     return true;
   } else {
     // if report is not safe, iterate through each level
-    for (let i = 0; i < array.length - 1; i++) {
+    for (let i = 0; i < array.length; i++) {
       // remove the current level from the report
       const arrayWithoutOneLevel = array.slice(0, i).concat(array.slice(i + 1));
 
