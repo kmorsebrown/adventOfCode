@@ -1,6 +1,8 @@
 const { getData } = require('../../Utils/globalFunctions.js');
 
-// https://adventofcode.com/2024/day/X
+// https://adventofcode.com/2024/day/XX
+
+// DAY=X npm run 2024
 exports.formatData = async (filepath) => {
   const data = await getData(filepath);
   return data;
