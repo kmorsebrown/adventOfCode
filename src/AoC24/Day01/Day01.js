@@ -3,6 +3,9 @@ const { parseStringOfInts } = require('../../Utils/parse.js');
 const { sortAscending, sum } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2024/day/1
+
+// DAY=1 npm run 2024
+
 exports.formatData = async (filepath) => {
   const data = await getData(filepath);
   let dataArr = data.split('\n').filter(String);
