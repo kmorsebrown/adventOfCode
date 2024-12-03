@@ -21,40 +21,6 @@ describe('Day03', () => {
       expect(actual).toEqual(mockProgram);
     });
   });
-  describe('isValidMulInstruction', () => {
-    it('returns true for 1 digit mul instructions', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(4,2)');
-      expect(actual).toEqual(true);
-    });
-    it('returns true for 2 digit mul instructions', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(43,26)');
-      expect(actual).toEqual(true);
-    });
-    it('returns true for 3 digit mul instructions', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(123,4)');
-      expect(actual).toEqual(true);
-    });
-    it('returns false for 4 digit mul instructions', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(34,5678)');
-      expect(actual).toEqual(false);
-    });
-    it('returns false for string without second number', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(4*');
-      expect(actual).toEqual(false);
-    });
-    it('returns false for string without closing paren', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul(6,9!');
-      expect(actual).toEqual(false);
-    });
-    it('returns false for string without mul', () => {
-      const actual = isValidMulInstruction(partOneRegex, '?(12,34)');
-      expect(actual).toEqual(false);
-    });
-    it('returns false for string without whitespace', () => {
-      const actual = isValidMulInstruction(partOneRegex, 'mul ( 2 , 4 )');
-      expect(actual).toEqual(false);
-    });
-  });
   describe('extractValidInstructions', () => {
     it('extracts valid instructions', () => {
       const actual = extractValidInstructions(partOneRegex, mockProgram);

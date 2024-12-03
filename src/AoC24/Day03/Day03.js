@@ -20,10 +20,6 @@ exports.formatData = async (filepath) => {
 
 exports.partOneRegex = /(mul\(\d{1,3},\d{1,3}\))/g;
 
-exports.isValidMulInstruction = (regex, string) => {
-  return regex.test(string);
-};
-
 exports.extractValidInstructions = (regex, string) => {
   const matches = string.matchAll(regex);
   const instructions = [];
