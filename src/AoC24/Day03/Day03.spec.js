@@ -1,8 +1,8 @@
 const {
   formatData,
   partOneRegex,
-  isValidMulInstruction,
-  extractValidInstructions,
+  partTwoRegex,
+  extractMatches,
   extractMultipliers,
   partOne,
   partTwo,
@@ -14,6 +14,9 @@ describe('Day03', () => {
   const mockProgram =
     'xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))';
 
+  const mockProgramPt2 =
+    "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
+
   describe.skip('formatData', () => {
     it('Formats the data into an array', async () => {
       const args = require.resolve('./Day03TestData.txt');
@@ -21,14 +24,25 @@ describe('Day03', () => {
       expect(actual).toEqual(mockProgram);
     });
   });
-  describe('extractValidInstructions', () => {
+  describe('extractMatches', () => {
     it('extracts valid instructions', () => {
-      const actual = extractValidInstructions(partOneRegex, mockProgram);
+      const actual = extractMatches(partOneRegex, mockProgram);
       expect(actual).toEqual(['mul(2,4)', 'mul(5,5)', 'mul(11,8)', 'mul(8,5)']);
+    });
+    it('extracts valid instructions and do & dont expressions', () => {
+      const actual = extractMatches(partTwoRegex, mockProgramPt2);
+      expect(actual).toEqual([
+        'mul(2,4)',
+        "don't()",
+        'mul(5,5)',
+        'mul(11,8)',
+        'do()',
+        'mul(8,5)',
+      ]);
     });
   });
   describe('extractMultipliers', () => {
-    it('extracts multipliers from instructions', () => {
+    it('extracts multipliers from instructions when check conditionals is not set', () => {
       const actual = extractMultipliers([
         'mul(2,4)',
         'mul(5,5)',
@@ -42,6 +56,16 @@ describe('Day03', () => {
         [8, 5],
       ]);
     });
+    it('extracts multipliers from instructions when checking conditionals', () => {
+      const actual = extractMultipliers(
+        ['mul(2,4)', "don't()", 'mul(5,5)', 'mul(11,8)', 'do()', 'mul(8,5)'],
+        true
+      );
+      expect(actual).toEqual([
+        [2, 4],
+        [8, 5],
+      ]);
+    });
   });
   describe('partOne', () => {
     it('returns the total of all multiplier instructions', async () => {
@@ -49,9 +73,9 @@ describe('Day03', () => {
       expect(actual).toEqual(161);
     });
   });
-  describe.skip('partTwo', () => {
+  describe('partTwo', () => {
     it('returns the total of all enabled multiplier instructions', async () => {
-      const actual = await partTwo(mockProgram);
+      const actual = await partTwo(mockProgramPt2);
       expect(actual).toEqual(48);
     });
   });

@@ -18,9 +18,10 @@ exports.formatData = async (filepath) => {
 
 // Part One
 
-exports.partOneRegex = /(mul\(\d{1,3},\d{1,3}\))/g;
+exports.partOneRegex = /mul\(\d{1,3},\d{1,3}\)/g;
+exports.partTwoRegex = /mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\)/g;
 
-exports.extractValidInstructions = (regex, string) => {
+exports.extractMatches = (regex, string) => {
   const matches = string.matchAll(regex);
   const instructions = [];
   for (const match of matches) {
@@ -29,20 +30,46 @@ exports.extractValidInstructions = (regex, string) => {
   return instructions;
 };
 
-exports.extractMultipliers = (array) => {
-  return array.map((string) => {
+exports.extractMultipliers = (array, checkConditionals = false) => {
+  const convertInstructions = (string) => {
     string = string.replace(/(mul\()/g, '');
     string = string.replace(/\)/g, '');
     const numbers = string.split(',');
     return [Number(numbers[0]), Number(numbers[1])];
-  });
+  };
+
+  // part one
+  if (!checkConditionals) {
+    return array.map((string) => convertInstructions(string));
+  }
+
+  // part two
+  if (checkConditionals) {
+    let progEnabled = true;
+    let multipliers = [];
+    const ENABLE = /do\(\)/;
+    const DISABLE = /don't\(\)/;
+    const INSTRUCTION = /mul\(.*?\)/;
+
+    array.forEach((string) => {
+      if (DISABLE.test(string)) {
+        // disable program when a disable conditional statement is reached
+        progEnabled = false;
+      } else if (ENABLE.test(string)) {
+        // enable program when an enable conditional statement is reached
+        progEnabled = true;
+      } else if (INSTRUCTION.test(string) && progEnabled) {
+        // convert multipliers if the program is enabled
+        multipliers.push(convertInstructions(string));
+      }
+    });
+
+    return multipliers;
+  }
 };
 
 exports.partOne = async (input) => {
-  const instructions = exports.extractValidInstructions(
-    exports.partOneRegex,
-    input
-  );
+  const instructions = exports.extractMatches(exports.partOneRegex, input);
   const multipliers = exports.extractMultipliers(instructions);
 
   let result = 0;
@@ -55,7 +82,17 @@ exports.partOne = async (input) => {
 
 // Part Two
 exports.partTwo = async (input) => {
-  return input;
+  const instructions = exports.extractMatches(exports.partTwoRegex, input);
+
+  const multipliers = exports.extractMultipliers(instructions, true);
+
+  let result = 0;
+
+  multipliers.forEach((pair) => {
+    result += pair[0] * pair[1];
+  });
+
+  return result;
 };
 
 exports.solve = async () => {
@@ -67,7 +104,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      // await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
