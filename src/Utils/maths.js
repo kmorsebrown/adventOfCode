@@ -46,3 +46,5 @@ exports.lcmAll = (arr) => arr.reduce(exports.lcm, 1);
   Among these multiples, 12, 24, 36, 48 are the common multiples of both 4 and 6
   The least among the common multiples is 12.
 */
+
+exports.isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string);
