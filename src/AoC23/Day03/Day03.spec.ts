@@ -34,7 +34,7 @@ describe('Day03', () => {
     });
   });
   describe('isSymbol', () => {
-    it('returns true if the character is a sumbol', () => {
+    it('returns true if the character is a symbol', () => {
       expect(isSymbol('#')).toEqual(true);
       expect(isSymbol('$')).toEqual(true);
       expect(isSymbol('/')).toEqual(true);
