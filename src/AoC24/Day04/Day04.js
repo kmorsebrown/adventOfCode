@@ -2,6 +2,7 @@ const { getData } = require('../../Utils/globalFunctions.js');
 const {
   arrayifyGrid,
   rotateOneEighty,
+  transpose,
   getAdjacentCoords,
   getValueFromCoords,
 } = require('../../Utils/grids.js');
@@ -21,33 +22,10 @@ exports.formatData = async (filepath) => {
   word search allows words to be:
 
     horizontal
-
-      XMAS..
-
     vertical
-
-      ..X..
-      ..M..
-      ..A..
-      ..S..
-
     diagonal
-
-      .X...
-      ..M..
-      ...A.
-      ....S
-
     written backwards
-
-      .SAMX.
-
     overlapping other words
-
-      .SAMX.
-      ..A...
-      ...M..
-      ....X.
 */
 
 exports.concatAndValidate = (arr, str) => {
@@ -93,7 +71,7 @@ exports.getDirectionsToCheck = ({ width, height, row, col, string }) => {
   return dirArr;
 };
 
-exports.getMatches = async (input, word) => {
+exports.getPartOneMatches = async (input, word) => {
   const coords = exports.getCoordinatesForAllCases(input, word[0]);
   const width = input[0].length;
   const height = input.length;
@@ -136,16 +114,97 @@ exports.getMatches = async (input, word) => {
 exports.partOne = async (input) => {
   const rotatedInput = rotateOneEighty(input);
   const results = await Promise.all([
-    await exports.getMatches(input, 'XMAS'),
-    await exports.getMatches(rotatedInput, 'XMAS'),
+    await exports.getPartOneMatches(input, 'XMAS'),
+    await exports.getPartOneMatches(rotatedInput, 'XMAS'),
   ]);
 
   return results[0] + results[1];
 };
 
 // Part Two
-exports.partTwo = async (input) => {
-  return input;
+
+/*
+  find all instances of the string `MAS` in the shape of an X
+
+    M_S      S_M
+    _A_  or  _A_
+    M_S      S_M
+
+    M_M      S_S
+    _A_  or  _A_
+    S_S      M_M
+*/
+
+exports.removeSides = (input) => {
+  let newGrid = JSON.parse(JSON.stringify(input));
+
+  newGrid.pop();
+  newGrid.shift();
+
+  newGrid = transpose(newGrid);
+
+  newGrid.pop();
+  newGrid.shift();
+
+  newGrid = transpose(newGrid);
+
+  return newGrid;
+};
+
+exports.partTwo = async (input, word) => {
+  const width = input[0].length;
+  const height = input.length;
+  const reverseWord = word.split('').reverse().join('');
+
+  let matches = 0;
+
+  const coords = exports
+    .getCoordinatesForAllCases(exports.removeSides(input), 'A')
+    .map((el) => {
+      return {
+        row: el.row + 1,
+        col: el.col + 1,
+      };
+    });
+
+  for (let i = 0; i < coords.length; i++) {
+    const { row, col } = coords[i];
+
+    const args = {
+      width: width,
+      height: height,
+      row: coords[i].row,
+      col: coords[i].col,
+    };
+
+    const wordCoords = {
+      NW: getAdjacentCoords({ ...args, dir: 'NW' }),
+      SW: getAdjacentCoords({ ...args, dir: 'SW' }),
+      NE: getAdjacentCoords({ ...args, dir: 'NE' }),
+      SE: getAdjacentCoords({ ...args, dir: 'SE' }),
+    };
+
+    const NE2SW = [getValueFromCoords(input, coords[i])];
+    const SE2NW = [getValueFromCoords(input, coords[i])];
+
+    NE2SW.push(getValueFromCoords(input, wordCoords.SW));
+    NE2SW.unshift(getValueFromCoords(input, wordCoords.NE));
+
+    SE2NW.push(getValueFromCoords(input, wordCoords.NW));
+    SE2NW.unshift(getValueFromCoords(input, wordCoords.SE));
+
+    const NE2SW_isMatch =
+      exports.concatAndValidate(NE2SW, word) ||
+      exports.concatAndValidate(NE2SW, reverseWord);
+    const SE2NW_isMatch =
+      exports.concatAndValidate(SE2NW, word) ||
+      exports.concatAndValidate(SE2NW, reverseWord);
+
+    if (NE2SW_isMatch && SE2NW_isMatch) {
+      matches += 1;
+    }
+  }
+  return matches;
 };
 
 exports.solve = async () => {
@@ -157,7 +216,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData, 'MAS'),
     ]);
     console.log(results);
     return results;

@@ -3,7 +3,8 @@ const {
   concatAndValidate,
   getCoordinatesForAllCases,
   getDirectionsToCheck,
-  getMatches,
+  getPartOneMatches,
+  removeSides,
   partOne,
   partTwo,
 } = require('./Day04');
@@ -163,23 +164,37 @@ describe('Day04', () => {
       expect(actual).toEqual([]);
     });
   });
-  describe('getMatches', () => {
+  describe('getPartOneMatches', () => {
     it('returns 2 matches', async () => {
-      const actual = await getMatches(mockTwoOverlap, 'XMAS');
+      const actual = await getPartOneMatches(mockTwoOverlap, 'XMAS');
       expect(actual).toEqual(2);
     });
   });
   describe('partOne', () => {
-    it('Returns the number of matches', async () => {
+    it('Returns the number of XMAS matches', async () => {
       const actual = await partOne(mockTestPuzzle);
       expect(actual).toEqual(18);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('removeSides', () => {
+    it('removes all sides of a grid', () => {
+      const mockGrid = [
+        ['00', '01', '02', '03'],
+        ['10', '11', '12', '13'],
+        ['20', '21', '22', '23'],
+        ['30', '31', '32', '33'],
+      ];
+      const actual = removeSides(mockGrid);
+      expect(actual).toEqual([
+        ['11', '12'],
+        ['21', '22'],
+      ]);
+    });
+  });
+  describe('partTwo', () => {
+    it('Returns the number of X-MAS matches', async () => {
+      const actual = await partTwo(mockTestPuzzle, 'MAS');
+      expect(actual).toEqual(9);
     });
   });
 });
