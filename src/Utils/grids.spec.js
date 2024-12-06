@@ -8,6 +8,8 @@ const {
   arrayifyGrid,
   getAdjacentCoords,
   getValueFromCoords,
+  getCoordinatesForMatch,
+  getCoordinatesForAllMatches,
 } = require('./grids.js');
 // npm test -- src/Utils/grids.spec.js
 
@@ -218,6 +220,45 @@ describe('grids', () => {
       ];
       const actual = getValueFromCoords(mockGrid, mockCoords);
       expect(actual).toEqual('f');
+    });
+  });
+  describe('getCoordinatesForMatch', () => {
+    it('returns all coordinates for 1s in an array of numbers', () => {
+      const actual = getCoordinatesForMatch([1, 1, 3], 2, 1);
+      expect(actual).toEqual([
+        { row: 2, col: 0 },
+        { row: 2, col: 1 },
+      ]);
+    });
+    it('returns all coordinates for Xs in an array of strings', () => {
+      const actual = getCoordinatesForMatch(['X', 'X', 'S'], 2, 'X');
+      expect(actual).toEqual([
+        { row: 2, col: 0 },
+        { row: 2, col: 1 },
+      ]);
+    });
+    it('returns all coordinates for X in a string', () => {
+      const actual = getCoordinatesForMatch('XXS', 2, 'X');
+      expect(actual).toEqual([
+        { row: 2, col: 0 },
+        { row: 2, col: 1 },
+      ]);
+    });
+  });
+  describe('getCoordinatesForAllMatches', () => {
+    it('returns all coordinates for K vals', () => {
+      const mockGrid = [
+        ['M', 'A', 'K'],
+        ['S', 'M', 'A'],
+        ['K', 'K', 'M'],
+      ];
+
+      const actual = getCoordinatesForAllMatches(mockGrid, 'K');
+      expect(actual).toEqual([
+        { row: 0, col: 2 },
+        { row: 2, col: 0 },
+        { row: 2, col: 1 },
+      ]);
     });
   });
 });
