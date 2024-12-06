@@ -166,3 +166,25 @@ exports.getAdjacentCoords = ({ height, width, row, col, dir }) => {
 exports.getValueFromCoords = (grid, { row, col }) => {
   return grid[row][col];
 };
+
+exports.getCoordinatesForMatch = (row, row_idx, val) => {
+  let coordinates = [];
+
+  for (let col_idx = 0; col_idx < row.length; col_idx++) {
+    if (row[col_idx] === val) {
+      coordinates.push({
+        row: row_idx,
+        col: col_idx,
+      });
+    }
+  }
+  return coordinates;
+};
+
+exports.getCoordinatesForAllMatches = (grid, val) => {
+  const coordinates = [];
+  grid.forEach((row, row_idx) => {
+    coordinates.push(...exports.getCoordinatesForMatch(row, row_idx, val));
+  });
+  return coordinates;
+};
