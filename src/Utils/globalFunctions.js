@@ -97,6 +97,10 @@ class Queue {
     // removes element from the front of a queue
     return this.items.shift();
   }
+  peek() {
+    // gets the front element without removing it
+    return this.items[this.frontIndex];
+  }
   front() {
     if (this.isEmpty()) {
       return 'No elements in Queue';
