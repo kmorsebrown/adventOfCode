@@ -5,6 +5,7 @@ const {
   transposeArrStr,
   flipHoriz,
   rotateOneEighty,
+  getAdjacentMatches,
   arrayifyGrid,
   getAdjacentCoords,
   getValueFromCoords,
@@ -118,6 +119,139 @@ describe('grids', () => {
         ['h', 'g', 'f', 'e'],
         ['d', 'c', 'b', 'a'],
       ]);
+    });
+  });
+  describe('getAdjacentMatches', () => {
+    const isStar = (el) => el === '*';
+    const isZero = (num) => num === 0;
+    it('Returns coordinates of stars N, E, S, W of current in array of strings when no options ', () => {
+      const mockData = ['***', '*.*', '***'];
+      const expected = [
+        { row: 0, col: 1 },
+        { row: 1, col: 2 },
+        { row: 2, col: 1 },
+        { row: 1, col: 0 },
+      ];
+      expect(getAdjacentMatches(mockData, 1, 1, isStar)).toEqual(expected);
+    });
+    it('Returns coordinates of stars N, E, S, W, NE, SE, SW, NW of current in array of strings when diags allowed', () => {
+      const mockData = ['***', '*.*', '***'];
+      const expected = [
+        { row: 0, col: 1 },
+        { row: 1, col: 2 },
+        { row: 2, col: 1 },
+        { row: 1, col: 0 },
+        { row: 0, col: 2 },
+        { row: 2, col: 2 },
+        { row: 2, col: 0 },
+        { row: 0, col: 0 },
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      expect(getAdjacentMatches(mockData, 1, 1, isStar, opts)).toEqual(
+        expected
+      );
+    });
+    it('Returns coordinates of 0s N, E, S, W of current in multidimensional array when no options ', () => {
+      const mockData = [
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 0, 0],
+      ];
+      const expected = [
+        { row: 0, col: 1 },
+        { row: 1, col: 2 },
+        { row: 2, col: 1 },
+        { row: 1, col: 0 },
+      ];
+      expect(getAdjacentMatches(mockData, 1, 1, isZero)).toEqual(expected);
+    });
+    it('Returns empty array when no adjacent matches', () => {
+      const mockData = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      const expected = [];
+      expect(getAdjacentMatches(mockData, 1, 1, isZero, opts)).toEqual(
+        expected
+      );
+    });
+    it('Returns N, E, NE when current is in first col & last row', () => {
+      const mockData = [
+        [1, 2, 3],
+        [0, 0, 6],
+        [7, 0, 9],
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      const expected = [
+        { row: 1, col: 0 },
+        { row: 2, col: 1 },
+        { row: 1, col: 1 },
+      ];
+      expect(getAdjacentMatches(mockData, 2, 0, isZero, opts)).toEqual(
+        expected
+      );
+    });
+    it('Returns N, W, NW when current is in last col & last row', () => {
+      const mockData = [
+        [1, 2, 3],
+        [4, 0, 0],
+        [7, 0, 9],
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      const expected = [
+        { row: 1, col: 2 },
+        { row: 2, col: 1 },
+        { row: 1, col: 1 },
+      ];
+      expect(getAdjacentMatches(mockData, 2, 2, isZero, opts)).toEqual(
+        expected
+      );
+    });
+    it('Returns E, S, SE when current is in first col & first row', () => {
+      const mockData = [
+        ['.', '*', '.'],
+        ['*', '*', '.'],
+        ['.', '.', '.'],
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      const expected = [
+        { row: 0, col: 1 },
+        { row: 1, col: 0 },
+        { row: 1, col: 1 },
+      ];
+      expect(getAdjacentMatches(mockData, 0, 0, isStar, opts)).toEqual(
+        expected
+      );
+    });
+    it('Returns W, S, SW when current is in last col & first row', () => {
+      const mockData = [
+        ['.', '*', '.'],
+        ['.', '*', '*'],
+        ['.', '.', '.'],
+      ];
+      const opts = {
+        allowDiagonals: true,
+      };
+      const expected = [
+        { row: 1, col: 2 },
+        { row: 0, col: 1 },
+        { row: 1, col: 1 },
+      ];
+      expect(getAdjacentMatches(mockData, 0, 2, isStar, opts)).toEqual(
+        expected
+      );
     });
   });
   describe('getAdjacentCoords', () => {

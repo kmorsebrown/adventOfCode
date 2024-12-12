@@ -52,63 +52,66 @@ exports.rotateOneEighty = (two_d_array) => {
 };
 
 /**
+ * returns coordinates for values
+ * adjacent to data[row][col]
+ * that pass the callback
  *
- * @param {string[]} data
+ * @param {string[] | (number|string)[][]} data
  * @param {number} row
  * @param {number} col
  * @param {function} callback
+ * @param {Object} options
  * @returns boolean
  */
-exports.hasAdjacentMatch = (data, row, col, callback) => {
-  let numAdjacentMatch = 0;
+exports.getAdjacentMatches = (data, row, col, callback, options = {}) => {
+  let adjacentMatches = [];
   const isNotFirstRow = row !== 0;
   const isNotLastRow = row !== data.length - 1;
   const isNotFirstCol = col !== 0;
   const isNotLastCol = col !== data[row].length - 1;
 
-  // checking for values that pass the callback
-  // adjacent to data[row][col]
-
-  if (isNotFirstRow) {
-    // check above center
-    numAdjacentMatch += callback(data[row - 1][col]) ? 1 : 0;
-
-    // check above left
-    if (isNotFirstCol) {
-      numAdjacentMatch += callback(data[row - 1][col - 1]) ? 1 : 0;
-    }
-
-    // check above right
-    if (isNotLastCol) {
-      numAdjacentMatch += callback(data[row - 1][col + 1]) ? 1 : 0;
-    }
+  // check N
+  if (isNotFirstRow && callback(data[row - 1][col])) {
+    adjacentMatches.push({ row: row - 1, col: col });
   }
 
-  // check left
-  if (isNotFirstCol) {
-    numAdjacentMatch += callback(data[row][col - 1]) ? 1 : 0;
+  // check E
+  if (isNotLastCol && callback(data[row][col + 1])) {
+    adjacentMatches.push({ row: row, col: col + 1 });
   }
 
-  // check right
-  if (isNotLastCol) {
-    numAdjacentMatch += callback(data[row][col + 1]) ? 1 : 0;
+  // check S
+  if (isNotLastRow && callback(data[row + 1][col])) {
+    adjacentMatches.push({ row: row + 1, col: col });
   }
 
-  if (isNotLastRow) {
-    // check below center
-    numAdjacentMatch += callback(data[row + 1][col]) ? 1 : 0;
+  // check W
+  if (isNotFirstCol && callback(data[row][col - 1])) {
+    adjacentMatches.push({ row: row, col: col - 1 });
+  }
 
-    // check below left
-    if (isNotFirstCol) {
-      numAdjacentMatch += callback(data[row + 1][col - 1]) ? 1 : 0;
+  if (options.allowDiagonals) {
+    // check NE
+    if (isNotFirstRow && isNotLastCol && callback(data[row - 1][col + 1])) {
+      adjacentMatches.push({ row: row - 1, col: col + 1 });
     }
 
-    // check below right
-    if (isNotLastCol) {
-      numAdjacentMatch += callback(data[row + 1][col + 1]) ? 1 : 0;
+    // check SE
+    if (isNotLastRow && isNotLastCol && callback(data[row + 1][col + 1])) {
+      adjacentMatches.push({ row: row + 1, col: col + 1 });
+    }
+
+    // check SW
+    if (isNotLastRow && isNotFirstCol && callback(data[row + 1][col - 1])) {
+      adjacentMatches.push({ row: row + 1, col: col - 1 });
+    }
+
+    // check NW
+    if (isNotFirstRow && isNotFirstCol && callback(data[row - 1][col - 1])) {
+      adjacentMatches.push({ row: row - 1, col: col - 1 });
     }
   }
-  return numAdjacentMatch > 0;
+  return adjacentMatches;
 };
 
 exports.getAdjacentCoords = ({ height, width, row, col, dir }) => {
