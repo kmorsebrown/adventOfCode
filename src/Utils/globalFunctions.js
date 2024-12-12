@@ -79,45 +79,117 @@ class Graph {
 
 // Queue class
 class Queue {
-  // Array is used to implement a Queue
+  /*
+    Could implement with an array, but it's inefficient for dequeue (removing from the front)
+    because shift() has O(n) complexity (n = num elements) b/c all subsequent elements must be shifted
+
+    More efficient approach is to use an object with two pointers: head and tail
+    This avoids shifting elements and keeps all operations at constant time O(1)
+  */
   constructor() {
-    this.items = [];
+    this.data = {}; // Object to store queue elements
+    this.head = 0; // Pointer to the front of the queue
+    this.tail = 0; // Pointer to the next available position
+
+    /* array implementation for posterity
+
+      this.items = [];
+
+    */
   }
 
-  // Functions to be implemented
-  enqueue(element) {
-    // adds an element at the rear of the queue
-    this.items.push(element);
+  // adds an element at the rear of the queue
+  enqueue(item) {
+    this.data[this.tail] = item;
+    this.tail++;
+
+    /* array implementation for posterity
+
+      this.items.push(element);
+
+    */
   }
+
+  // Remove an element from the front of the queue
   dequeue() {
     if (this.isEmpty()) {
-      // returns underflow when called on empty queue
-      return 'Underflow';
+      console.error('Queue is empty');
+      return undefined;
     }
-    // removes element from the front of a queue
-    return this.items.shift();
+
+    const item = this.data[this.head];
+    delete this.data[this.head]; // Clean up memory
+    this.head++;
+    return item;
+
+    /* array implementation for posterity
+
+      return this.items.shift();
+
+    */
   }
-  peek() {
-    // gets the front element without removing it
-    return this.items[this.frontIndex];
-  }
+
+  // Get the front element without removing it
   front() {
     if (this.isEmpty()) {
-      return 'No elements in Queue';
+      console.error('Queue is empty');
+      return undefined;
     }
-    // returns the front element of the queue
-    return this.items[0];
+
+    return this.data[this.head];
+
+    /* array implementation for posterity
+
+      return this.items[this.frontIndex];
+
+    */
   }
+
+  // Check if the queue is empty
   isEmpty() {
-    // return true if the queue is empty
+    return this.head === this.tail;
+    /* array implementation for posterity
+
     return this.items.length == 0;
+
+    */
   }
+
+  // Get the size of the queue
+  size() {
+    return this.tail - this.head;
+  }
+
+  // Clear the queue
+  clear() {
+    this.data = {};
+    this.head = 0;
+    this.tail = 0;
+  }
+
+  // Print the queue elements
+
   printQueue() {
-    let str = '';
-    for (let i = 0; i < this.items.length; i++) {
-      str += this.items[i] + ' ';
+    if (this.isEmpty()) {
+      console.log('Queue is empty');
+      return;
     }
-    return str;
+
+    const elements = [];
+    for (let i = this.head; i < this.tail; i++) {
+      elements.push(this.data[i]);
+    }
+    console.log(elements.join(' -> ')); // Customize format as needed
+
+    /* array implementation for posterity
+
+      let str = '';
+      for (let i = 0; i < this.items.length; i++) {
+        str += this.items[i] + ' ';
+      }
+      return str;
+
+    */
   }
 }
 
