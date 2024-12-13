@@ -1,12 +1,12 @@
-const { formatData, partOne, partTwo } = require('./DayXX');
+const { formatData, partOne, partTwo } = require('./Day11');
 
-// npm test -- src/AoC24/DayXX/DayXX.spec.js
+// npm test -- src/AoC24/Day11/Day11.spec.js
 
-describe('DayXX', () => {
-  const mockInput = [];
-  describe.skip('formatData', () => {
+describe('Day11', () => {
+  const mockInput = ['0', '1', '10', '99', '999'];
+  describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./DayXXTestData.txt');
+      const args = require.resolve('./Day11TestData.txt');
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });
