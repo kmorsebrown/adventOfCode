@@ -114,6 +114,57 @@ exports.getAdjacentMatches = (data, row, col, callback, options = {}) => {
   return adjacentMatches;
 };
 
+exports.getAllAdjacentCoords = (data, row, col, options = {}) => {
+  let adjacentCoords = [];
+  const isNotFirstRow = row !== 0;
+  const isNotLastRow = row !== data.length - 1;
+  const isNotFirstCol = col !== 0;
+  const isNotLastCol = col !== data[row].length - 1;
+
+  // get N
+  if (isNotFirstRow) {
+    adjacentCoords.push({ row: row - 1, col: col });
+  }
+
+  // get E
+  if (isNotLastCol) {
+    adjacentCoords.push({ row: row, col: col + 1 });
+  }
+
+  // get S
+  if (isNotLastRow) {
+    adjacentCoords.push({ row: row + 1, col: col });
+  }
+
+  // get W
+  if (isNotFirstCol) {
+    adjacentCoords.push({ row: row, col: col - 1 });
+  }
+
+  if (options.allowDiagonals) {
+    // get NE
+    if (isNotFirstRow && isNotLastCol) {
+      adjacentCoords.push({ row: row - 1, col: col + 1 });
+    }
+
+    // get SE
+    if (isNotLastRow && isNotLastCol) {
+      adjacentCoords.push({ row: row + 1, col: col + 1 });
+    }
+
+    // get SW
+    if (isNotLastRow && isNotFirstCol) {
+      adjacentCoords.push({ row: row + 1, col: col - 1 });
+    }
+
+    // get NW
+    if (isNotFirstRow && isNotFirstCol) {
+      adjacentCoords.push({ row: row - 1, col: col - 1 });
+    }
+  }
+  return adjacentCoords;
+};
+
 exports.getAdjacentCoords = ({ height, width, row, col, dir }) => {
   const isNotFirstRow = row !== 0;
   const isNotLastRow = row !== height - 1;
