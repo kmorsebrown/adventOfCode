@@ -193,6 +193,32 @@ class Queue {
   }
 }
 
+function handleLargeArray(data) {
+  const MAX_ARRAY_LENGTH = Math.pow(2, 32) - 2; // Maximum allowed array length in JavaScript
+
+  if (data.length > MAX_ARRAY_LENGTH) {
+    // Handle the large array
+    const chunks = [];
+    let startIndex = 0;
+
+    while (startIndex < data.length) {
+      const endIndex = Math.min(startIndex + MAX_ARRAY_LENGTH, data.length);
+      const chunk = data.slice(startIndex, endIndex);
+      chunks.push(chunk);
+      startIndex = endIndex;
+    }
+
+    // Process the chunks
+    for (const chunk of chunks) {
+      // Your logic to process each chunk
+      console.log('Processing chunk:', chunk);
+    }
+  } else {
+    // Process the array directly
+    console.log('Processing array:', data);
+  }
+}
+
 module.exports = {
   getData,
   appendFile,
