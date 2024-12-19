@@ -14,6 +14,12 @@ describe('parse', () => {
         83, 86, 6, 31, 17, 9, 48, 53,
       ]);
     });
+    it('parses negative integers from comma seperated string', () => {
+      const input = '83, -86,  6, 31, -17,  9, 48, 53';
+      expect(parseStringOfInts(input, ',')).toEqual([
+        83, -86, 6, 31, -17, 9, 48, 53,
+      ]);
+    });
   });
   describe('unique', () => {
     it('returns only unique values in an array', () => {
