@@ -242,3 +242,7 @@ exports.getCoordinatesForAllMatches = (grid, val) => {
   });
   return coordinates;
 };
+
+exports.replaceCharInString = (str, col, newChar) => {
+  return str.substring(0, col) + newChar + str.substring(col + 1, str.length);
+};

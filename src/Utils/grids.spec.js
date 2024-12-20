@@ -12,6 +12,7 @@ const {
   getValueFromCoords,
   getCoordinatesForMatch,
   getCoordinatesForAllMatches,
+  replaceCharInString,
 } = require('./grids.js');
 // npm test -- src/Utils/grids.spec.js
 
@@ -509,6 +510,23 @@ describe('grids', () => {
         { row: 2, col: 0 },
         { row: 2, col: 1 },
       ]);
+    });
+  });
+  describe('replaceCharInString', () => {
+    it('replaces character at col 1 in a grid of strings', () => {
+      const string = '...';
+      const result = '.@.';
+      expect(replaceCharInString(string, 1, '@')).toEqual(result);
+    });
+    it('replaces character at 0 in a grid of strings', () => {
+      const string = '...';
+      const result = '@..';
+      expect(replaceCharInString(string, 0, '@')).toEqual(result);
+    });
+    it('replaces character at 0 in a grid of strings', () => {
+      const string = '...';
+      const result = '..@';
+      expect(replaceCharInString(string, 2, '@')).toEqual(result);
     });
   });
 });
