@@ -5,3 +5,12 @@ This repository houses my solutions to the Advent of Code puzzles. I'm still ver
 That being said, I don't expect anyone to need to read or maintain my code, so it's allowed to be ugly, clever, inelegant, and messy if needed.
 
 Also this is fun, and whenever it stops being fun I'll do something else. I'm not obligated to finish.
+
+## Stars
+
+| AoC  | During Challenge | Lifetime |
+| ---- | ---------------- | -------- |
+| 2021 | 14\*             | 15\*     |
+| 2022 | 21\*             | 22\*     |
+| 2023 | 24\*             | 25\*     |
+| 2024 | 28\*             | 28\*     |

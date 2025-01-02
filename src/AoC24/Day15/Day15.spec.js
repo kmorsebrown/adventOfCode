@@ -5,6 +5,13 @@ const {
   moveRobot,
   getGPSCoords,
   partOne,
+  doubleMap,
+  pushBoxesWest,
+  pushBoxesEast,
+  pushBoxesNorth,
+  pushBoxesSouth,
+  moveRobotPt2,
+  processMovesPt2,
   partTwo,
 } = require('./Day15');
 
@@ -46,6 +53,40 @@ vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
 ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
 v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^`;
 
+  const mockDoubledMapLarge = [
+    '####################',
+    '##....[]....[]..[]##',
+    '##............[]..##',
+    '##..[][]....[]..[]##',
+    '##....[]@.....[]..##',
+    '##[]##....[]......##',
+    '##[]....[]....[]..##',
+    '##..[][]..[]..[][]##',
+    '##........[]......##',
+    '####################',
+  ];
+
+  const mockMapSmallPt2 = [
+    '#######',
+    '#...#.#',
+    '#.....#',
+    '#..OO@#',
+    '#..O..#',
+    '#.....#',
+    '#######',
+  ];
+
+  const mockMovesSmallPt2 = '<vv<<^^<<^^';
+
+  const mockDoubledMapSmallPt2 = [
+    '##############',
+    '##......##..##',
+    '##..........##',
+    '##....[][]@.##',
+    '##....[]....##',
+    '##..........##',
+    '##############',
+  ];
   describe('getMap', () => {
     it('Formats the data into an array', async () => {
       const args = require.resolve('./Day15TestData.txt');
@@ -298,6 +339,298 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^`;
     it('Gets the sum of all GPS coords for the larger example', async () => {
       const actual = await partOne(mockMapLarge, mockMovesLarge);
       expect(actual).toEqual(10092);
+    });
+  });
+  describe('doubleMap', () => {
+    it('doubles the larger map', () => {
+      expect(doubleMap(mockMapLarge)).toEqual(mockDoubledMapLarge);
+    });
+    it('doubles the smaller map', () => {
+      expect(doubleMap(mockMapSmallPt2)).toEqual(mockDoubledMapSmallPt2);
+    });
+  });
+  describe('pushBoxesWest', () => {
+    it('pushes two boxes one slot to the west', () => {
+      const robot = { row: 3, col: 10 };
+      const rowStr = '##....[][]@.##';
+      expect(pushBoxesWest(rowStr, robot)).toEqual('##...[][]@..##');
+    });
+    it('does not push two boxes to the west if there is a wall', () => {
+      const robot = { row: 3, col: 6 };
+      const rowStr = '##[][]@..##';
+      expect(pushBoxesWest(rowStr, robot)).toEqual('##[][]@..##');
+    });
+  });
+  describe('pushBoxesNorth', () => {
+    it('pushes boxes one slot to the north', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      const robot = { row: 5, col: 7 };
+      expect(pushBoxesNorth(startMap, robot)).toEqual(endMap);
+    });
+    it('does not push boxes one slot to the north because of a wall', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      const robot = { row: 4, col: 7 };
+      expect(pushBoxesNorth(startMap, robot)).toEqual(endMap);
+    });
+  });
+  describe('pushBoxesSouth', () => {
+    it('pushes boxes one slot to the south', () => {
+      const startMap = [
+        '##############',
+        '##.....@....##',
+        '##....[]....##',
+        '##...[][]...##',
+        '##..........##',
+        '##......##..##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##..........##',
+        '##.....@....##',
+        '##....[]....##',
+        '##...[][]...##',
+        '##......##..##',
+        '##############',
+      ];
+      const robot = { row: 1, col: 7 };
+      expect(pushBoxesSouth(startMap, robot)).toEqual(endMap);
+    });
+    it('does not push boxes one slot to the south because of a wall', () => {
+      const startMap = [
+        '##############',
+        '##..........##',
+        '##.....@....##',
+        '##....[]....##',
+        '##...[][]...##',
+        '##......##..##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##..........##',
+        '##.....@....##',
+        '##....[]....##',
+        '##...[][]...##',
+        '##......##..##',
+        '##############',
+      ];
+      const robot = { row: 2, col: 7 };
+      expect(pushBoxesSouth(startMap, robot)).toEqual(endMap);
+    });
+  });
+  describe('pushBoxesEast', () => {
+    it('pushes two boxes one slot to the east', () => {
+      const robot = { row: 3, col: 4 };
+      const rowStr = '##..@[][]..##';
+      expect(pushBoxesEast(rowStr, robot)).toEqual('##...@[][].##');
+    });
+    it('does not push two boxes to the east if there is a wall', () => {
+      const robot = { row: 3, col: 4 };
+      const rowStr = '##..@[][]##';
+      expect(pushBoxesEast(rowStr, robot)).toEqual('##..@[][]##');
+    });
+  });
+  describe('moveRobotPt2', () => {
+    it('pushes boxes west', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##....[][]@.##',
+        '##....[]....##',
+        '##..........##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]@..##',
+        '##....[]....##',
+        '##..........##',
+        '##############',
+      ];
+      moveRobotPt2('<', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+    it('moves south', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]@..##',
+        '##....[]....##',
+        '##..........##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]...##',
+        '##....[].@..##',
+        '##..........##',
+        '##############',
+      ];
+      moveRobotPt2('v', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+    it('does not move south because of a wall', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##############',
+      ];
+      moveRobotPt2('v', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+    it('pushes boxes north', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##..........##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      moveRobotPt2('^', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+    it('does not pushes boxes north because there is a wall', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##...[][]...##',
+        '##....[]....##',
+        '##.....@....##',
+        '##..........##',
+        '##############',
+      ];
+      moveRobotPt2('^', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+    it('pushes one box south', () => {
+      const startMap = [
+        '##############',
+        '##......##..##',
+        '##...@[]....##',
+        '##...[][]...##',
+        '##..........##',
+        '##..........##',
+        '##############',
+      ];
+      const endMap = [
+        '##############',
+        '##......##..##',
+        '##....[]....##',
+        '##...@.[]...##',
+        '##...[].....##',
+        '##..........##',
+        '##############',
+      ];
+      moveRobotPt2('v', startMap);
+      expect(startMap).toEqual(endMap);
+    });
+  });
+  describe('processMovesPt2', () => {
+    it('process moves of smaller example', async () => {
+      const result = [
+        '##############',
+        '##...[].##..##',
+        '##...@.[]...##',
+        '##....[]....##',
+        '##..........##',
+        '##..........##',
+        '##############',
+      ];
+      const actual = await processMovesPt2(
+        mockMovesSmallPt2,
+        mockDoubledMapSmallPt2
+      );
+      expect(actual).toEqual(result);
+    });
+    it('process moves of larger example', async () => {
+      const result = [
+        '####################',
+        '##[].......[].[][]##',
+        '##[]...........[].##',
+        '##[]........[][][]##',
+        '##[]......[]....[]##',
+        '##..##......[]....##',
+        '##..[]............##',
+        '##..@......[].[][]##',
+        '##......[][]..[]..##',
+        '####################',
+      ];
+      const actual = await processMovesPt2(mockMovesLarge, mockDoubledMapLarge);
+      expect(actual).toEqual(result);
     });
   });
   describe.skip('partTwo', () => {
