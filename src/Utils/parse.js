@@ -1,7 +1,7 @@
-exports.parseStringOfInts = (str, seperator) => {
+exports.parseStringOfInts = (str, separator) => {
   return str
     .trim()
-    .split(seperator)
+    .split(separator)
     .map((n) => parseInt(n, 10))
     .filter((r) => !isNaN(r));
 };

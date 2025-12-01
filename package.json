@@ -8,6 +8,7 @@
     "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js",
     "2023": "rm -rf ./dist && mkdir ./dist && tsc && node dist/AoC23/AoC2023solve.js",
     "2024": "rm -rf ./dist && mkdir ./dist && tsc && node dist/AoC24/AoC2024solve.js",
+    "2025": "rm -rf ./dist && mkdir ./dist && tsc && node dist/AoC25/AoC2025solve.js",
     "test": "jest",
     "test:2021": "jest --testPathPattern=src/AoC21 --collectCoverage=true --collectCoverageFrom=src/AoC21/**/*.{ts,js}",
     "test:2022": "jest --testPathPattern=src/AoC22 --collectCoverage=true --collectCoverageFrom=src/AoC22/**/*.{ts,js}",
