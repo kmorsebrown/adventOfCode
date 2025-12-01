@@ -1,4 +1,10 @@
-const { formatData, rotateDial, partOne, partTwo } = require('./Day01');
+const {
+  formatData,
+  rotateDial,
+  rotateDialPt2,
+  partOne,
+  partTwo,
+} = require('./Day01');
 
 // npm test -- src/AoC25/Day01/Day01.spec.js
 
@@ -55,11 +61,69 @@ describe('Day01', () => {
     });
   });
 
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
+  describe('rotateDialPt2', () => {
+    describe('rotating to the left', () => {
+      it('Returns a lower number when rotated L w/o passing 0', () => {
+        const result = rotateDialPt2(82, 'L30', 0);
+        expect(result.dialPointedAt).toEqual(52);
+        expect(result.zeroCount).toEqual(0);
+      });
+      it('Handles passing 0 when rotating left', () => {
+        const result = rotateDialPt2(50, 'L68', 0);
+        expect(result.dialPointedAt).toEqual(82);
+        expect(result.zeroCount).toEqual(1);
+      });
+      it('Handles ending on 0 when rotating Left', () => {
+        const result = rotateDialPt2(55, 'L55', 0);
+        expect(result.dialPointedAt).toEqual(0);
+        expect(result.zeroCount).toEqual(1);
+      });
+      it('Handles being rotated 99 clicks from 99 to 0 to the left', () => {
+        const result = rotateDialPt2(99, 'L99', 0);
+        expect(result.dialPointedAt).toEqual(0);
+        expect(result.zeroCount).toEqual(1);
+      });
+      it('Handles being rotated 5 clicks to the left from 0', () => {
+        const result = rotateDialPt2(0, 'L5', 0);
+        expect(result.dialPointedAt).toEqual(95);
+        expect(result.zeroCount).toEqual(0);
+      });
+      it('Handles being rotated 1 click to the left from 0', () => {
+        const result = rotateDialPt2(0, 'L1', 0);
+        expect(result.dialPointedAt).toEqual(99);
+        expect(result.zeroCount).toEqual(0);
+      });
+      it('Handles passing 0 once rotating to the left', () => {
+        const result = rotateDialPt2(14, 'L82', 0);
+        expect(result.dialPointedAt).toEqual(32);
+        expect(result.zeroCount).toEqual(1);
+      });
+    });
+    describe('rotating to the right', () => {
+      it('Returns a higher number when rotated R w/o passing 99', () => {
+        const result = rotateDialPt2(0, 'R14', 0);
+        expect(result.dialPointedAt).toEqual(14);
+        expect(result.zeroCount).toEqual(0);
+      });
+      it('Handles passing 99 when rotating right', () => {
+        const result = rotateDialPt2(95, 'R60', 0);
+        expect(result.dialPointedAt).toEqual(55);
+        expect(result.zeroCount).toEqual(1);
+      });
+      it('Handles ending on 0 when rotating right', () => {
+        const result = rotateDialPt2(52, 'R48', 0);
+        expect(result.dialPointedAt).toEqual(0);
+        expect(result.zeroCount).toEqual(1);
+      });
+    });
+  });
+
+  describe('partTwo', () => {
+    it('Password 6', async () => {
+      const args = mockInput;
+      console.error(mockInput);
       const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+      expect(actual).toEqual(6);
     });
   });
 });
