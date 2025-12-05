@@ -1,5 +1,5 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
+const { getData, Queue } = require('../../Utils/globalFunctions.js');
+const { sum, sortAscending } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2025/day/02
 
@@ -11,6 +11,12 @@ exports.formatData = async (filepath) => {
   });
   return formatted;
 };
+
+function* generateRange(start, end) {
+  yield start;
+  if (start === end) return;
+  yield* generateRange(start + 1, end);
+}
 
 const isEven = (num) => {
   return num % 2 == 0;
@@ -27,6 +33,16 @@ const splitId = (id) => {
     return [parseInt(firstHalf), parseInt(secondHalf)];
   }
 };
+exports.getSubstring = (id, n) => {
+  if (id.length % n != 0) {
+    console.error(`Invalid Input: ${id.length} is not divisible by ${n}`);
+    return;
+  }
+
+  let parts = Math.floor(id.length / n);
+
+  return id.substring(0, parts);
+};
 
 const roundUpToEven = (num) => {
   return '1' + '0'.repeat(num.length);
@@ -36,9 +52,31 @@ const roundDownToEven = (num) => {
   return '9'.repeat(num.length - 1);
 };
 
-// Part One
+// https://www.geeksforgeeks.org/dsa/find-all-factors-of-a-natural-number/
+exports.findDivisors = (id) => {
+  let divisors = [];
+  let n = id.length;
+  // Note that this loop runs till square root
+  for (let i = 1; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) {
+      // If divisors are equal, print only one
+      if (n / i === i) {
+        divisors.push(i);
+      }
+      // Otherwise print both (except for 1)
+      else {
+        if (i !== 1) {
+          divisors.push(i);
+        }
+        divisors.push(n / i);
+      }
+    }
+  }
+  return sortAscending(divisors);
+};
 
-exports.filterRanges = (ranges) => {
+// Part One
+exports.filterRangesPartOne = (ranges) => {
   return ranges
     .map((range) => {
       const startId = range[0];
@@ -84,7 +122,7 @@ exports.filterRanges = (ranges) => {
     .filter(Boolean);
 };
 
-exports.findDuplicatesInRange = (range) => {
+exports.findDuplicatesInRangePartOne = (range) => {
   const startId = range[0];
   const splitStartId = splitId(startId);
 
@@ -105,11 +143,6 @@ exports.findDuplicatesInRange = (range) => {
 
   // generate range from new start to new end
   // then all your bad IDs are those new numbers repeated
-  function* generateRange(start, end) {
-    yield start;
-    if (start === end) return;
-    yield* generateRange(start + 1, end);
-  }
 
   const invalidIdFirstHalves = [
     ...generateRange(parseInt(startIdFirstHalf), parseInt(endIdFirstHalf)),
@@ -118,18 +151,79 @@ exports.findDuplicatesInRange = (range) => {
 };
 
 exports.partOne = async (input) => {
-  const filteredRanges = exports.filterRanges(input);
+  const filteredRanges = exports.filterRangesPartOne(input);
 
   const invalidIds = filteredRanges
-    .map((range) => exports.findDuplicatesInRange(range))
+    .map((range) => exports.findDuplicatesInRangePartOne(range))
     .flat();
 
   return sum(invalidIds);
 };
 
 // Part Two
+
+exports.filterRangesPartTwo = (ranges) => {
+  let newRanges = [];
+
+  ranges.forEach((range) => {
+    const startId = range[0];
+    const startIdNumDigits = startId.length;
+
+    const endId = range[1];
+    const endIdNumDigits = endId.length;
+
+    if (startIdNumDigits === endIdNumDigits) {
+      newRanges.push(range);
+    } else if (isOdd(startIdNumDigits)) {
+      newRanges.push([startId, String(parseInt(roundUpToEven(startId)) - 1)]);
+      newRanges.push([roundUpToEven(startId), endId]);
+    } else if (isOdd(endIdNumDigits)) {
+      newRanges.push([startId, roundDownToEven(endId)]);
+      newRanges.push([String(parseInt(roundDownToEven(endId)) + 1), endId]);
+    }
+  });
+
+  return newRanges;
+};
+exports.findInvalidIds = (range) => {
+  const startId = range[0];
+  const endId = range[1];
+
+  const idList = [...generateRange(parseInt(startId), parseInt(endId))];
+
+  const divisors = exports.findDivisors(startId);
+
+  let invalidIds = new Set();
+
+  divisors.forEach((divisor) => {
+    const substrings = [
+      ...new Set(idList.map((id) => exports.getSubstring(String(id), divisor))),
+    ];
+    for (const str of substrings) {
+      const possibleInvalidId = str.repeat(divisor);
+
+      if (parseInt(possibleInvalidId) < parseInt(startId)) {
+        continue;
+      }
+
+      if (parseInt(possibleInvalidId) > parseInt(endId)) {
+        continue;
+      }
+
+      invalidIds.add(possibleInvalidId);
+    }
+  });
+  return [...invalidIds];
+};
+
 exports.partTwo = async (input) => {
-  return undefined;
+  const filteredRanges = exports.filterRangesPartTwo(input);
+
+  const invalidIds = filteredRanges
+    .map((range) => exports.findInvalidIds(range))
+    .flat();
+
+  return sum(invalidIds);
 };
 
 exports.solve = async () => {
@@ -146,7 +240,7 @@ exports.solve = async () => {
     console.log(results);
     return results;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
