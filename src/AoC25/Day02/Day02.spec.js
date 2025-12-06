@@ -71,7 +71,11 @@ describe('Day02', () => {
   });
   describe('filterRangesPartTwo', () => {
     it('should split up ranges that contain both odd and even number of digits', () => {
-      const actual = filterRangesPartTwo(mockInput);
+      const actual = filterRangesPartTwo([
+        ...mockInput,
+        ['2', '9'],
+        ['2', '12'],
+      ]);
       expect(actual).toEqual([
         ['11', '22'],
         ['95', '99'],
@@ -86,6 +90,7 @@ describe('Day02', () => {
         ['565653', '565659'],
         ['824824821', '824824827'],
         ['2121212118', '2121212124'],
+        ['10', '12'],
       ]);
     });
   });
@@ -100,7 +105,7 @@ describe('Day02', () => {
     });
     it('cannot divide odd number of digits', () => {
       const actual = getSubstring('12345', 3);
-      expect(actual).toBeUndefined;
+      expect(actual).toBeUndefined();
     });
   });
   describe('findDivisors', () => {
@@ -138,9 +143,9 @@ describe('Day02', () => {
       const actual = findInvalidIds(['222220', '222224']);
       expect(actual).toEqual(['222222']);
     });
-    it('returns undefined for 1698522-1698528', () => {
+    it('returns empty array for 1698522-1698528', () => {
       const actual = findInvalidIds(['1698522', '1698528']);
-      expect(actual).toBeUndefined;
+      expect(actual).toEqual([]);
     });
   });
   describe('partTwo', () => {

@@ -56,6 +56,7 @@ const roundDownToEven = (num) => {
 exports.findDivisors = (id) => {
   let divisors = [];
   let n = id.length;
+
   // Note that this loop runs till square root
   for (let i = 1; i <= Math.sqrt(n); i++) {
     if (n % i === 0) {
@@ -173,9 +174,15 @@ exports.filterRangesPartTwo = (ranges) => {
     const endIdNumDigits = endId.length;
 
     if (startIdNumDigits === endIdNumDigits) {
-      newRanges.push(range);
+      // single digit IDs cannot be invalid
+      if (startIdNumDigits !== 1) {
+        newRanges.push(range);
+      }
     } else if (isOdd(startIdNumDigits)) {
-      newRanges.push([startId, String(parseInt(roundUpToEven(startId)) - 1)]);
+      // do not push ids that are only 1 digit
+      if (startIdNumDigits !== 1) {
+        newRanges.push([startId, String(parseInt(roundUpToEven(startId)) - 1)]);
+      }
       newRanges.push([roundUpToEven(startId), endId]);
     } else if (isOdd(endIdNumDigits)) {
       newRanges.push([startId, roundDownToEven(endId)]);
