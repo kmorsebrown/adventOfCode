@@ -13,9 +13,9 @@ exports.formatData = async (filepath) => {
 };
 
 function* generateRange(start, end) {
-  yield start;
-  if (start === end) return;
-  yield* generateRange(start + 1, end);
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
 }
 
 const isEven = (num) => {
