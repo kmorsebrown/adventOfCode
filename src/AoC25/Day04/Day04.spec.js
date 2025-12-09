@@ -79,7 +79,7 @@ describe('Day04', () => {
       expect(actual).toEqual(expected);
     });
   });
-  describe.skip('partTwo', () => {
+  describe('partTwo', () => {
     it('Returns total number of rolls of paper that can be removed by forklift', async () => {
       const actual = await partTwo(mockInput);
       expect(actual).toEqual(43);

@@ -82,10 +82,35 @@ exports.removeRolls = async (grid, accessibleRolls) => {
   return newGrid;
 };
 
-exports.findAndRemoveAccessibleRolls = async (grid) => {};
+const findAndRemoveAccessibleRolls = async (
+  grid,
+  accessibleRolls,
+  numRollsRemoved
+) => {
+  let newGrid = await exports.removeRolls(grid, accessibleRolls);
+  let newNumRollsRemoved = numRollsRemoved + accessibleRolls.size;
+
+  let newAccessibleRolls = await exports.findAccessiblePaper(grid);
+
+  if (newAccessibleRolls.size === 0) {
+    return newNumRollsRemoved;
+  }
+
+  return await findAndRemoveAccessibleRolls(
+    newGrid,
+    newAccessibleRolls,
+    newNumRollsRemoved
+  );
+};
 
 exports.partTwo = async (input) => {
-  return input;
+  const accessibleRolls = await exports.findAccessiblePaper(input);
+  const numRollsRemoved = await findAndRemoveAccessibleRolls(
+    input,
+    accessibleRolls,
+    0
+  );
+  return numRollsRemoved;
 };
 
 exports.solve = async () => {
@@ -97,7 +122,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log(results);
     return results;
