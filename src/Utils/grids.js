@@ -10,6 +10,23 @@ exports.isLast = (Idx, array) => {
 // from https://www.30secondsofcode.org/js/s/transpose-matrix/
 exports.transpose = (arr) => arr[0].map((col, i) => arr.map((row) => row[i]));
 
+exports.transposeRagged = (arr) => {
+  let colLengths = arr.map((el) => el.length);
+  let maxCols = Math.max(...colLengths);
+
+  let result = [];
+
+  for (let i = 0; i < maxCols; ++i) {
+    result[i] = [];
+
+    for (let j = 0; j < arr.length; ++j) {
+      result[i][j] = arr[j][i];
+    }
+  }
+
+  return result.map((el) => el.filter(Boolean));
+};
+
 exports.transposeArrStr = (arr) => {
   const arrayifiedGrid = arr.map((row) => {
     let string = row.trim();
