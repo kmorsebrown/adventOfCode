@@ -18,8 +18,6 @@ if (dayNum) {
     );
 
   dayList.forEach((day) => {
-    console.log(`${day}:`);
     require(path.join(__dirname, path.join(day, `${day}.js`)));
-    console.log('\n');
   });
 }

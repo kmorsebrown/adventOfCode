@@ -161,6 +161,7 @@ exports.solve = async () => {
       await exports.partOne(formattedData),
       await exports.partTwo(formattedData),
     ]);
+    console.log('\n' + 'Day 01');
     console.log(results);
     return results;
   } catch (err) {
