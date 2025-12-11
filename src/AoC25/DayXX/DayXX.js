@@ -30,6 +30,7 @@ exports.solve = async () => {
       await exports.partOne(formattedData),
       await exports.partTwo(formattedData),
     ]);
+    console.log('\n' + 'Day XX');
     console.log(results);
     return results;
   } catch (err) {
