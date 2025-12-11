@@ -1,4 +1,4 @@
-const { parseStringOfInts, unique } = require('./parse.js');
+const { parseStringOfInts, mergeOverlap, unique } = require('./parse.js');
 
 describe('parse', () => {
   describe('parseStringOfInts', () => {
@@ -25,6 +25,21 @@ describe('parse', () => {
     it('returns only unique values in an array', () => {
       const mockArr = ['a', 1, 'a', 2, '1', 2, 'b', 'B'];
       expect(unique(mockArr)).toEqual(['a', 1, 2, '1', 'b', 'B']);
+    });
+  });
+  describe('mergeOverlap', () => {
+    it('merges overlapping ranges in array of rages', () => {
+      const mockArr = [
+        [7, 8],
+        [1, 5],
+        [2, 4],
+        [4, 6],
+      ];
+      const actual = mergeOverlap(mockArr);
+      expect(actual).toEqual([
+        [1, 6],
+        [7, 8],
+      ]);
     });
   });
 });
