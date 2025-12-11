@@ -25,11 +25,10 @@ describe('Day05', () => {
       expect(actual).toEqual(3);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('Returns the number of fresh ids in all ranges', async () => {
+      const actual = await partTwo(mockInput);
+      expect(actual).toEqual(14);
     });
   });
 });

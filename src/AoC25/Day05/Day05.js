@@ -1,6 +1,6 @@
 const { getData } = require('../../Utils/globalFunctions.js');
 const { parseStringOfInts, mergeOverlap } = require('../../Utils/parse.js');
-const { sortAscending } = require('../../Utils/maths.js');
+const { sortAscending, sum } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2025/day/5
 
@@ -42,8 +42,15 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+const getNumIdsInRange = (range) => {
+  return range[1] - range[0] + 1;
+};
+
 exports.partTwo = async (input) => {
-  return input;
+  const { freshIds, availableIds } = input;
+  const mergedRanges = mergeOverlap(freshIds);
+
+  return sum(mergedRanges.map((range) => getNumIdsInRange(range)));
 };
 
 exports.solve = async () => {
