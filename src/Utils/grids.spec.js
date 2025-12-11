@@ -7,6 +7,7 @@ const {
   rotateOneEighty,
   getAdjacentMatches,
   arrayifyGrid,
+  transposeRagged,
   getAdjacentCoords,
   getAllAdjacentCoords,
   getValueFromCoords,
@@ -46,6 +47,16 @@ describe('grids', () => {
         [2, 5, 8, 11],
         [3, 6, 9, 12],
       ]);
+    });
+  });
+  describe('transposeRagged', () => {
+    it('transposes 2D array w/different column lengths', () => {
+      const matrix = [
+        [6, 4],
+        [2, 3],
+        [3, 1, 4],
+      ];
+      expect(transposeRagged(matrix)).toEqual([[6, 2, 3], [4, 3, 1], [4]]);
     });
   });
   describe('transposeArrStr', () => {

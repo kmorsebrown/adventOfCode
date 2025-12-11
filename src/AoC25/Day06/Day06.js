@@ -1,6 +1,6 @@
 const { getData } = require('../../Utils/globalFunctions.js');
 const { parseStringOfInts } = require('../../Utils/parse.js');
-const { transpose } = require('../../Utils/grids.js');
+const { transpose, transposeRagged } = require('../../Utils/grids.js');
 const { sum } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2025/day/6
@@ -8,21 +8,26 @@ const { sum } = require('../../Utils/maths.js');
 // DAY=6 npm run 2025
 exports.formatData = async (filepath) => {
   const data = await getData(filepath);
-  const splitData = data.split('\n');
-  const operations = splitData.pop().trim().replace(/\s+/g, ' ').split(' ');
-  const integers = splitData.map((str) => parseStringOfInts(str, ' '));
-  return transpose([...integers, operations]);
+  return data.split('\n');
 };
 
 // Part One
+
+exports.formatDataPt1 = async (splitData) => {
+  const splitDataCopy = JSON.parse(JSON.stringify(splitData));
+  const operations = splitDataCopy.pop().trim().replace(/\s+/g, ' ').split(' ');
+  const integers = splitDataCopy.map((str) => parseStringOfInts(str, ' '));
+  return transpose([...integers, operations]);
+};
 
 exports.evaluateEquation = (arr, operator) => {
   return arr.reduce((a, b) => eval(`${a}${operator}${b}`));
 };
 
 exports.partOne = async (input) => {
+  const problems = await exports.formatDataPt1(input);
   return sum(
-    input.map((problem) => {
+    problems.map((problem) => {
       const operator = problem.pop();
       return exports.evaluateEquation(problem, operator);
     })
@@ -30,8 +35,38 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+
+exports.formatDataPt2 = async (splitData) => {
+  const splitDataCopy = JSON.parse(JSON.stringify(splitData));
+  const operations = splitDataCopy.pop().trim().replace(/\s+/g, ' ').split(' ');
+  const transposed = transpose(splitDataCopy.map((str) => str.split(''))).map(
+    (arr) => arr.join('')
+  );
+
+  let result = [];
+  let temp = [];
+
+  transposed.forEach((item) => {
+    if (item.trim() === '') {
+      result.push([...temp.reverse(), operations.shift()]);
+      temp = [];
+    } else {
+      temp.push(parseInt(item.trim()));
+    }
+  });
+  if (temp.length) result.push([...temp.reverse(), operations.shift()]);
+
+  return result.reverse();
+};
+
 exports.partTwo = async (input) => {
-  return input;
+  const problems = await exports.formatDataPt2(input);
+  return sum(
+    problems.map((problem) => {
+      const operator = problem.pop();
+      return exports.evaluateEquation(problem, operator);
+    })
+  );
 };
 
 exports.solve = async () => {
