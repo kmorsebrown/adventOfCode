@@ -4,6 +4,7 @@ const {
   getCoordinatesForMatch,
   getAdjacentCoords,
 } = require('../../Utils/grids.js');
+const { log } = require('console');
 
 // https://adventofcode.com/2025/day/7
 
@@ -85,7 +86,39 @@ exports.partOne = async (input) => {
 
 // Part Two
 exports.partTwo = async (input) => {
-  return input;
+  let stack = [];
+  let timelines = new Set();
+  const visited = new Set();
+
+  for (const [i, row] of input.entries()) {
+    let match = getCoordinatesForMatch(row, i, 'S');
+    if (match) {
+      stack.push({ coords: match[0], timeline: new Set() });
+      break;
+    }
+  }
+
+  while (stack.length > 0) {
+    let current = stack.pop();
+    let { row, col } = current.coords;
+    let timeline = current.timeline;
+
+    timeline.add(`${row}-${col}`);
+    visited.add(`${row}-${col}`);
+
+    let nextBeams = exports.moveBeam(input, current.coords);
+
+    // check if timeline end
+    if (!nextBeams) {
+      timelines.add(JSON.stringify([...timeline]));
+      continue;
+    } else {
+      nextBeams.filter(Boolean).forEach((beam) => {
+        stack.push({ coords: beam, timeline: new Set([...timeline]) });
+      });
+    }
+  }
+  return timelines.size;
 };
 
 exports.solve = async () => {
@@ -99,12 +132,12 @@ exports.solve = async () => {
       await exports.partOne(formattedData),
       //await exports.partTwo(formattedData),
     ]);
-    log('\n' + 'Day 07');
-    log(results);
+    console.log('\n' + 'Day 07');
+    console.log(results);
     return results;
   } catch (err) {
-    log(err);
+    console.log(err);
   }
 };
 
-exports.solve();
+//exports.solve();

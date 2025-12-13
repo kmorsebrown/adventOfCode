@@ -69,11 +69,10 @@ describe('Day07', () => {
       expect(actual).toEqual(21);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('Returns the number of different timelines the particle ended up on', async () => {
+      const actual = await partTwo(mockInput);
+      expect(actual).toEqual(40);
     });
   });
 });
