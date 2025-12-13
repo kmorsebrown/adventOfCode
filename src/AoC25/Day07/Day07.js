@@ -1,4 +1,5 @@
 const { getData, Queue } = require('../../Utils/globalFunctions.js');
+const { sum } = require('../../Utils/maths.js');
 const {
   arrayifyGrid,
   getCoordinatesForMatch,
@@ -14,18 +15,24 @@ exports.formatData = async (filepath) => {
   return arrayifyGrid(data.split('\n'), '');
 };
 
+const getStartPosition = (grid) => {
+  for (const [i, row] of grid.entries()) {
+    let match = getCoordinatesForMatch(row, i, 'S');
+    if (match) {
+      return match[0];
+    }
+  }
+};
 // Part One
 
-exports.moveBeam = (grid, current) => {
-  const height = grid.length;
-  const width = grid[0].length;
-  const row = current.row;
-  const col = current.col;
+exports.moveBeam = (height, width, nextRow, current) => {
+  if (nextRow) {
+    const row = current.row;
+    const col = current.col;
 
-  const southCoord = getAdjacentCoords({ height, width, row, col, dir: 'S' });
+    const southCoord = getAdjacentCoords({ height, width, row, col, dir: 'S' });
 
-  if (southCoord) {
-    if (grid[southCoord.row][southCoord.col] === '^') {
+    if (nextRow[southCoord.col] === '^') {
       const newBeams = [
         getAdjacentCoords({
           height,
@@ -55,19 +62,20 @@ exports.partOne = async (input) => {
 
   let numSplits = 0;
 
-  for (const [i, row] of input.entries()) {
-    let match = getCoordinatesForMatch(row, i, 'S');
-    if (match) {
-      queuedBeams.add(`${match.row}-${match.col}`);
-      queue.enqueue(match[0]);
-      break;
-    }
-  }
+  const start = getStartPosition(input);
+
+  queuedBeams.add(`${start.row}-${start.col}`);
+  queue.enqueue(start);
 
   while (!queue.isEmpty()) {
     let current = queue.front();
 
-    let nextBeams = exports.moveBeam(input, current);
+    let nextBeams = exports.moveBeam(
+      input.length,
+      input[0].length,
+      input[current.row + 1],
+      current
+    );
     if (nextBeams) {
       if (nextBeams.length > 1) {
         numSplits += 1;
@@ -85,40 +93,49 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
+
+exports.getNextRow = () => {};
 exports.partTwo = async (input) => {
-  let stack = [];
-  let timelines = new Set();
-  const visited = new Set();
+  const start = getStartPosition(input);
 
-  for (const [i, row] of input.entries()) {
-    let match = getCoordinatesForMatch(row, i, 'S');
-    if (match) {
-      stack.push({ coords: match[0], timeline: new Set() });
-      break;
+  // key: col, val: num incoming beams
+  let currentRow = new Map();
+  currentRow.set(start.col, 1);
+
+  // increment by 2 b/c splitters only every other row
+  // and beam always moves down
+  // so splitter row & the row below it will always have the same
+  // beam data
+  for (let i = 1; i < input.length; i += 2) {
+    let nextRow = new Map();
+    currentRow.forEach((numBeams, col) => {
+      let nextBeams = exports.moveBeam(
+        input.length,
+        input[0].length,
+        input[i + 1],
+        {
+          row: i,
+          col: col,
+        }
+      );
+      if (nextBeams) {
+        nextBeams.filter(Boolean).forEach((beam) => {
+          if (nextRow.has(beam.col)) {
+            nextRow.set(beam.col, nextRow.get(beam.col) + numBeams);
+          } else {
+            nextRow.set(beam.col, numBeams);
+          }
+        });
+      }
+    });
+
+    if (nextRow.size > 0) {
+      currentRow.clear();
+      currentRow = new Map(nextRow);
     }
   }
-
-  while (stack.length > 0) {
-    let current = stack.pop();
-    let { row, col } = current.coords;
-    let timeline = current.timeline;
-
-    timeline.add(`${row}-${col}`);
-    visited.add(`${row}-${col}`);
-
-    let nextBeams = exports.moveBeam(input, current.coords);
-
-    // check if timeline end
-    if (!nextBeams) {
-      timelines.add(JSON.stringify([...timeline]));
-      continue;
-    } else {
-      nextBeams.filter(Boolean).forEach((beam) => {
-        stack.push({ coords: beam, timeline: new Set([...timeline]) });
-      });
-    }
-  }
-  return timelines.size;
+  const beams = [...currentRow.values()];
+  return sum(beams);
 };
 
 exports.solve = async () => {
@@ -130,7 +147,7 @@ exports.solve = async () => {
     const formattedData = await exports.formatData(dataPath);
     const results = await Promise.all([
       await exports.partOne(formattedData),
-      //await exports.partTwo(formattedData),
+      await exports.partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 07');
     console.log(results);
@@ -140,4 +157,4 @@ exports.solve = async () => {
   }
 };
 
-//exports.solve();
+exports.solve();
