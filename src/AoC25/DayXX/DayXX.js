@@ -3,32 +3,32 @@ const { getData } = require('../../Utils/globalFunctions.js');
 // https://adventofcode.com/2025/day/XX
 
 // DAY=X npm run 2025
-exports.formatData = async (filepath) => {
+const formatData = async (filepath) => {
   const data = await getData(filepath);
   return data;
 };
 
 // Part One
 
-exports.partOne = async (input) => {
+const partOne = async (input) => {
   return input;
 };
 
 // Part Two
-exports.partTwo = async (input) => {
+const partTwo = async (input) => {
   return input;
 };
 
-exports.solve = async () => {
+const solve = async () => {
   const dataPath = require.resolve(
     '../../../src/AoC25/puzzleInputs/DayXXInput.txt'
   );
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day XX');
     console.log(results);
@@ -38,4 +38,11 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();
+solve();
+
+module.exports = {
+  solve,
+  formatData,
+  partOne,
+  partTwo,
+};
