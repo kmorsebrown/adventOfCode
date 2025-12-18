@@ -51,11 +51,10 @@ describe('Day08', () => {
       expect(actual).toEqual(40);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('Return the x coordinates of the last two junction boxes connected in the circuit multiplied together', async () => {
+      const actual = await partTwo(mockInput);
+      expect(actual).toEqual(25272);
     });
   });
 });
