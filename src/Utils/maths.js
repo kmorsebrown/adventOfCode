@@ -1,15 +1,15 @@
-exports.sum = (arr) => {
+const sum = (arr) => {
   arr = arr.map((n) => parseInt(n, 10)).filter((r) => !isNaN(r));
   return arr.reduce((a, b) => a + b);
 };
 
-exports.sortDescending = (arr) => {
+const sortDescending = (arr) => {
   return arr.sort(function (a, b) {
     return b - a;
   });
 };
 
-exports.sortAscending = (arr) => {
+const sortAscending = (arr) => {
   return arr.sort(function (a, b) {
     return a - b;
   });
@@ -17,7 +17,7 @@ exports.sortAscending = (arr) => {
 
 // gcd, lcm, and lcmAll code from Kevin Talley's AoC 2023 Day 09 solution
 
-exports.gcd = (a, b) => (b == 0 ? a : exports.gcd(b, a % b));
+const gcd = (a, b) => (b == 0 ? a : gcd(b, a % b));
 /* 
   https://www.geeksforgeeks.org/program-to-find-gcd-or-hcf-of-two-numbers/
   GCD (greatest common divisor) or HCF (highest common factor) of two numbers is
@@ -31,8 +31,8 @@ exports.gcd = (a, b) => (b == 0 ? a : exports.gcd(b, a % b));
   The greatest among the common factors is 4.
 */
 
-exports.lcm = (a, b) => (a / exports.gcd(a, b)) * b;
-exports.lcmAll = (arr) => arr.reduce(exports.lcm, 1);
+const lcm = (a, b) => (a / gcd(a, b)) * b;
+const lcmAll = (arr) => arr.reduce(lcm, 1);
 
 /* 
   https://www.geeksforgeeks.org/least-common-multiple/
@@ -47,10 +47,44 @@ exports.lcmAll = (arr) => arr.reduce(exports.lcm, 1);
   The least among the common multiples is 12.
 */
 
-exports.isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string);
+const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string);
 
-exports.getDistance = (p, q) => {
+const getDistance = (p, q) => {
   return Math.sqrt(
     (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2
   );
+};
+
+// optimized factorial & combinations javascript from
+// https://stackoverflow.com/questions/75330679/how-to-implement-the-ncr-algorithm-combination-when-n-167-in-javascript
+const factorial = (num, min = 0) => {
+  let f = 1;
+  for (let i = num; i > min; --i) {
+    f = f * i;
+  }
+  return f;
+};
+
+const combinations = (n, r) => {
+  if (n < r || n < 0 || r < 0) {
+    return 0; // Invalid input
+  }
+  if (n === r || r === 0) {
+    return 1;
+  }
+
+  return factorial(n, n - r) / factorial(r, 0);
+};
+
+module.exports = {
+  sum,
+  sortDescending,
+  sortAscending,
+  gcd,
+  lcm,
+  lcmAll,
+  isNumeric,
+  getDistance,
+  factorial,
+  combinations,
 };
