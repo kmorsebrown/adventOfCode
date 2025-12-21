@@ -7,7 +7,25 @@ exports.parseStringOfInts = (str, separator) => {
 };
 
 exports.unique = (arr) => {
-  return arr.filter((value, index, array) => array.indexOf(value) === index);
+  const seen = new Set();
+  return arr.filter((value) => {
+    // typeof null is 'object'
+    const type = value === null ? 'null' : typeof value;
+
+    let key;
+
+    if (type === 'number' || type === 'string' || type === 'boolean') {
+      key = `${type}:${value}`;
+    } else {
+      key = `${type}:${JSON.stringify(value)}`;
+    }
+
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 };
 
 // https://www.geeksforgeeks.org/dsa/merging-intervals/

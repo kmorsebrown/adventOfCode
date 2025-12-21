@@ -76,6 +76,12 @@ const combinations = (n, r) => {
   return factorial(n, n - r) / factorial(r, 0);
 };
 
+function* generateRange(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
 module.exports = {
   sum,
   sortDescending,
@@ -87,4 +93,5 @@ module.exports = {
   getDistance,
   factorial,
   combinations,
+  generateRange,
 };

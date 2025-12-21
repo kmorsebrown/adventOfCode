@@ -1,4 +1,10 @@
-const { formatData, partOne, partTwo, getArea } = require('./Day09');
+const {
+  formatData,
+  partOne,
+  partTwo,
+  getArea,
+  checkIfRectangleInPolygon,
+} = require('./Day09');
 
 // npm test -- src/AoC25/Day09/Day09.spec.js
 
@@ -44,11 +50,149 @@ describe('Day09', () => {
       expect(actual).toEqual(50);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('checkIfRectangleInPolygon', () => {
+    const mockRectanglesInPolygon = [
+      [
+        [7, 1],
+        [11, 1],
+      ],
+      [
+        [7, 1],
+        [9, 5],
+      ],
+      [
+        [7, 1],
+        [7, 3],
+      ],
+      [
+        [11, 1],
+        [11, 7],
+      ],
+      [
+        [11, 1],
+        [9, 7],
+      ],
+      [
+        [11, 1],
+        [9, 5],
+      ],
+      [
+        [11, 1],
+        [7, 3],
+      ],
+      [
+        [11, 7],
+        [9, 7],
+      ],
+      [
+        [11, 7],
+        [9, 5],
+      ],
+      [
+        [9, 7],
+        [9, 5],
+      ],
+      [
+        [9, 5],
+        [2, 5],
+      ],
+      [
+        [9, 5],
+        [2, 3],
+      ],
+      [
+        [9, 5],
+        [7, 3],
+      ],
+      [
+        [2, 5],
+        [2, 3],
+      ],
+      [
+        [2, 5],
+        [7, 3],
+      ],
+      [
+        [2, 3],
+        [7, 3],
+      ],
+    ];
+
+    const mockRectanglesNotInPolygon = [
+      [
+        [7, 1],
+        [11, 7],
+      ],
+      [
+        [7, 1],
+        [9, 7],
+      ],
+      [
+        [7, 1],
+        [2, 5],
+      ],
+      [
+        [7, 1],
+        [2, 3],
+      ],
+      [
+        [11, 1],
+        [2, 5],
+      ],
+      [
+        [11, 1],
+        [2, 3],
+      ],
+      [
+        [11, 7],
+        [2, 5],
+      ],
+      [
+        [11, 7],
+        [2, 3],
+      ],
+      [
+        [11, 7],
+        [7, 3],
+      ],
+      [
+        [9, 7],
+        [2, 5],
+      ],
+      [
+        [9, 7],
+        [2, 3],
+      ],
+      [
+        [9, 7],
+        [7, 3],
+      ],
+    ];
+    it('returns false for rectangle not in polygon', () => {
+      for (const corners of mockRectanglesNotInPolygon) {
+        const actual = checkIfRectangleInPolygon(
+          corners[0],
+          corners[1],
+          mockInput
+        );
+        expect(actual).toBe(false);
+      }
+    });
+    it('returns true for rectangle in polygon', () => {
+      for (const corners of mockRectanglesInPolygon) {
+        const actual = checkIfRectangleInPolygon(
+          corners[0],
+          corners[1],
+          mockInput
+        );
+        expect(actual).toBe(true);
+      }
+    });
+  });
+  describe('partTwo', () => {
+    it('Calculate the largest possible rectangle inside the polygon', async () => {
+      const actual = await partTwo(mockInput);
+      expect(actual).toEqual(24);
     });
   });
 });

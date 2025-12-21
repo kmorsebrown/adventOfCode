@@ -26,6 +26,21 @@ describe('parse', () => {
       const mockArr = ['a', 1, 'a', 2, '1', 2, 'b', 'B'];
       expect(unique(mockArr)).toEqual(['a', 1, 2, '1', 'b', 'B']);
     });
+    it('returns only unique values in a 2D array', () => {
+      const mockArr = [
+        [1, 2],
+        [3, 2],
+        [4, 5],
+        [3, 2],
+        [2, 3],
+      ];
+      expect(unique(mockArr)).toEqual([
+        [1, 2],
+        [3, 2],
+        [4, 5],
+        [2, 3],
+      ]);
+    });
   });
   describe('mergeOverlap', () => {
     it('merges overlapping ranges in array of rages', () => {
