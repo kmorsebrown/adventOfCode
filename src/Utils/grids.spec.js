@@ -13,6 +13,8 @@ const {
   getValueFromCoords,
   getCoordinatesForMatch,
   getCoordinatesForAllMatches,
+  checkPointOnSegment,
+  checkPointInPolygon,
 } = require('./grids.js');
 // npm test -- src/Utils/grids.spec.js
 
@@ -520,6 +522,166 @@ describe('grids', () => {
         { row: 2, col: 0 },
         { row: 2, col: 1 },
       ]);
+    });
+  });
+  describe('checkPointOnSegment', () => {
+    it('returns true for point on N=>S vertical line', () => {
+      expect(checkPointOnSegment([2, 4], [2, 3], [2, 5])).toBe(true);
+    });
+    it('returns true for point on E=>W horizontal line', () => {
+      expect(checkPointOnSegment([5, 3], [2, 3], [7, 3])).toBe(true);
+    });
+
+    it('returns true for point on S=>N vertical line', () => {
+      expect(checkPointOnSegment([2, 4], [2, 5], [2, 3])).toBe(true);
+    });
+
+    it('returns true for point on W=>E horizontal line', () => {
+      expect(checkPointOnSegment([5, 3], [7, 3], [2, 3])).toBe(true);
+    });
+  });
+  describe('checkPointInPolygon', () => {
+    const mockPolygon = [
+      { x: 7, y: 2 },
+      { x: 3, y: 6 },
+      { x: 3, y: 12 },
+      { x: 6, y: 9 },
+      { x: 10, y: 13 },
+      { x: 10, y: 5 },
+    ];
+    const mock2DArrayPolygon = [
+      [7, 2],
+      [3, 6],
+      [3, 12],
+      [6, 9],
+      [10, 13],
+      [10, 5],
+    ];
+
+    const mockPointsInPolygon = [
+      { x: 6, y: 5 },
+      { x: 5, y: 7 },
+      { x: 4, y: 10 },
+      { x: 9, y: 10 },
+      { x: 10, y: 8 },
+    ];
+
+    const mockPointsIn2DArrayPolygon = [
+      [6, 5],
+      [5, 7],
+      [4, 10],
+      [9, 10],
+      [10, 8],
+    ];
+
+    const mockPointsOutPolygon = [
+      { x: 1, y: 1 },
+      { x: 4, y: 2 },
+      { x: 2, y: 7 },
+      { x: 1, y: 9 },
+      { x: 6, y: 10 },
+      { x: 2, y: 13 },
+      { x: 12, y: 8 },
+      { x: 6, y: 14 },
+    ];
+    const mockPointsOut2DArrayPolygon = [
+      [1, 1],
+      [4, 2],
+      [2, 7],
+      [1, 9],
+      [6, 10],
+      [2, 13],
+      [12, 8],
+      [6, 14],
+    ];
+    it('returns true for points inside the polygon', () => {
+      for (const point of mockPointsInPolygon) {
+        let actual = checkPointInPolygon(point, mockPolygon);
+        console.log(`${point.x}, ${point.y}: ${actual}`);
+        expect(actual).toBe(true);
+      }
+    });
+    it('returns false for points outside the polygon', () => {
+      for (const point of mockPointsOutPolygon) {
+        let actual = checkPointInPolygon(point, mockPolygon);
+        console.log(`${point.x}, ${point.y}: ${actual}`);
+        expect(actual).toBe(false);
+      }
+    });
+
+    it('returns true for points inside the 2D Array polygon', () => {
+      for (const point of mockPointsIn2DArrayPolygon) {
+        let actual = checkPointInPolygon(point, mock2DArrayPolygon);
+        expect(actual).toBe(true);
+      }
+    });
+    it('returns false for points outside the 2D Array polygon', () => {
+      for (const point of mockPointsOut2DArrayPolygon) {
+        let actual = checkPointInPolygon(point, mock2DArrayPolygon);
+        expect(actual).toBe(false);
+      }
+    });
+    it('returns true for points on vertexes of rectangular polygon', () => {
+      const mockInput = [
+        [7, 1],
+        [11, 1],
+        [11, 7],
+        [9, 7],
+        [9, 5],
+        [2, 5],
+        [2, 3],
+        [7, 3],
+      ];
+
+      for (const point of mockInput) {
+        let actual = checkPointInPolygon(point, mockInput);
+        expect(actual).toBe(true);
+      }
+    });
+    it('returns true for points on vertexes of complex polygon', () => {
+      for (const point of mock2DArrayPolygon) {
+        let actual = checkPointInPolygon(point, mock2DArrayPolygon);
+        expect(actual).toBe(true);
+      }
+    });
+    it('returns true for points on vertical edges of rectangular polygon', () => {
+      const mockInput = [
+        [7, 1],
+        [11, 1],
+        [11, 7],
+        [9, 7],
+        [9, 5],
+        [2, 5],
+        [2, 3],
+        [7, 3],
+      ];
+
+      const pointsOnEdge = [
+        [2, 4],
+        [5, 3],
+        [6, 5],
+        [9, 1],
+      ];
+
+      for (const point of pointsOnEdge) {
+        let actual = checkPointInPolygon(point, mockInput);
+        expect(actual).toBe(true);
+      }
+    });
+    it('returns true for point on edge of complex polygon', () => {
+      const pointsOnEdge = [
+        [6, 3],
+        [3, 8],
+        [5, 10],
+        [8, 11],
+        [10, 9],
+        [9, 4],
+      ];
+
+      for (const point of pointsOnEdge) {
+        let actual = checkPointInPolygon(point, mock2DArrayPolygon);
+        expect(actual).toBe(true);
+      }
     });
   });
 });
