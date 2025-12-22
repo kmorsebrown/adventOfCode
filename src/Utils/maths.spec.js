@@ -6,7 +6,9 @@ const {
   lcm,
   lcmAll,
   cartesian,
+  cartesianGenerator,
   getCombinations,
+  combinationRepetitionGenerator,
 } = require('./maths.js');
 // npm test -- src/Utils/maths.spec.js
 
@@ -96,6 +98,106 @@ describe('maths', () => {
       expect(actual).toEqual(expected);
     });
   });
+  describe('combinationRepetitionGenerator', () => {
+    it('should return all combinations of size 2 from a 3-element array', () => {
+      const input = ['A', 'B', 'C'];
+      const r = 2;
+      const result = [...combinationRepetitionGenerator(input, r)];
+
+      const expected = [
+        ['A', 'A'],
+        ['A', 'B'],
+        ['A', 'C'],
+        ['B', 'B'],
+        ['B', 'C'],
+        ['C', 'C'],
+      ];
+
+      expect(result).toEqual(expected);
+      expect(result.length).toBe(6);
+    });
+
+    it('should handle r = 1 correctly', () => {
+      const input = [1, 2, 3];
+      const result = [...combinationRepetitionGenerator(input, 1)];
+
+      expect(result).toEqual([[1], [2], [3]]);
+    });
+
+    it('should return an empty array if r is 0', () => {
+      const input = [1, 2, 3];
+      const result = [...combinationRepetitionGenerator(input, 0)];
+
+      // The generator yields once (the empty set []) then finishes
+      expect(result).toEqual([[]]);
+    });
+
+    it('should handle a single element array with multiple repetitions', () => {
+      const input = ['Z'];
+      const result = [...combinationRepetitionGenerator(input, 3)];
+
+      expect(result).toEqual([['Z', 'Z', 'Z']]);
+    });
+
+    it('should work with different data types (numbers and strings)', () => {
+      const input = [1, 'A'];
+      const result = [...combinationRepetitionGenerator(input, 2, true)];
+
+      expect(result).toEqual([
+        [1, 1],
+        [1, 'A'],
+        ['A', 'A'],
+      ]);
+    });
+    it('should work with 2D arrays', () => {
+      const input = [
+        [1, 2],
+        [3, 4],
+      ];
+      const result = [...combinationRepetitionGenerator(input, 2, true)];
+
+      expect(result).toEqual([
+        [
+          [1, 2],
+          [1, 2],
+        ],
+        [
+          [1, 2],
+          [3, 4],
+        ],
+        [
+          [3, 4],
+          [3, 4],
+        ],
+      ]);
+    });
+
+    it('should be lazy and allow partial iteration', () => {
+      const input = [1, 2, 3, 4, 5];
+      const gen = combinationRepetitionGenerator(input, 3, true);
+
+      // We only take the first result manually
+      const firstValue = gen.next().value;
+
+      expect(firstValue).toEqual([1, 1, 1]);
+      // The generator hasn't finished, proving it didn't calculate all 35 combinations yet
+    });
+
+    it('should not allow repeats when allowRepeats is false', () => {
+      const input = ['A', 'B', 'C'];
+      const r = 2;
+      const result = [...combinationRepetitionGenerator(input, r, false)];
+
+      const expected = [
+        ['A', 'B'],
+        ['A', 'C'],
+        ['B', 'C'],
+      ];
+
+      expect(result).toEqual(expected);
+      expect(result.length).toBe(3);
+    });
+  });
   describe('cartesian', () => {
     it('returns the cartesian product of three different arrays', () => {
       const arr1 = ['a', 'b'];
@@ -182,6 +284,71 @@ describe('maths', () => {
       ];
 
       expect(cartesian(...Array(2).fill(arr))).toEqual(expected);
+    });
+  });
+  describe('cartesianGenerator', () => {
+    it('should return an empty array wrapped in a generator if no arguments are passed', () => {
+      const gen = cartesianGenerator();
+      const result = Array.from(gen);
+      expect(result).toEqual([[]]);
+    });
+
+    it('should handle a single array input', () => {
+      const gen = cartesianGenerator([1, 2]);
+      const result = Array.from(gen);
+      expect(result).toEqual([[1], [2]]);
+    });
+
+    it('should calculate the Cartesian product of two arrays', () => {
+      const gen = cartesianGenerator([1, 2], ['a', 'b']);
+      const result = Array.from(gen);
+
+      expect(result).toEqual([
+        [1, 'a'],
+        [1, 'b'],
+        [2, 'a'],
+        [2, 'b'],
+      ]);
+    });
+
+    it('should handle arrays of different lengths', () => {
+      const gen = cartesianGenerator([1], ['a', 'b'], [true]);
+      const result = Array.from(gen);
+
+      expect(result).toEqual([
+        [1, 'a', true],
+        [1, 'b', true],
+      ]);
+    });
+
+    it('should yield values lazily', () => {
+      const gen = cartesianGenerator([1, 2], ['a', 'b']);
+
+      // Manually trigger next()
+      expect(gen.next().value).toEqual([1, 'a']);
+      expect(gen.next().value).toEqual([1, 'b']);
+
+      // Ensure it isn't finished yet
+      const third = gen.next();
+      expect(third.value).toEqual([2, 'a']);
+      expect(third.done).toBe(false);
+
+      gen.next(); // [2, 'b']
+      expect(gen.next().done).toBe(true);
+    });
+
+    it('should work correctly within a for...of loop', () => {
+      const gen = cartesianGenerator(['red', 'blue'], ['large']);
+      const gatheredResults = [];
+
+      // The generator should allow standard iteration
+      for (const combination of gen) {
+        gatheredResults.push(combination);
+      }
+
+      expect(gatheredResults).toHaveLength(2);
+      expect(gatheredResults[0]).toEqual(['red', 'large']);
+      expect(gatheredResults[1]).toEqual(['blue', 'large']);
     });
   });
 });

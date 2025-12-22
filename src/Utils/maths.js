@@ -92,6 +92,36 @@ const getCombinations = (arr) => {
   }
   return res;
 };
+
+// based on www.geeksforgeeks.org/dsa/combinations-with-repetitions/
+function* combinationRepetitionGenerator(
+  arr,
+  r,
+  allowRepeats = true,
+  start = 0,
+  chosen = []
+) {
+  // Base case: if we've picked 'r' items, yield the current set
+  if (chosen.length === r) {
+    yield [...chosen];
+    return;
+  }
+
+  for (let i = start; i < arr.length; i++) {
+    chosen.push(arr[i]);
+    // Yield all combinations from the next recursive step
+    yield* combinationRepetitionGenerator(
+      arr,
+      r,
+      allowRepeats,
+      allowRepeats ? i : i + 1,
+      chosen
+    );
+    // Backtrack: remove the last element to try the next one
+    chosen.pop();
+  }
+}
+
 function* generateRange(start, end) {
   for (let i = start; i <= end; i++) {
     yield i;
@@ -156,4 +186,5 @@ module.exports = {
   generateRange,
   cartesian,
   cartesianGenerator,
+  combinationRepetitionGenerator,
 };
