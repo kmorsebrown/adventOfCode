@@ -25,7 +25,7 @@ const formatData = async (filepath) => {
 const partOne = async (input) => {
   let numPaths = 0;
 
-  let visited = new Map();
+  let visited = new Set();
 
   const dfs = (node) => {
     // If destination is reached,
@@ -36,18 +36,18 @@ const partOne = async (input) => {
     }
 
     // Mark current node as visited
-    visited.set(node, true);
+    visited.add(node);
 
     // Explore all unvisited neighbors
     for (let neighbor of input.get(node)) {
-      if (!visited.get(neighbor)) {
+      if (!visited.has(neighbor)) {
         dfs(neighbor);
       }
     }
 
-    // Backtrack: unmark the node
-    // before returning
-    visited.set(node, false);
+    // Backtrack: delete the node
+    // before returning so other paths can use it
+    visited.delete(node);
   };
 
   dfs('you');
@@ -57,7 +57,36 @@ const partOne = async (input) => {
 
 // Part Two
 const partTwo = async (input) => {
-  return input;
+  let numPaths = 0;
+
+  let visited = new Set();
+
+  const dfs = (node, hasDac, hasFft) => {
+    // If destination is reached,
+    // and it contains dac and fft
+    // increment count
+    if (node === 'out') {
+      if (hasDac && hasFft) numPaths++;
+      return;
+    }
+
+    const nowHasDac = hasDac || node === 'dac';
+    const nowHasFft = hasFft || node === 'fft';
+
+    visited.add(node);
+
+    for (let neighbor of input.get(node)) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor, nowHasDac, nowHasFft);
+      }
+    }
+
+    visited.delete(node);
+  };
+
+  dfs('svr', false, false);
+
+  return numPaths;
 };
 
 const solve = async () => {
@@ -69,7 +98,7 @@ const solve = async () => {
     const formattedData = await formatData(dataPath);
     const results = await Promise.all([
       await partOne(formattedData),
-      //await partTwo(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 11');
     console.log(results);

@@ -30,11 +30,25 @@ describe('Day11', () => {
       expect(actual).toEqual(5);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('returns the total number of paths from svr to out that visit both dac and fft', async () => {
+      const mockGraph = new Map([
+        ['svr', ['aaa', 'bbb']],
+        ['aaa', ['fft']],
+        ['fft', ['ccc']],
+        ['bbb', ['tty']],
+        ['tty', ['ccc']],
+        ['ccc', ['ddd', 'eee']],
+        ['ddd', ['hub']],
+        ['hub', ['fff']],
+        ['eee', ['dac']],
+        ['dac', ['fff']],
+        ['fff', ['ggg', 'hhh']],
+        ['ggg', ['out']],
+        ['hhh', ['out']],
+      ]);
+      const actual = await partTwo(mockGraph);
+      expect(actual).toEqual(2);
     });
   });
 });
