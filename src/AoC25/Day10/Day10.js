@@ -179,6 +179,16 @@ const getButtonsToPress = (buttonMap, state, maxJoltageMap) => {
     .filter((button) => !button.some((i) => state[i] === maxJoltageMap.get(i)));
 };
 
+const comparator = (a, b) => {
+  // prioritize fewer button presses if button presses are different
+  if (a.numButtonPresses !== b.numButtonPresses) {
+    return a.numButtonPresses < b.numButtonPresses;
+  }
+
+  // prioritize by higher sum (closer to target) if button presses are the same
+  return a.sum > b.sum;
+};
+
 const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
   const maxJoltageMap = mapJoltageMaximums(targetJoltage);
   const buttonMap = getButtonMap(buttonSchematics, targetJoltage);
@@ -188,14 +198,16 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
   visited.add(JSON.stringify(initialState));
 
   // TODO: Replace with Priority Queue
-  let queue = new Queue();
-  queue.enqueue({
+  const pQueue = new PriorityQueue(comparator);
+
+  pQueue.push({
     currentState: initialState,
     numButtonPresses: 0,
+    sum: 0,
   });
 
-  while (!queue.isEmpty()) {
-    const { currentState, numButtonPresses } = queue.front();
+  while (!pQueue.isEmpty()) {
+    const { currentState, numButtonPresses } = pQueue.pop();
     let buttonsToPress = getButtonsToPress(
       buttonMap,
       currentState,
@@ -216,13 +228,13 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
 
       if (!visited.has(JSON.stringify(newState))) {
         visited.add(JSON.stringify(newState));
-        queue.enqueue({
+        pQueue.push({
           currentState: newState,
           numButtonPresses: newNumButtonPresses,
+          sum: sum(newState),
         });
       }
     }
-    queue.dequeue();
   }
 };
 
@@ -272,5 +284,6 @@ module.exports = {
   pressButton,
   fewestButtonPressesForJoltage,
   getButtonsToPress,
+  comparator,
   partTwo,
 };
