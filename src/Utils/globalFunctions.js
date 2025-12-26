@@ -90,24 +90,12 @@ class Queue {
     this.data = {}; // Object to store queue elements
     this.head = 0; // Pointer to the front of the queue
     this.tail = 0; // Pointer to the next available position
-
-    /* array implementation for posterity
-
-      this.items = [];
-
-    */
   }
 
   // adds an element at the rear of the queue
   enqueue(item) {
     this.data[this.tail] = item;
     this.tail++;
-
-    /* array implementation for posterity
-
-      this.items.push(element);
-
-    */
   }
 
   // Remove an element from the front of the queue
@@ -121,12 +109,6 @@ class Queue {
     delete this.data[this.head]; // Clean up memory
     this.head++;
     return item;
-
-    /* array implementation for posterity
-
-      return this.items.shift();
-
-    */
   }
 
   // Get the front element without removing it
@@ -137,37 +119,21 @@ class Queue {
     }
 
     return this.data[this.head];
-
-    /* array implementation for posterity
-
-      return this.items[this.frontIndex];
-
-    */
   }
 
-  // Check if the queue is empty
   isEmpty() {
     return this.head === this.tail;
-    /* array implementation for posterity
-
-    return this.items.length == 0;
-
-    */
   }
 
-  // Get the size of the queue
   size() {
     return this.tail - this.head;
   }
 
-  // Clear the queue
   clear() {
     this.data = {};
     this.head = 0;
     this.tail = 0;
   }
-
-  // Print the queue elements
 
   printQueue() {
     if (this.isEmpty()) {
@@ -180,16 +146,6 @@ class Queue {
       elements.push(this.data[i]);
     }
     console.log(elements.join(' -> ')); // Customize format as needed
-
-    /* array implementation for posterity
-
-      let str = '';
-      for (let i = 0; i < this.items.length; i++) {
-        str += this.items[i] + ' ';
-      }
-      return str;
-
-    */
   }
 }
 
@@ -219,6 +175,119 @@ function handleLargeArray(data) {
   }
 }
 
+// https://www.geeksforgeeks.org/javascript/implementation-priority-queue-javascript/
+// https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
+
+class PriorityQueue {
+  static #top = 0;
+  static #parent(i) {
+    return ((i + 1) >>> 1) - 1;
+  }
+  static #left(i) {
+    return (i << 1) + 1;
+  }
+  static #right(i) {
+    return (i + 1) << 1;
+  }
+
+  #heap;
+  #comparator;
+
+  // smaller values have priority by default
+  constructor(comparator = (a, b) => a - b < 0) {
+    this.#heap = [];
+    this.#comparator = comparator;
+  }
+
+  // Public Methods
+  size() {
+    return this.#heap.length;
+  }
+
+  isEmpty() {
+    return this.size() === 0;
+  }
+
+  peek() {
+    return this.#heap[PriorityQueue.#top] ?? null;
+  }
+
+  push(...values) {
+    for (const value of values) {
+      this.#heap.push(value);
+      this.#siftUp();
+    }
+    return this.size();
+  }
+
+  pop() {
+    if (this.#heap.length === 0) return null;
+    const poppedValue = this.peek();
+    const bottom = this.size() - 1;
+    if (bottom > PriorityQueue.#top) {
+      this.#swap(PriorityQueue.#top, bottom);
+    }
+    this.#heap.pop();
+    this.#siftDown();
+    return poppedValue;
+  }
+
+  replace(value) {
+    if (this.#heap.length === 0) {
+      this.#heap.push(value);
+      return null;
+    }
+    const replacedValue = this.peek();
+    this.#heap[PriorityQueue.#top] = value;
+    this.#siftDown();
+    return replacedValue;
+  }
+
+  // Private methods
+  #isHigherPriority(i, j) {
+    return this.#comparator(this.#heap[i], this.#heap[j]);
+  }
+
+  #swap(i, j) {
+    [this.#heap[i], this.#heap[j]] = [this.#heap[j], this.#heap[i]];
+  }
+
+  #siftUp() {
+    let node = this.#heap.length - 1;
+    while (
+      node > PriorityQueue.#top &&
+      this.#isHigherPriority(node, PriorityQueue.#parent(node))
+    ) {
+      this.#swap(node, PriorityQueue.#parent(node));
+      node = PriorityQueue.#parent(node);
+    }
+  }
+
+  #siftDown() {
+    const { length } = this.#heap;
+    let node = PriorityQueue.#top;
+
+    while (
+      (PriorityQueue.#left(node) < length &&
+        this.#isHigherPriority(PriorityQueue.#left(node), node)) ||
+      (PriorityQueue.#right(node) < length &&
+        this.#isHigherPriority(PriorityQueue.#right(node), node))
+    ) {
+      const bestChild =
+        PriorityQueue.#right(node) < length &&
+        this.#isHigherPriority(
+          PriorityQueue.#right(node),
+          PriorityQueue.#left(node)
+        )
+          ? PriorityQueue.#right(node)
+          : PriorityQueue.#left(node);
+
+      this.#swap(node, bestChild);
+      node = bestChild;
+    }
+  }
+}
+
 module.exports = {
   getData,
   appendFile,
@@ -226,4 +295,5 @@ module.exports = {
   PART2_KEY,
   Graph,
   Queue,
+  PriorityQueue,
 };
