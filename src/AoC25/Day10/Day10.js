@@ -169,24 +169,19 @@ const getButtonsToPress = (buttonMap, state, maxJoltageMap) => {
     }
   };
 
-  const nextIndex = findLowestUnmaxedIndex();
-
   // filter out buttons that cannot be pressed because they
   // increment an index that has already hit max joltage
 
-  return buttonMap
-    .get(nextIndex)
-    .filter((button) => !button.some((i) => state[i] === maxJoltageMap.get(i)));
-};
+  const nextIndex = findLowestUnmaxedIndex();
+  const buttonsAtIndex = buttonMap.get(nextIndex);
 
-const comparator = (a, b) => {
-  // prioritize fewer button presses if button presses are different
-  if (a.numButtonPresses !== b.numButtonPresses) {
-    return a.numButtonPresses < b.numButtonPresses;
+  if (buttonsAtIndex) {
+    return buttonsAtIndex.filter(
+      (button) => !button.some((i) => state[i] === maxJoltageMap.get(i))
+    );
   }
 
-  // prioritize by higher sum (closer to target) if button presses are the same
-  return a.sum > b.sum;
+  return;
 };
 
 const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
@@ -194,48 +189,47 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
   const buttonMap = getButtonMap(buttonSchematics, targetJoltage);
   const initialState = Array(targetJoltage.length).fill(0);
 
-  const visited = new Set();
-  visited.add(JSON.stringify(initialState));
+  let lowestNumButtons = sum(targetJoltage) + 1;
 
-  // TODO: Replace with Priority Queue
-  const pQueue = new PriorityQueue(comparator);
+  const dfs = (currentState, numButtonPresses) => {
+    if (numButtonPresses >= lowestNumButtons) {
+      // return if already used more buttons than best solution
+      return;
+    }
 
-  pQueue.push({
-    currentState: initialState,
-    numButtonPresses: 0,
-    sum: 0,
-  });
-
-  while (!pQueue.isEmpty()) {
-    const { currentState, numButtonPresses } = pQueue.pop();
     let buttonsToPress = getButtonsToPress(
       buttonMap,
       currentState,
       maxJoltageMap
     );
 
+    // If no valid buttons, this is a dead end - backtrack
+    if (!buttonsToPress || buttonsToPress.length === 0) {
+      return;
+    }
+
     for (const button of buttonsToPress) {
       let newState = pressButton(button, currentState);
       let newNumButtonPresses = numButtonPresses + 1;
 
+      // don't continue down path if max is exceeded
       if (joltageTargetExceeded(maxJoltageMap, newState)) {
         continue;
       }
 
+      // success case
       if (joltageTargetMet(maxJoltageMap, newState)) {
-        return newNumButtonPresses;
+        lowestNumButtons = Math.min(lowestNumButtons, newNumButtonPresses);
+        return;
       }
 
-      if (!visited.has(JSON.stringify(newState))) {
-        visited.add(JSON.stringify(newState));
-        pQueue.push({
-          currentState: newState,
-          numButtonPresses: newNumButtonPresses,
-          sum: sum(newState),
-        });
-      }
+      dfs(newState, newNumButtonPresses);
     }
-  }
+  };
+
+  dfs(initialState, 0);
+
+  return lowestNumButtons;
 };
 
 const partTwo = async (input) => {
@@ -284,6 +278,5 @@ module.exports = {
   pressButton,
   fewestButtonPressesForJoltage,
   getButtonsToPress,
-  comparator,
   partTwo,
 };

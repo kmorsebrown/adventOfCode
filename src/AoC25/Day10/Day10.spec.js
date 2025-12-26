@@ -10,7 +10,6 @@ const {
   joltageTargetMet,
   fewestButtonPressesForJoltage,
   getButtonsToPress,
-  comparator,
   partTwo,
 } = require('./Day10');
 
@@ -386,79 +385,6 @@ describe('Day10', () => {
         mockInput[2].buttonSchematics
       );
       expect(actual).toEqual(11);
-    });
-  });
-  describe('comparator', () => {
-    it('returns false when b has fewer button presses than a', () => {
-      const a = {
-        numButtonPresses: 3,
-        state: [3, 2, 1, 0],
-      };
-
-      const b = {
-        numButtonPresses: 2,
-        state: [2, 1, 1, 0],
-      };
-      const actual = comparator(a, b);
-      expect(actual).toEqual(false);
-    });
-
-    it('returns true when a has fewer button presses than b', () => {
-      const a = {
-        numButtonPresses: 2,
-        state: [2, 1, 1, 0],
-      };
-
-      const b = {
-        numButtonPresses: 3,
-        state: [3, 2, 1, 0],
-      };
-
-      const actual = comparator(a, b);
-      expect(actual).toEqual(true);
-    });
-
-    it('returns false when a and b have the same button presses, and b is closer to target than a', () => {
-      const a = {
-        numButtonPresses: 6,
-        state: [3, 2, 4, 0],
-      };
-
-      const b = {
-        numButtonPresses: 6,
-        state: [3, 2, 4, 3],
-      };
-      const actual = comparator(a, b);
-      expect(actual).toEqual(false);
-    });
-
-    it('returns true when a and b have the same button presses, and a is closer to target than b', () => {
-      const a = {
-        numButtonPresses: 6,
-        state: [3, 2, 4, 3],
-      };
-
-      const b = {
-        numButtonPresses: 6,
-        state: [3, 2, 4, 0],
-      };
-
-      const actual = comparator(a, b);
-      expect(actual).toEqual(true);
-    });
-
-    it('returns true when a and b have the same button presses and are equally close to the target', () => {
-      const a = {
-        numButtonPresses: 3,
-        state: [3, 2, 1, 0],
-      };
-
-      const b = {
-        numButtonPresses: 3,
-        state: [3, 0, 3, 0],
-      };
-      const actual = comparator(a, b);
-      expect(actual).toEqual(false);
     });
   });
   describe('partTwo', () => {
