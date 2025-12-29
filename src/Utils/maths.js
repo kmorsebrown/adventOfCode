@@ -171,6 +171,14 @@ function* cartesianGenerator(...a) {
   yield* helper([], 0);
 }
 
+const isEven = (num) => {
+  return num % 2 == 0;
+};
+
+const isOdd = (num) => {
+  return num % 2 == 1;
+};
+
 module.exports = {
   sum,
   sortDescending,
@@ -187,4 +195,6 @@ module.exports = {
   cartesian,
   cartesianGenerator,
   combinationRepetitionGenerator,
+  isEven,
+  isOdd,
 };
