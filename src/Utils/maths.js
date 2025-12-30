@@ -76,11 +76,108 @@ const combinations = (n, r) => {
   return factorial(n, n - r) / factorial(r, 0);
 };
 
+// https://www.geeksforgeeks.org/javascript/find-all-the-combinations-of-the-array-values-in-javascript/
+const getCombinations = (arr) => {
+  const res = [];
+  const total = Math.pow(2, arr.length);
+
+  for (let i = 1; i < total; i++) {
+    const comb = [];
+    for (let j = 0; j < arr.length; j++) {
+      if (i & (1 << j)) {
+        comb.push(arr[j]);
+      }
+    }
+    res.push(comb);
+  }
+  return res;
+};
+
+// based on www.geeksforgeeks.org/dsa/combinations-with-repetitions/
+function* combinationRepetitionGenerator(
+  arr,
+  r,
+  allowRepeats = true,
+  start = 0,
+  chosen = []
+) {
+  // Base case: if we've picked 'r' items, yield the current set
+  if (chosen.length === r) {
+    yield [...chosen];
+    return;
+  }
+
+  for (let i = start; i < arr.length; i++) {
+    chosen.push(arr[i]);
+    // Yield all combinations from the next recursive step
+    yield* combinationRepetitionGenerator(
+      arr,
+      r,
+      allowRepeats,
+      allowRepeats ? i : i + 1,
+      chosen
+    );
+    // Backtrack: remove the last element to try the next one
+    chosen.pop();
+  }
+}
+
 function* generateRange(start, end) {
   for (let i = start; i <= end; i++) {
     yield i;
   }
 }
+
+const cartesian = (...a) =>
+  // the ...a syntax collects all args into a single array named a
+  // allows the function to handle nay number of input sets
+
+  // reduce "collapsed" the list of arrays into a single final result
+  // acc: holds the combinations built so far (accumulator)
+  // currentSet: next array of items we need to multiply into combinations
+  // [[]]: initial value, a single "empty" combination
+  a.reduce(
+    (acc, currentSet) =>
+      // flatMap takes the nested array created in the next step and "flattens" them
+      // by one level so that acc says a flat list of combinations
+      // rather than a deeply nested tree
+      // combined: array of elements picked from previous sets
+
+      acc.flatMap((combined) =>
+        // loop through each item in the "new" set
+        currentSet.map((item) =>
+          // takes the elements of combined and adds item as a new entry at the end
+          [...combined, item]
+        )
+      ),
+    [[]]
+  );
+
+function* cartesianGenerator(...a) {
+  const result = [[]];
+
+  // Yield combinations one by one at the final step
+  function* helper(acc, index) {
+    if (index === a.length) {
+      yield acc;
+      return;
+    }
+
+    for (const item of a[index]) {
+      yield* helper([...acc, item], index + 1);
+    }
+  }
+
+  yield* helper([], 0);
+}
+
+const isEven = (num) => {
+  return num % 2 == 0;
+};
+
+const isOdd = (num) => {
+  return num % 2 == 1;
+};
 
 module.exports = {
   sum,
@@ -93,5 +190,11 @@ module.exports = {
   getDistance,
   factorial,
   combinations,
+  getCombinations,
   generateRange,
+  cartesian,
+  cartesianGenerator,
+  combinationRepetitionGenerator,
+  isEven,
+  isOdd,
 };
