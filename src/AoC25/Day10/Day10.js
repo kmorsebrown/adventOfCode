@@ -145,9 +145,9 @@ const getPatternMap = (length, buttons) => {
 const getButtonComboPatterns = (length, buttons) => {
   let combinations = [];
 
-  for (const numButtonsToPress of generateRange(1, buttons.length)) {
+  for (const numButtonsToPress of generateRange(0, buttons.length)) {
     const newCombinations = Array.from(
-      combinationRepetitionGenerator(buttons, numButtonsToPress)
+      combinationRepetitionGenerator(buttons, numButtonsToPress, false)
     );
     combinations = [...combinations, ...newCombinations];
   }
@@ -197,7 +197,14 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
     buttonSchematics
   );
 
+  const cache = new Map();
+
   const getNumPresses = (state) => {
+    const key = state.join(',');
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
     if (state.every((counter) => counter === 0)) {
       return 0;
     }
@@ -223,6 +230,7 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
       );
     }
 
+    cache.set(key, lowestNumPresses);
     return lowestNumPresses;
   };
 
@@ -259,7 +267,6 @@ const solve = async () => {
   }
 };
 
-// 21666 too high
 solve();
 
 module.exports = {
