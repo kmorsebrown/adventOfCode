@@ -21,6 +21,7 @@ const formatData = async (filepath) => {
 // Part One
 
 // https://www.geeksforgeeks.org/dsa/count-possible-paths-two-vertices/
+// Approach 1 (Using Depth-First Search)
 
 const partOne = async (input) => {
   let numPaths = 0;
@@ -56,6 +57,9 @@ const partOne = async (input) => {
 };
 
 // Part Two
+
+// https://www.geeksforgeeks.org/dsa/count-possible-paths-two-vertices/
+// Approach 2 (Using Topological Sort)
 
 const getNumPaths = async (
   source,
