@@ -1,4 +1,4 @@
-const { getData, Graph } = require('../../Utils/globalFunctions.js');
+const { getData, Queue } = require('../../Utils/globalFunctions.js');
 
 // https://adventofcode.com/2025/day/11
 
@@ -56,37 +56,128 @@ const partOne = async (input) => {
 };
 
 // Part Two
-const partTwo = async (input) => {
-  let numPaths = 0;
 
-  let visited = new Set();
+const getNumPaths = async (
+  source,
+  sourceWays,
+  initQueue,
+  baseIndegree,
+  baseWays,
+  adj,
+  destination
+) => {
+  const ways = new Map([...baseWays]);
+  const indegree = new Map([...baseIndegree]);
 
-  const dfs = (node, hasDac, hasFft) => {
-    // If destination is reached,
-    // and it contains dac and fft
-    // increment count
-    if (node === 'out') {
-      if (hasDac && hasFft) numPaths++;
-      return;
-    }
+  // Perform topological sort using Kahn's algorithm
 
-    const nowHasDac = hasDac || node === 'dac';
-    const nowHasFft = hasFft || node === 'fft';
+  let queue = new Queue();
 
-    visited.add(node);
+  for (const node of initQueue) {
+    queue.enqueue(node);
+  }
 
-    for (let neighbor of input.get(node)) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor, nowHasDac, nowHasFft);
+  ways.set(source, sourceWays); // base case: # ways to be at the source
+
+  while (!queue.isEmpty()) {
+    let node = queue.front();
+    queue.dequeue();
+    const neighbors = adj.get(node) || [];
+
+    for (const neighbor of neighbors) {
+      ways.set(neighbor, ways.get(neighbor) + ways.get(node));
+
+      indegree.set(neighbor, indegree.get(neighbor) - 1);
+      if (indegree.get(neighbor) === 0) {
+        queue.enqueue(neighbor);
       }
     }
+  }
 
-    visited.delete(node);
-  };
+  return ways.get(destination) || 0;
+};
 
-  dfs('svr', false, false);
+const partTwo = async (adj) => {
+  const baseIndegree = new Map();
+  const baseWays = new Map();
+  const nodes = new Set();
 
-  return numPaths;
+  // Create adjacency list (1-based indexing)
+  for (const [device, outputs] of adj) {
+    nodes.add(device);
+    for (const output of outputs) {
+      nodes.add(output);
+      baseIndegree.set(output, (baseIndegree.get(output) || 0) + 1);
+    }
+    if (!baseIndegree.has(device)) baseIndegree.set(device, 0);
+  }
+
+  // Perform topological sort using Kahn's algorithm
+
+  let initQueue = [];
+
+  for (const node of nodes) {
+    // Map to store the number of ways to reach each node
+    // (initialized with 0)
+    baseWays.set(node, 0);
+    if ((baseIndegree.get(node) || 0) === 0) {
+      initQueue.push(node);
+    }
+  }
+
+  try {
+    const [numPathsFromSvrToDac, numPathsFromSvrToFft] = await Promise.all([
+      getNumPaths('svr', 1, initQueue, baseIndegree, baseWays, adj, 'dac'),
+      getNumPaths('svr', 1, initQueue, baseIndegree, baseWays, adj, 'fft'),
+    ]);
+
+    const [numPathsFromDacToFft, numPathsFromFftToDac] = await Promise.all([
+      getNumPaths(
+        'dac',
+        numPathsFromSvrToDac,
+        initQueue,
+        baseIndegree,
+        baseWays,
+        adj,
+        'fft'
+      ),
+      getNumPaths(
+        'fft',
+        numPathsFromSvrToFft,
+        initQueue,
+        baseIndegree,
+        baseWays,
+        adj,
+        'dac'
+      ),
+    ]);
+
+    const [numPathsFromFftToOut, numPathsFromDacToOut] = await Promise.all([
+      getNumPaths(
+        'fft',
+        numPathsFromDacToFft,
+        initQueue,
+        baseIndegree,
+        baseWays,
+        adj,
+        'out'
+      ),
+      getNumPaths(
+        'dac',
+        numPathsFromFftToDac,
+        initQueue,
+        baseIndegree,
+        baseWays,
+        adj,
+        'out'
+      ),
+    ]);
+
+    return numPathsFromFftToOut + numPathsFromDacToOut;
+  } catch (error) {
+    // If ANY function fails, the whole thing rejects immediately
+    console.error('One of the functions failed', error);
+  }
 };
 
 const solve = async () => {
@@ -114,5 +205,6 @@ module.exports = {
   solve,
   formatData,
   partOne,
+  getNumPaths,
   partTwo,
 };
