@@ -1,7 +1,7 @@
 const { getData } = require('../../Utils/globalFunctions.js');
 const { arrayifyGrid } = require('../../Utils/grids.js');
 const { parseStringOfInts } = require('../../Utils/parse.js');
-const { BitwiseShape } = require('../../Utils/bitwiseGrids.js');
+const { BitwiseShape, BitwiseField } = require('../../Utils/bitwise.js');
 
 // https://adventofcode.com/2025/day/12
 
@@ -80,7 +80,13 @@ const solve = async () => {
   }
 };
 
-solve();
+// solve();
+
+const rectShape = new BitwiseShape(4, 2, [0b0111, 0b1100]);
+const shape = new BitwiseShape(2, 4, [0b10, 0b10, 0b11n, 0b01]);
+
+const field = new BitwiseField(4, 4);
+console.log(field.toString());
 
 module.exports = {
   solve,

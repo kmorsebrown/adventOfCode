@@ -28,7 +28,7 @@ const flipVertical = (shape) => {
   return [...shape].reverse();
 };
 
-function rotate90Clockwise(shape, width) {
+const rotate90Clockwise = (shape, width) => {
   const height = shape.length;
   // The new height will be the old width
   const newShape = new Array(width).fill(0);
@@ -51,9 +51,9 @@ function rotate90Clockwise(shape, width) {
     }
   }
   return newShape;
-}
+};
 
-function rotate90Counterclockwise(shape, width) {
+const rotate90Counterclockwise = (shape, width) => {
   const height = shape.length;
   // The new height will be the old width
   const newShape = new Array(width).fill(0);
@@ -74,19 +74,26 @@ function rotate90Counterclockwise(shape, width) {
     }
   }
   return newShape;
-}
-
-const binaryStrings = (bitwiseRow, numCols) => {
-  // .toString(2) converts the number to a binary string
-  // .padStart(numCols, '0') ensures it's always numCols digits long (e.g., 1 -> 001)
-  return '0b' + bitwiseRow.toString(2).padStart(numCols, '0');
 };
+
+// https://smithkruz.medium.com/mind-blowing-javascript-bitwise-hacks-youll-actually-use-208b45c35c6d
+// aka "Hamming Weight"
+const countSetBits = (n) => {
+  let count = 0;
+  while (n) {
+    n &= n - 1;
+    count++;
+  }
+  return count;
+};
+
+const boolToNum = (bool) => +bool;
 
 class BitwiseGrid {
   constructor(width, height, rows) {
-    this.rows = rows.map(BigInt);
     this.width = width;
     this.height = height;
+    this.rows = rows.map(BigInt);
   }
 
   /**
@@ -114,7 +121,17 @@ class BitwiseGrid {
     }
   }
 
-  getAllCoordinates() {
+  fullRowMask() {
+    // creates a string of '1's as long as the width and converts to BigInt
+    return (1n << this.width) - 1n;
+  }
+
+  emptyRowMask() {
+    // creates a string of '1's as long as the width and converts to BigInt
+    return 0n;
+  }
+
+  getAllSetBitCoordinates() {
     const coords = [];
     for (let y = 0; y < this.height; y++) {
       let row = this.rows[y];
@@ -131,20 +148,19 @@ class BitwiseGrid {
     return coords;
   }
 
-  transpose() {
-    // New width = old height, New height = old width
-    const newRows = new Array(this.width).fill(0n);
-
+  getAllUnSetBitCoordinates() {
+    const coords = [];
     for (let y = 0; y < this.height; y++) {
+      let row = this.rows[y];
+
       for (let x = 0; x < this.width; x++) {
-        if (this.get(x, y)) {
-          // Old (x, y) becomes New (y, x)
-          // In new grid, we shift by (newWidth - 1 - newX) -> (height - 1 - y)
-          newRows[x] |= 1n << BigInt(this.height - 1 - y);
+        // Check bit at x
+        if (!((row >> BigInt(this.width - 1 - x)) & 1n)) {
+          coords.push({ x, y });
         }
       }
     }
-    return new this.constructor(this.height, this.width, newRows);
+    return coords;
   }
 
   /**
@@ -298,21 +314,14 @@ class BitwiseGrid {
     return new this.constructor(this.width, this.height, clusterRows);
   }
 
-  fullRowMask() {
-    // creates a string of '1's as long as the width and converts to BigInt
-    return (1n << this.width) - 1n;
-  }
-
-  emptyRowMask() {
-    // creates a string of '1's as long as the width and converts to BigInt
-    return 0n;
-  }
-
   flipHorizontal() {
+    // a b c  =>  c b a
+    // d e f  =>  f e d
+    // g h i  =>  i h g
+
     const newRows = this.rows.map((row) => {
       let flipped = 0n;
       for (let i = 0; i < this.width; i++) {
-        // If the bit at position i is set, set the bit at the mirrored position
         if ((row >> BigInt(i)) & 1n) {
           flipped |= 1n << BigInt(this.width - 1 - i);
         }
@@ -323,60 +332,115 @@ class BitwiseGrid {
   }
 
   flipVertical() {
+    // a b c  =>  g h i
+    // d e f  =>  d e f
+    // g h i  =>  a b c
+
     const newRows = [...this.rows].reverse();
     return new this.constructor(this.width, this.height, newRows);
   }
 
-  rotate90Clockwise() {
-    // The new height will be the old width
-    const newRows = new Array(this.width).fill(0n);
+  flipDiagonal() {
+    const newWidth = this.height;
+    const newHeight = this.width;
 
-    for (let row = 0; row < this.height; row++) {
-      for (let col = 0; col < this.width; col++) {
-        // Isolate the bit at row, col
-        // col 0 is the (width-1) bit.
-        let bit = (this.rows[row] >> BigInt(this.width - 1 - col)) & 1n;
+    // a b c  =>  a d g
+    // d e f  =>  b e h
+    // g h i  =>  c f i
 
-        if (bit === 1n) {
-          // Map to New Row (col) and New Column (height - 1 - row)
-          // Set the bit in the newRow
-          // Shift by (height - 1 - New Column) to maintain bit order
-          // (height - 1 - (height - 1 - row)) is the same as row
-          newRows[col] |= 1n << BigInt(row);
+    const newRows = new Array(newHeight).fill(0n);
+
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        if (this.get(x, y)) {
+          const newX = y;
+          const newY = x;
+          // (newWidth - 1 - newX) === (height - 1 - y)
+          newRows[newY] |= 1n << BigInt(newWidth - 1 - newX);
         }
       }
     }
     return new this.constructor(this.height, this.width, newRows);
   }
 
-  rotate90Counterclockwise() {
-    const newRows = new Array(this.width).fill(0n);
+  rotate90Clockwise() {
+    const newHeight = this.width;
+    const newWidth = this.height;
+    const newRows = Array(newHeight).fill(0n);
+
+    // a b c  =>  g d a
+    // d e f  =>  h e b
+    // g h i  =>  i f c
+
     for (let row = 0; row < this.height; row++) {
       for (let col = 0; col < this.width; col++) {
-        let bit = (this.rows[row] >> BigInt(this.width - 1 - col)) & 1n;
-        if (bit === 1n) {
-          // New Row: width - 1 - col, New Col: row
-          newRows[this.width - 1 - col] |= 1n << BigInt(this.height - 1 - row);
+        // row 0 => col 2
+        // row 1 => col 1
+        // row 2 => col 0
+        const newRow = col;
+
+        // col 0 => row 0
+        // col 1 => row 1
+        // col 2 => row 2
+        const newCol = this.width - 1 - row;
+
+        const bit = this.rows[row] >> BigInt(this.width - 1 - col);
+
+        if ((bit & 1n) === 1n) {
+          newRows[newRow] |= 1n << BigInt(this.width - 1 - newCol);
         }
       }
     }
-    return new this.constructor(this.height, this.width, newRows);
+    return new this.constructor(newWidth, newHeight, newRows);
+  }
+
+  rotate90Counterclockwise() {
+    const newHeight = this.width;
+    const newWidth = this.height;
+    const newRows = Array(newHeight).fill(0n);
+
+    // a b c  =>  c f i
+    // d e f  =>  b e h
+    // g h i  =>  a d g
+
+    for (let row = 0; row < this.height; row++) {
+      for (let col = 0; col < this.width; col++) {
+        // row 0 => col 0
+        // row 1 => col 1
+        // row 2 => col 2
+        const newRow = newHeight - 1 - col;
+
+        // col 0 => row 2
+        // col 1 => row 1
+        // col 2 => row 0
+        const newCol = row;
+
+        const bit = this.rows[row] >> BigInt(this.width - 1 - col);
+
+        if ((bit & 1n) === 1n) {
+          newRows[newRow] |= 1n << BigInt(newWidth - 1 - newCol);
+        }
+      }
+    }
+    return new this.constructor(newWidth, newHeight, newRows);
   }
 
   rotate180() {
     return this.rotate90Clockwise().rotate90Clockwise();
   }
 
+  rowToString(row, width, onChar = '#', offChar = '.') {
+    return row
+      .toString(2)
+      .padStart(width, '0')
+      .replace(/1/g, onChar)
+      .replace(/0/g, offChar);
+  }
+
   // Helper to see the shape in the console
   toString(onChar = '#', offChar = '.') {
     return this.rows
-      .map((row) =>
-        row
-          .toString(2)
-          .padStart(this.width, '0')
-          .replace(/1/g, onChar)
-          .replace(/0/g, offChar)
-      )
+      .map((row) => this.rowToString(row, this.width, onChar, offChar))
       .join('\n');
   }
 
@@ -461,14 +525,6 @@ class BitwiseField extends BitwiseGrid {
     this.rows[y] = 0n;
   }
 
-  get leftWallMask() {
-    return 1n << (BigInt(this.width) - 1n);
-  }
-
-  get rightWallMask() {
-    return 1n;
-  }
-
   /**
    *
    * @param {*} shape
@@ -514,35 +570,44 @@ class BitwiseField extends BitwiseGrid {
    * Returns a NEW BitwiseField if successful, or null if collision/OOB.
    */
   tryPlace(shape, x, y) {
-    // 1. Bounds Check
-    if (
-      x < 0 ||
-      y < 0 ||
-      x + shape.width > this.width ||
-      y + shape.height > this.height
-    ) {
+    // isValidMove Check
+    if (!this.isValidMove(shape, x, y)) {
       return null;
     }
 
-    // 2. Prepare shifted rows for collision check
-    // Logic: Shift the shape bits left to align with the field's X position
+    // Shift the shape bits left to align with the field's X position
     const shiftAmount = BigInt(this.width - shape.width - x);
     const shiftedRows = shape.rows.map((row) => row << shiftAmount);
 
-    // 3. Collision Check (Bitwise AND)
-    for (let i = 0; i < shape.height; i++) {
-      if ((this.rows[y + i] & shiftedRows[i]) !== 0n) {
-        return null; // Collision!
-      }
-    }
-
-    // 4. Create New Field State (Bitwise OR)
+    // Create New Field State (Bitwise OR)
     const nextRows = [...this.rows];
     for (let i = 0; i < shape.height; i++) {
       nextRows[y + i] |= shiftedRows[i];
     }
 
     return new BitwiseField(this.width, this.height, nextRows);
+  }
+
+  /**
+   * Places a BitwiseShape at x, y.
+   * Sets the applicable cells if successful, throws error if collision/OOB.
+   */
+  place(shape, x, y) {
+    // isValidMove Check
+    if (this.isValidMove(shape, x, y)) {
+      // Shift the shape bits left to align with the field's X position
+      const shiftAmount = BigInt(this.width - shape.width - x);
+      const shiftedRows = shape.rows.map((row) => row << shiftAmount);
+
+      // Create New Field State (Bitwise OR)
+      for (let i = 0; i < shape.height; i++) {
+        this.rows[y + i] |= shiftedRows[i];
+      }
+      return 'success';
+    } else {
+      console.error('Move is not valid');
+      return 'failure';
+    }
   }
 }
 
@@ -552,6 +617,8 @@ module.exports = {
   flipVertical,
   rotate90Clockwise,
   rotate90Counterclockwise,
+  countSetBits,
+  boolToNum,
   BitwiseShape,
   BitwiseGrid,
   BitwiseField,
