@@ -4,6 +4,7 @@ const {
   placeGifts,
   generateShapePermutations,
   generateShapeArrays,
+  generateShapesMap,
   partOne,
   partTwo,
 } = require('./Day12');
@@ -192,6 +193,20 @@ describe('Day12', () => {
         mockInput.regions[1].gifts
       );
       expect(actual.length).toEqual(6);
+    });
+  });
+  describe('generateShapesMap', () => {
+    it('generates shape map w/o recording num occurrences', () => {
+      const actual = generateShapesMap(mockShapes);
+      expect(actual.size).toEqual(6);
+      expect(actual.get('###\n##.\n##.')).toEqual(0);
+    });
+    it('generates shape map w/recording num occurrences', () => {
+      const actual = generateShapesMap(mockShapes, true);
+      expect(actual.size).toEqual(6);
+      expect(actual.get('###\n##.\n##.')).toEqual(1);
+
+      console.error(JSON.stringify([...actual.entries()].join(';')));
     });
   });
   describe('placeGifts', () => {

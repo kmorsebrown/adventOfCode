@@ -107,6 +107,23 @@ const generateShapeArrays = (shapes, giftsToPlace) => {
   return shapesArray;
 };
 
+const generateShapesMap = (shapes, recordNum = false) => {
+  const shapesMap = new Map();
+
+  for (const shape of shapes) {
+    const key = shape.toString();
+    if (shapesMap.has(key)) {
+      if (recordNum) {
+        shapesMap.set(key, shapesMap.get(key) + 1);
+      }
+      continue;
+    } else {
+      shapesMap.set(key, recordNum ? 1 : 0);
+    }
+  }
+  return shapesMap;
+};
+
 /**
  *
  * @param {*} region BitwiseField instance
@@ -115,19 +132,36 @@ const generateShapeArrays = (shapes, giftsToPlace) => {
  */
 const placeGifts = async (region, shapes) => {
   const shapeArrays = generateShapeArrays(shapes, region.gifts);
-  let initialState = new BitwiseField(region.width, region.height);
 
+  let initialState = new BitwiseField(region.width, region.height);
   let allShapesFit = false;
+
+  const cache = new Map();
+
+  const shapesMap = generateShapesMap(shapeArrays.flat());
 
   const placeGift = (gifts, state) => {
     const newGifts = [...gifts];
-    const gift = newGifts.pop();
+    const giftsToPlaceMap = new Map([...shapesMap.entries()]);
+
+    for (const gift of newGifts) {
+      const giftKey = gift.toString();
+      giftsToPlaceMap.set(giftKey, giftsToPlaceMap.get(giftKey) + 1);
+    }
+
+    const key = [...giftsToPlaceMap.entries()].join(';') + state.toString();
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
+    const giftToPlace = newGifts.pop();
 
     const availableSpots = state.getAllUnSetBitCoordinates();
 
     for (const spot of availableSpots) {
       const { x, y } = spot;
-      const newState = state.tryPlace(gift, x, y);
+      const newState = state.tryPlace(giftToPlace, x, y);
 
       if (newState === null) continue;
 
@@ -137,6 +171,8 @@ const placeGifts = async (region, shapes) => {
         return true;
       }
     }
+
+    cache.set(key, false);
     return false;
   };
 
@@ -145,7 +181,7 @@ const placeGifts = async (region, shapes) => {
       break;
     }
 
-    allShapesFit = placeGift(permutation, initialState);
+    allShapesFit = placeGift(permutation, initialState, shapesMap);
   }
 
   return allShapesFit;
@@ -190,6 +226,7 @@ module.exports = {
   placeGifts,
   generateShapePermutations,
   generateShapeArrays,
+  generateShapesMap,
   partOne,
   partTwo,
 };
