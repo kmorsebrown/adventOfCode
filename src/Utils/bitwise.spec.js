@@ -13,99 +13,101 @@ const {
 // npm test -- src/Utils/grids.spec.js
 
 describe('bitwiseGrids', () => {
-  describe('convertRowToBitwise', () => {
-    it('converts #. row to bitwise', () => {
-      const row = ['#', '#', '.'];
-      const expected = 0b110;
-      expect(convertRowToBitwise(row, '#')).toEqual(expected);
+  describe('non class methods', () => {
+    describe('convertRowToBitwise', () => {
+      it('converts #. row to bitwise', () => {
+        const row = ['#', '#', '.'];
+        const expected = 0b110;
+        expect(convertRowToBitwise(row, '#')).toEqual(expected);
+      });
+      it('converts 1 0 row to bitwise', () => {
+        const row = [1, 0, 1];
+        const expected = 0b101;
+        expect(convertRowToBitwise(row, 1)).toEqual(expected);
+      });
     });
-    it('converts 1 0 row to bitwise', () => {
-      const row = [1, 0, 1];
-      const expected = 0b101;
-      expect(convertRowToBitwise(row, 1)).toEqual(expected);
+    describe('flipHorizontal', () => {
+      it('flips bitwise grid horizontally', () => {
+        const shape = [0b011, 0b100, 0b011];
+        const expected = [0b110, 0b001, 0b110];
+        expect(flipHorizontal(shape, 3)).toEqual(expected);
+      });
     });
-  });
-  describe('flipHorizontal', () => {
-    it('flips bitwise grid horizontally', () => {
-      const shape = [0b011, 0b100, 0b011];
-      const expected = [0b110, 0b001, 0b110];
-      expect(flipHorizontal(shape, 3)).toEqual(expected);
+    describe('flipVertical', () => {
+      it('flips bitwise grid vertically', () => {
+        const shape = [0b011, 0b100, 0b011];
+        const expected = [0b011, 0b100, 0b011];
+        expect(flipVertical(shape)).toEqual(expected);
+      });
     });
-  });
-  describe('flipVertical', () => {
-    it('flips bitwise grid vertically', () => {
-      const shape = [0b011, 0b100, 0b011];
-      const expected = [0b011, 0b100, 0b011];
-      expect(flipVertical(shape)).toEqual(expected);
+    describe('rotate90Clockwise', () => {
+      it('rotates bitwise grid 90 degrees clockwise', () => {
+        // . # #
+        // # # #
+        // # # .
+        const shape = [0b011, 0b111, 0b110];
+        // # # .
+        // # # #
+        // . # #
+        const expected = [0b110, 0b111, 0b011];
+        expect(rotate90Clockwise(shape, 3)).toEqual(expected);
+      });
+      it('rotates bitwise grid 90 degrees clockwise', () => {
+        // # # #
+        // # # .
+        // . # #
+        const shape = [0b111, 0b110, 0b011];
+        // . # #
+        // # # #
+        // # . #
+        const expected = [0b011, 0b111, 0b101];
+        expect(rotate90Clockwise(shape, 3)).toEqual(expected);
+      });
+      it('rotates bitwise grid 90 degrees clockwise', () => {
+        // # # #
+        // # . .
+        // # # #
+        const shape = [0b111, 0b100, 0b111];
+        // # # #
+        // # . #
+        // # . #
+        const expected = [0b111, 0b101, 0b101];
+        expect(rotate90Clockwise(shape, 3)).toEqual(expected);
+      });
     });
-  });
-  describe('rotate90Clockwise', () => {
-    it('rotates bitwise grid 90 degrees clockwise', () => {
-      // . # #
-      // # # #
-      // # # .
-      const shape = [0b011, 0b111, 0b110];
-      // # # .
-      // # # #
-      // . # #
-      const expected = [0b110, 0b111, 0b011];
-      expect(rotate90Clockwise(shape, 3)).toEqual(expected);
+    describe('rotate90Counterclockwise', () => {
+      it('rotates bitwise grid 90 degrees counter-clockwise', () => {
+        const expected = [0b011, 0b111, 0b110];
+        const shape = [0b110, 0b111, 0b011];
+        expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
+      });
+      it('rotates bitwise grid 90 degrees counter-clockwise', () => {
+        const expected = [0b111, 0b110, 0b011];
+        const shape = [0b011, 0b111, 0b101];
+        expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
+      });
+      it('rotates bitwise grid 90 degrees counter-clockwise', () => {
+        const expected = [0b111, 0b100, 0b111];
+        const shape = [0b111, 0b101, 0b101];
+        expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
+      });
     });
-    it('rotates bitwise grid 90 degrees clockwise', () => {
-      // # # #
-      // # # .
-      // . # #
-      const shape = [0b111, 0b110, 0b011];
-      // . # #
-      // # # #
-      // # . #
-      const expected = [0b011, 0b111, 0b101];
-      expect(rotate90Clockwise(shape, 3)).toEqual(expected);
+    describe('countSetBits', () => {
+      it('returns 2 for 9 (aka 0b1001)', () => {
+        // 9 = 0b1001
+        expect(countSetBits(9)).toEqual(2);
+      });
+      it('returns 0 for 0 (aka 0b0)', () => {
+        expect(countSetBits(0)).toEqual(0);
+      });
     });
-    it('rotates bitwise grid 90 degrees clockwise', () => {
-      // # # #
-      // # . .
-      // # # #
-      const shape = [0b111, 0b100, 0b111];
-      // # # #
-      // # . #
-      // # . #
-      const expected = [0b111, 0b101, 0b101];
-      expect(rotate90Clockwise(shape, 3)).toEqual(expected);
-    });
-  });
-  describe('rotate90Counterclockwise', () => {
-    it('rotates bitwise grid 90 degrees counter-clockwise', () => {
-      const expected = [0b011, 0b111, 0b110];
-      const shape = [0b110, 0b111, 0b011];
-      expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
-    });
-    it('rotates bitwise grid 90 degrees counter-clockwise', () => {
-      const expected = [0b111, 0b110, 0b011];
-      const shape = [0b011, 0b111, 0b101];
-      expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
-    });
-    it('rotates bitwise grid 90 degrees counter-clockwise', () => {
-      const expected = [0b111, 0b100, 0b111];
-      const shape = [0b111, 0b101, 0b101];
-      expect(rotate90Counterclockwise(shape, 3)).toEqual(expected);
-    });
-  });
-  describe('countSetBits', () => {
-    it('returns 2 for 9 (aka 0b1001)', () => {
-      // 9 = 0b1001
-      expect(countSetBits(9)).toEqual(2);
-    });
-    it('returns 0 for 0 (aka 0b0)', () => {
-      expect(countSetBits(0)).toEqual(0);
-    });
-  });
-  describe('boolToNum', () => {
-    it('converts true to 1', () => {
-      expect(boolToNum(true)).toEqual(1);
-    });
-    it('converts false to 0', () => {
-      expect(boolToNum(false)).toEqual(0);
+    describe('boolToNum', () => {
+      it('converts true to 1', () => {
+        expect(boolToNum(true)).toEqual(1);
+      });
+      it('converts false to 0', () => {
+        expect(boolToNum(false)).toEqual(0);
+      });
     });
   });
   describe('BitwiseGrid', () => {

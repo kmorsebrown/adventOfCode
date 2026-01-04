@@ -1,7 +1,7 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { arrayifyGrid } = require('../../Utils/grids.js');
+const { getData, Queue } = require('../../Utils/globalFunctions.js');
 const { parseStringOfInts } = require('../../Utils/parse.js');
 const { BitwiseShape, BitwiseField } = require('../../Utils/bitwise.js');
+const { cartesianGenerator } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2025/day/12
 
@@ -24,7 +24,8 @@ const formatData = async (filepath) => {
     );
     const gifts = parseStringOfInts(region.replace(regex, ''), ' ');
     formattedRegions.push({
-      dimensions,
+      width: dimensions[0],
+      height: dimensions[1],
       gifts,
     });
   }
@@ -33,6 +34,14 @@ const formatData = async (filepath) => {
     shapes: formattedShapes,
     regions: formattedRegions,
   };
+};
+
+const generateShapes = (shapes) => {
+  let bitwiseShapes = [];
+  for (const shape of shapes) {
+    bitwiseShapes.push(BitwiseShape.fromData(shape, '#'));
+  }
+  return bitwiseShapes;
 };
 
 // Part One
@@ -51,6 +60,97 @@ const formatData = async (filepath) => {
   must be placed perfectly on the grid => no overlaps
 */
 
+const generateShapePermutations = (shape) => {
+  const generatedShapes = new Set();
+
+  const rotated = [
+    shape,
+    shape.rotate90Clockwise(),
+    shape.rotate180(),
+    shape.rotate90Counterclockwise(),
+  ];
+
+  let shapePermutations = [];
+
+  for (const rotatedShape of rotated) {
+    const shapeKey = rotatedShape.toString();
+    const flippedShape = rotatedShape.flipHorizontal();
+    const flippedShapeKey = flippedShape.toString();
+
+    if (!generatedShapes.has(shapeKey)) {
+      shapePermutations.push(rotatedShape);
+      generatedShapes.add(shapeKey);
+    }
+
+    // rotating 180 & flipping horizontally = flipping vertically
+    // flipping horizontally = rotating 180 & flipping vertically
+    // so no need to do a discreet vertical flip for each rotation
+    if (!generatedShapes.has(flippedShapeKey)) {
+      shapePermutations.push(flippedShape);
+      generatedShapes.add(flippedShapeKey);
+    }
+  }
+
+  return shapePermutations;
+};
+
+const generateShapeArrays = (shapes, giftsToPlace) => {
+  let shapesArray = [];
+
+  for (let i = 0; i < shapes.length; i++) {
+    if (giftsToPlace[i] == 0) continue;
+    const permutations = generateShapePermutations(shapes[i]);
+    for (let j = giftsToPlace[i]; j > 0; j--) {
+      shapesArray.push(permutations);
+    }
+  }
+  return shapesArray;
+};
+
+/**
+ *
+ * @param {*} region BitwiseField instance
+ * @param {*} giftsToPlace array of numbers
+ * @param {*} shapes array of BitwiseShape instances
+ */
+const placeGifts = async (region, shapes) => {
+  const shapeArrays = generateShapeArrays(shapes, region.gifts);
+  let initialState = new BitwiseField(region.width, region.height);
+
+  let allShapesFit = false;
+
+  const placeGift = (gifts, state) => {
+    const newGifts = [...gifts];
+    const gift = newGifts.pop();
+
+    const availableSpots = state.getAllUnSetBitCoordinates();
+
+    for (const spot of availableSpots) {
+      const { x, y } = spot;
+      const newState = state.tryPlace(gift, x, y);
+
+      if (newState === null) continue;
+
+      if (newGifts.length > 0) {
+        return placeGift(newGifts, newState);
+      } else {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  for (const permutation of cartesianGenerator(...shapeArrays)) {
+    if (allShapesFit) {
+      break;
+    }
+
+    allShapesFit = placeGift(permutation, initialState);
+  }
+
+  return allShapesFit;
+};
+
 // how many of the regions can fit all of the presents listed?
 const partOne = async (input) => {
   return input;
@@ -68,6 +168,7 @@ const solve = async () => {
 
   try {
     const formattedData = await formatData(dataPath);
+    const shapes = generateShapes(formattedData.shapes);
     const results = await Promise.all([
       await partOne(formattedData),
       await partTwo(formattedData),
@@ -82,15 +183,13 @@ const solve = async () => {
 
 // solve();
 
-const rectShape = new BitwiseShape(4, 2, [0b0111, 0b1100]);
-const shape = new BitwiseShape(2, 4, [0b10, 0b10, 0b11n, 0b01]);
-
-const field = new BitwiseField(4, 4);
-console.log(field.toString());
-
 module.exports = {
   solve,
   formatData,
+  generateShapes,
+  placeGifts,
+  generateShapePermutations,
+  generateShapeArrays,
   partOne,
   partTwo,
 };
