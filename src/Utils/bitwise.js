@@ -148,6 +148,30 @@ class BitwiseGrid {
     return coords;
   }
 
+  countBits(countSet = true) {
+    function countSetBits(n) {
+      let count = 0;
+      let temp = n;
+      while (temp > 0n) {
+        temp &= temp - 1n;
+        count++;
+      }
+      return count;
+    }
+
+    const totalSetBits = this.rows.reduce(
+      (acc, val) => acc + countSetBits(val),
+      0
+    );
+
+    if (countSet) {
+      return totalSetBits;
+    } else {
+      const area = this.width * this.height;
+      return area - totalSetBits;
+    }
+  }
+
   getAllUnSetBitCoordinates() {
     const coords = [];
     for (let y = 0; y < this.height; y++) {
@@ -560,6 +584,8 @@ class BitwiseGrid {
 class BitwiseShape extends BitwiseGrid {
   constructor(width, height, rows) {
     super(width, height, rows);
+    this.offsets = this.getAllSetBitCoordinates();
+    this.area = this.offsets.length;
   }
   /**
    * Factory method to create a shape from an array of strings or 2D array
