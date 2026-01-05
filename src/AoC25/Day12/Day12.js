@@ -36,14 +36,6 @@ const formatData = async (filepath) => {
   };
 };
 
-const generateShapes = (shapes) => {
-  let bitwiseShapes = [];
-  for (const shape of shapes) {
-    bitwiseShapes.push(BitwiseShape.fromData(shape, '#'));
-  }
-  return bitwiseShapes;
-};
-
 // Part One
 
 /*
@@ -92,19 +84,6 @@ const generateShapePermutations = (shape) => {
   }
 
   return shapePermutations;
-};
-
-const generateShapeArrays = (shapes, giftsToPlace) => {
-  let shapesArray = [];
-
-  for (let i = 0; i < shapes.length; i++) {
-    if (giftsToPlace[i] == 0) continue;
-    const permutations = generateShapePermutations(shapes[i]);
-    for (let j = giftsToPlace[i]; j > 0; j--) {
-      shapesArray.push(permutations);
-    }
-  }
-  return shapesArray;
 };
 
 const generateShapesToPlaceMap = (shapes, giftsToPlace) => {
@@ -172,6 +151,19 @@ const placeGifts = (region, shapes) => {
   const cache = new Map();
 
   const regionArea = region.width * region.height;
+
+  // all gifts fit in 3x3 grid
+  const numGiftsWillDefFit = (region.width / 3) * (region.height / 3);
+  if (numGiftsWillDefFit >= sum(region.gifts)) {
+    return true;
+  }
+
+  //
+  const giftArea = getAreaShapesToPlace(shapes, region.gifts);
+
+  if (giftArea > regionArea) {
+    return false;
+  }
 
   const placeGift = (state, giftsToPlace, placedGifts) => {
     const key =
@@ -334,11 +326,15 @@ const placeGifts = (region, shapes) => {
 
 // how many of the regions can fit all of the presents listed?
 const partOne = async (input) => {
-  const shapes = generateShapes(input.shapes);
+  let bitwiseShapes = [];
+  for (const shape of input.shapes) {
+    bitwiseShapes.push(BitwiseShape.fromData(shape, '#'));
+  }
+
   let num = 0;
 
   for (const region of input.regions) {
-    const fitsGifts = placeGifts(region, shapes);
+    const fitsGifts = placeGifts(region, bitwiseShapes);
     num += fitsGifts ? 1 : 0;
   }
   return num;
@@ -373,10 +369,8 @@ solve();
 module.exports = {
   solve,
   formatData,
-  generateShapes,
   placeGifts,
   generateShapePermutations,
-  generateShapeArrays,
   generateShapesToPlaceMap,
   generateShapesMap,
   getAreaShapesToPlace,

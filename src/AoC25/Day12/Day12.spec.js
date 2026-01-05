@@ -1,9 +1,7 @@
 const {
   formatData,
-  generateShapes,
   placeGifts,
   generateShapePermutations,
-  generateShapeArrays,
   generateShapesToPlaceMap,
   generateShapesMap,
   getAreaShapesToPlace,
@@ -64,18 +62,6 @@ describe('Day12', () => {
       const args = require.resolve('./Day12TestData.txt');
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
-    });
-  });
-  describe('generateShapes', () => {
-    it('generates the bitwise shapes', () => {
-      const actual = generateShapes(mockInput.shapes);
-
-      expect(actual[0].rows).toEqual([0b111n, 0b110n, 0b110n]);
-      expect(actual[1].rows).toEqual([0b111n, 0b110n, 0b011n]);
-      expect(actual[2].rows).toEqual([0b011n, 0b111n, 0b110n]);
-      expect(actual[3].rows).toEqual([0b110n, 0b111n, 0b110n]);
-      expect(actual[4].rows).toEqual([0b111n, 0b100n, 0b111n]);
-      expect(actual[5].rows).toEqual([0b111n, 0b010n, 0b111n]);
     });
   });
   describe('generateShapePermutations', () => {
@@ -180,23 +166,6 @@ describe('Day12', () => {
       expect(actual.length).toEqual(4);
     });
   });
-  describe('generateShapeArrays', () => {
-    it('returns 2 arrays of shape permutations for [0, 0, 0, 0, 2, 0]', () => {
-      const actual = generateShapeArrays(
-        mockShapes,
-        mockInput.regions[0].gifts
-      );
-      expect(actual.length).toEqual(2);
-      expect(actual[0].length).toEqual(4);
-    });
-    it('returns 6 arrays of shape permutations for [0, 0, 0, 0, 2, 0]', () => {
-      const actual = generateShapeArrays(
-        mockShapes,
-        mockInput.regions[1].gifts
-      );
-      expect(actual.length).toEqual(6);
-    });
-  });
   describe('getAreaShapesToPlace', () => {
     it('returns 14 for [0, 0, 0, 0, 2, 0]', () => {
       const actual = getAreaShapesToPlace(
@@ -236,8 +205,6 @@ describe('Day12', () => {
       const actual = generateShapesMap(mockShapes, true);
       expect(actual.size).toEqual(6);
       expect(actual.get('###\n##.\n##.')).toEqual(1);
-
-      console.error(JSON.stringify([...actual.entries()].join(';')));
     });
   });
   describe('placeGifts', () => {
