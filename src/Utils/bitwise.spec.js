@@ -241,6 +241,26 @@ describe('bitwiseGrids', () => {
         expect(oneCluster.getAllSetBitCoordinates()).toHaveLength(5);
       });
     });
+    describe('getUnsetNeighbors', () => {
+      it('should find all coords bordering 1s without diagonals', () => {
+        // 1 1 0
+        // 1 0 0
+        // 0 0 0
+        const grid = new BitwiseGrid(3, 3, [0b110n, 0b100n, 0b000n]);
+
+        const neighbors = grid.getUnsetNeighbors(false);
+
+        expect(neighbors).toHaveLength(3);
+
+        expect(neighbors).toEqual(
+          expect.arrayContaining([
+            { x: 2, y: 0 },
+            { x: 1, y: 1 },
+            { x: 2, y: 0 },
+          ])
+        );
+      });
+    });
     describe('getAllClusters()', () => {
       it('should find all distinct clusters of 1s', () => {
         // 1 1 0

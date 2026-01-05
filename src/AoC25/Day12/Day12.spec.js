@@ -241,26 +241,25 @@ describe('Day12', () => {
     });
   });
   describe('placeGifts', () => {
-    it('successfully places gifts for 4x4 region', async () => {
-      const actual = await placeGifts(mockInput.regions[0], mockShapes);
+    it('successfully places gifts for 4x4 region', () => {
+      const actual = placeGifts(mockInput.regions[0], mockShapes);
       expect(actual).toEqual(true);
     });
 
-    it('successfully places gifts for the first 12x5 region', async () => {
-      const actual = await placeGifts(mockInput.regions[1], mockShapes);
+    it('successfully places gifts for the first 12x5 region', () => {
+      const actual = placeGifts(mockInput.regions[1], mockShapes);
       expect(actual).toEqual(true);
     });
 
-    it('unsuccessfully places gifts for the second 12x5 region', async () => {
-      const actual = await placeGifts(mockInput.regions[2], mockShapes);
+    it('unsuccessfully places gifts for the second 12x5 region', () => {
+      const actual = placeGifts(mockInput.regions[2], mockShapes);
       expect(actual).toEqual(false);
     });
   });
-  describe.skip('partOne', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partOne(args);
-      expect(actual).toEqual(0);
+  describe('partOne', () => {
+    it('returns the number of regions that can fit shapes', async () => {
+      const actual = await partOne(mockInput);
+      expect(actual).toEqual(2);
     });
   });
   describe.skip('partTwo', () => {

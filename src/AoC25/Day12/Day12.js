@@ -156,7 +156,7 @@ const generateShapesMap = (shapes, recordNum = false) => {
  * @param {*} giftsToPlace array of numbers
  * @param {*} shapes array of BitwiseShape instances
  */
-const placeGifts = async (region, shapes) => {
+const placeGifts = (region, shapes) => {
   const shapesToPlaceMap = generateShapesToPlaceMap(shapes, region.gifts);
   const placedShapesMap = new Map();
 
@@ -170,6 +170,8 @@ const placeGifts = async (region, shapes) => {
   let initialState = new BitwiseField(region.width, region.height);
 
   const cache = new Map();
+
+  const regionArea = region.width * region.height;
 
   const placeGift = (state, giftsToPlace, placedGifts) => {
     const key =
@@ -227,11 +229,31 @@ const placeGifts = async (region, shapes) => {
       return false;
     }
 
+    let borderSpots = [];
+    const regionArea = state.width * state.height;
+    if (availableArea < regionArea) {
+      borderSpots = state.getUnsetNeighbors(false);
+    }
+
     const availableSpots = availableClusters.flat().filter((coord) => {
       const { x, y } = coord;
       // filter out coordinates that are too close to the edges to place a gift
       // all gifts are 3 x 3
       if (x + 3 <= state.width && y + 3 <= state.height) {
+        // at least one piece has been placed
+        if (availableArea < regionArea) {
+          if (
+            borderSpots.length > 0 &&
+            borderSpots.filter((spot) => spot.x === x && spot.y === y).length >
+              0
+          ) {
+            // spot borders existing shape
+            return true;
+          } else {
+            // not bordering existing piece
+            return false;
+          }
+        }
         return true;
       }
       return false;
@@ -312,7 +334,14 @@ const placeGifts = async (region, shapes) => {
 
 // how many of the regions can fit all of the presents listed?
 const partOne = async (input) => {
-  return input;
+  const shapes = generateShapes(input.shapes);
+  let num = 0;
+
+  for (const region of input.regions) {
+    const fitsGifts = placeGifts(region, shapes);
+    num += fitsGifts ? 1 : 0;
+  }
+  return num;
 };
 
 // Part Two
@@ -327,10 +356,9 @@ const solve = async () => {
 
   try {
     const formattedData = await formatData(dataPath);
-    const shapes = generateShapes(formattedData.shapes);
     const results = await Promise.all([
       await partOne(formattedData),
-      await partTwo(formattedData),
+      // await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 12');
     console.log(results);
@@ -340,22 +368,7 @@ const solve = async () => {
   }
 };
 
-// solve();
-
-let testArray = [
-  { x: 0, y: 0 },
-  { x: 0, y: 1 },
-  { x: 1, y: 0 },
-  { x: 1, y: 1 },
-];
-
-for (const obj of testArray) {
-  console.log(JSON.stringify(obj));
-  if (obj.x === 1 || obj.y === 1) {
-    testArray = testArray.filter((el) => el.x < 1 || el.y < 1);
-  }
-  console.log(JSON.stringify(testArray));
-}
+solve();
 
 module.exports = {
   solve,

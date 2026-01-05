@@ -123,7 +123,7 @@ class BitwiseGrid {
 
   fullRowMask() {
     // creates a string of '1's as long as the width and converts to BigInt
-    return (1n << this.width) - 1n;
+    return (1n << BigInt(this.width)) - 1n;
   }
 
   emptyRowMask() {
@@ -254,6 +254,50 @@ class BitwiseGrid {
     }
 
     return neighbors;
+  }
+
+  getUnsetNeighbors(allowDiagonals = false) {
+    const neighborRows = new Array(this.height).fill(0n);
+    const fullMask = this.fullRowMask();
+
+    for (let y = 0; y < this.height; y++) {
+      const currentRow = this.rows[y];
+      if (currentRow === 0n) continue;
+
+      // 1. Horizontal Neighbors (Left and Right)
+      // We must shift by a BigInt, so we wrap the '1' in BigInt()
+      let horizontal = (currentRow << 1n) | (currentRow >> 1n);
+
+      // 2. Combine into the neighbor mask
+      neighborRows[y] |= horizontal;
+
+      // Check bounds using standard Numbers, but assign BigInts
+      if (y > 0) neighborRows[y - 1] |= currentRow;
+      if (y < this.height - 1) neighborRows[y + 1] |= currentRow;
+
+      if (allowDiagonals) {
+        if (y > 0) neighborRows[y - 1] |= horizontal;
+        if (y < this.height - 1) neighborRows[y + 1] |= horizontal;
+      }
+    }
+
+    const resultCoords = [];
+    for (let y = 0; y < this.height; y++) {
+      // Only keep bits that were NOT set in the original grid
+      // Logic: (Neighbors OR-ed together) AND (NOT original bits) AND (within width)
+      neighborRows[y] &= ~this.rows[y] & fullMask;
+
+      if (neighborRows[y] !== 0n) {
+        for (let x = 0; x < this.width; x++) {
+          // Explicitly convert (width - 1 - x) to BigInt for the shift
+          const shiftAmount = BigInt(this.width - 1 - x);
+          if ((neighborRows[y] >> shiftAmount) & 1n) {
+            resultCoords.push({ x, y });
+          }
+        }
+      }
+    }
+    return resultCoords;
   }
 
   /**
