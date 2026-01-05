@@ -153,11 +153,8 @@ describe('bitwiseGrids', () => {
 
         const coords = grid.getAllSetBitCoordinates();
 
-        // We expect 3 coordinates
         expect(coords).toHaveLength(3);
 
-        // Check specific contents (order usually depends on iteration,
-        // typically row by row, then col by col)
         expect(coords).toContainEqual({ x: 0, y: 0 });
         expect(coords).toContainEqual({ x: 2, y: 0 });
         expect(coords).toContainEqual({ x: 1, y: 1 });
@@ -174,11 +171,8 @@ describe('bitwiseGrids', () => {
 
         const coords = grid.getAllUnSetBitCoordinates();
 
-        // We expect 3 coordinates
         expect(coords).toHaveLength(3);
 
-        // Check specific contents (order usually depends on iteration,
-        // typically row by row, then col by col)
         expect(coords).toContainEqual({ x: 1, y: 0 });
         expect(coords).toContainEqual({ x: 0, y: 1 });
         expect(coords).toContainEqual({ x: 2, y: 1 });
@@ -190,51 +184,149 @@ describe('bitwiseGrids', () => {
       });
     });
     describe('getConnectedCluster()', () => {
-      it('should retrieve a contiguous shape starting from x,y', () => {
-        // Shape:
+      it('should retrieve a contiguous shape of 1s (default behavior)', () => {
         // 1 1 0 0
         // 1 0 0 0
-        // 0 0 1 0  <-- Disconnected island
+        // 0 0 1 0
         const grid = new BitwiseGrid(4, 3, [0b1100n, 0b1000n, 0b0010n]);
 
-        // Start flood fill at top-left (0,0)
+        // Test default behavior (targetValue = 1)
         const cluster = grid.getConnectedCluster(0, 0);
 
         expect(cluster.toString('1', '0')).toEqual(
           '1100\n' + '1000\n' + '0000'
         );
-
-        // Should have the 3 connected blocks
-        expect(cluster.get(0, 0)).toBe(1);
-        expect(cluster.get(1, 0)).toBe(1);
-        expect(cluster.get(0, 1)).toBe(1);
-
-        // Should NOT have the island at (2,2)
-        expect(cluster.get(2, 2)).toBe(0);
+        expect(cluster.get(2, 2)).toBe(0); // Island remains isolated
       });
 
-      it('should return an empty grid if the start coordinate is empty', () => {
-        const grid = new BitwiseGrid(2, 2, [0b11n, 0b11n]);
-        // 0,0 is full, but 5,5 is out of bounds/empty
-        // Or picking an empty spot in the grid
-        const emptySpot = grid.getConnectedCluster(2, 2);
+      it('should retrieve a contiguous shape of 0s when targetValue is 0', () => {
+        // 1 1 0 0
+        // 1 0 0 0
+        // 0 0 1 0
+        const grid = new BitwiseGrid(4, 3, [0b1100n, 0b1000n, 0b0010n]);
 
-        expect(emptySpot.getAllSetBitCoordinates()).toHaveLength(0);
+        // Start at (2,0) which is a '0'
+        const cluster = grid.getConnectedCluster(2, 0, 0);
+
+        // The result grid will have 1s where the "0-cluster" was found
+        // The cluster of 0s starting at 2,0 includes the entire 'L' shaped empty space
+        expect(cluster.toString('1', '0')).toEqual(
+          '0011\n' + '0111\n' + '1101'
+        );
+      });
+
+      it('should return empty grid if the start coordinate does not match targetValue', () => {
+        const grid = new BitwiseGrid(2, 2, [0b11n, 0b00n]);
+
+        // (0,0) is a 1. If we ask for a cluster of 0s starting there, it should fail immediately.
+        const cluster = grid.getConnectedCluster(0, 0, 0);
+
+        expect(cluster.getAllSetBitCoordinates()).toHaveLength(0);
+      });
+
+      it('should return an empty grid if the start coordinate is out of bounds', () => {
+        const grid = new BitwiseGrid(2, 2, [0b11n, 0b11n]);
+        const outOfBounds = grid.getConnectedCluster(5, 5, 1);
+
+        expect(outOfBounds.getAllSetBitCoordinates()).toHaveLength(0);
       });
 
       it('should handle complex snake shapes', () => {
-        // Shape "S"
         // 0 1 1
         // 1 1 0
         // 1 0 0
         const grid = new BitwiseGrid(3, 3, [0b011n, 0b110n, 0b100n]);
 
-        const cluster = grid.getConnectedCluster(0, 2); // Start at bottom left
+        const oneCluster = grid.getConnectedCluster(0, 2, 1);
+        expect(oneCluster.getAllSetBitCoordinates()).toHaveLength(5);
+      });
+    });
+    describe('getAllClusters()', () => {
+      it('should find all distinct clusters of 1s', () => {
+        // 1 1 0
+        // 1 0 0
+        // 0 0 1
+        const grid = new BitwiseGrid(3, 3, [0b110n, 0b100n, 0b001n]);
 
-        // Verify it walked the whole path to top right
-        expect(cluster.get(2, 0)).toBe(1);
-        expect(cluster.getAllSetBitCoordinates()).toHaveLength(5);
-        expect(cluster.toString('1', '0')).toEqual('011\n' + '110\n' + '100');
+        const clusters = grid.getAllClusters(1);
+
+        expect(clusters).toHaveLength(2);
+
+        // First cluster: the L-shape at top-left
+        expect(clusters[0]).toHaveLength(3);
+        expect(clusters[0]).toEqual(
+          expect.arrayContaining([
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 0, y: 1 },
+          ])
+        );
+
+        // Second cluster: the single dot at bottom-right
+        expect(clusters[1]).toHaveLength(1);
+        expect(clusters[1]).toEqual([{ x: 2, y: 2 }]);
+      });
+
+      it('should find all distinct clusters of 0s', () => {
+        // 1 0 1
+        // 0 1 0
+        // 1 0 1
+        const grid = new BitwiseGrid(3, 3, [0b101n, 0b010n, 0b101n]);
+
+        const clusters = grid.getAllClusters(0);
+
+        // Each 0 is isolated by 1s (checkerboard pattern)
+        expect(clusters).toHaveLength(4);
+        expect(clusters[0]).toEqual([{ x: 1, y: 0 }]);
+        expect(clusters[1]).toEqual([{ x: 0, y: 1 }]);
+        expect(clusters[2]).toEqual([{ x: 2, y: 1 }]);
+        expect(clusters[3]).toEqual([{ x: 1, y: 2 }]);
+      });
+
+      it('should find all distinct clusters of 0s when diagonals allowed', () => {
+        // 1 0 1
+        // 0 1 0
+        // 1 0 1
+        const grid = new BitwiseGrid(3, 3, [0b101n, 0b010n, 0b101n]);
+
+        const clusters = grid.getAllClusters(0, true);
+
+        // Each 0 is isolated by 1s (checkerboard pattern)
+        expect(clusters).toHaveLength(1);
+        expect(clusters[0]).toEqual(
+          expect.arrayContaining([
+            { x: 1, y: 0 },
+            { x: 0, y: 1 },
+            { x: 2, y: 1 },
+            { x: 1, y: 2 },
+          ])
+        );
+      });
+
+      it('should return a single cluster if the grid is entirely the target value', () => {
+        const grid = new BitwiseGrid(2, 2, [0b11n, 0b11n]);
+        const clusters = grid.getAllClusters(1);
+
+        expect(clusters).toHaveLength(1);
+        expect(clusters[0]).toHaveLength(4); // All 4 bits
+      });
+
+      it('should return an empty array if the target value does not exist in the grid', () => {
+        const grid = new BitwiseGrid(2, 2, [0b00n, 0b00n]);
+        const clusters = grid.getAllClusters(1);
+
+        expect(clusters).toEqual([]);
+      });
+
+      it('should handle "wrapped" or snake shapes correctly', () => {
+        // 1 1 1
+        // 0 0 1
+        // 1 1 1
+        const grid = new BitwiseGrid(3, 3, [0b111n, 0b001n, 0b111n]);
+        const clusters = grid.getAllClusters(1);
+
+        expect(clusters).toHaveLength(1); // It's one continuous snake
+        expect(clusters[0]).toHaveLength(7);
       });
     });
     describe('getNeighbor()', () => {
@@ -732,6 +824,7 @@ describe('bitwiseGrids', () => {
       });
 
       it('should handle a complex shape', () => {
+        const field = new BitwiseField(10, 10);
         const complexShape = BitwiseShape.fromData(['###', '##.', '.##']);
 
         const newField = field.tryPlace(complexShape, 0, 0);

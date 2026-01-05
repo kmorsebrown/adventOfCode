@@ -261,29 +261,32 @@ class BitwiseGrid {
    * connected to (startX, startY).
    * (A Bitwise equivalent of a Flood Fill)
    */
-  getConnectedCluster(startX, startY) {
-    if (!this.get(startX, startY))
+  getConnectedCluster(startX, startY, targetValue = 1, allowDiagonals = false) {
+    // Check if the starting point even matches what we're looking for
+    if (this.get(startX, startY) !== targetValue) {
       return new this.constructor(
         this.width,
         this.height,
         new Array(this.height).fill(0n)
       );
+    }
 
-    // We will build a "visited" grid using BigInts (efficient!)
     const clusterRows = new Array(this.height).fill(0n);
-
-    // Queue for BFS
     const queue = [{ x: startX, y: startY }];
 
-    // Mark start as visited in our result grid
+    // Mark start as visited
     clusterRows[startY] |= 1n << BigInt(this.width - 1 - startX);
 
     const dirs = [
-      [0, 1], // S
-      [0, -1], // N
-      [1, 0], // E
-      [-1, 0], // W
+      [0, 1],
+      [0, -1],
+      [1, 0],
+      [-1, 0],
     ];
+
+    if (allowDiagonals) {
+      dirs.push([1, 1], [1, -1], [-1, 1], [-1, -1]);
+    }
 
     while (queue.length > 0) {
       const { x, y } = queue.shift();
@@ -292,18 +295,15 @@ class BitwiseGrid {
         const nx = x + dx;
         const ny = y + dy;
 
-        // 1. Bounds check
         if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
-          // 2. Check if the bit is set in the source grid
-          const isSetInSource =
-            (this.rows[ny] >> BigInt(this.width - 1 - nx)) & 1n;
+          // Check if the neighbor matches our target value (0 or 1)
+          const matchTarget = this.get(nx, ny) === targetValue;
 
-          // 3. Check if we haven't visited it yet (is NOT set in clusterRows)
+          // Check if NOT already in our cluster result
           const isVisited =
             (clusterRows[ny] >> BigInt(this.width - 1 - nx)) & 1n;
 
-          if (isSetInSource && !isVisited) {
-            // Mark as visited/added
+          if (matchTarget && !isVisited) {
             clusterRows[ny] |= 1n << BigInt(this.width - 1 - nx);
             queue.push({ x: nx, y: ny });
           }
@@ -312,6 +312,47 @@ class BitwiseGrid {
     }
 
     return new this.constructor(this.width, this.height, clusterRows);
+  }
+
+  getAllClusters(targetValue, allowDiagonals = false) {
+    const clusters = [];
+
+    // Create a tracking grid to keep track of what we've already "grouped"
+    // We use a temporary BitwiseGrid so we can use its .get() and .set() methods
+    let tracker = new BitwiseGrid(this.width, this.height, [...this.rows]);
+
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        // If this cell matches our target (0 or 1)...
+        if (tracker.get(x, y) === targetValue) {
+          // 1. Find the entire cluster starting here
+          const clusterGrid = tracker.getConnectedCluster(
+            x,
+            y,
+            targetValue,
+            allowDiagonals
+          );
+          const clusterCoords = [];
+
+          // 2. Extract coordinates and "remove" from tracker
+          for (let cy = 0; cy < this.height; cy++) {
+            if (clusterGrid.rows[cy] === 0n) continue; // Optimization: skip empty rows
+
+            for (let cx = 0; cx < this.width; cx++) {
+              if (clusterGrid.get(cx, cy)) {
+                clusterCoords.push({ x: cx, y: cy });
+
+                // To prevent finding this cluster again, we flip the bit
+                // in the tracker to the opposite of the targetValue
+                tracker.set(cx, cy, targetValue ^ 1);
+              }
+            }
+          }
+          clusters.push(clusterCoords);
+        }
+      }
+    }
+    return clusters;
   }
 
   flipHorizontal() {

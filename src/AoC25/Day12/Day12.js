@@ -1,7 +1,7 @@
 const { getData, Queue } = require('../../Utils/globalFunctions.js');
 const { parseStringOfInts } = require('../../Utils/parse.js');
 const { BitwiseShape, BitwiseField } = require('../../Utils/bitwise.js');
-const { cartesianGenerator } = require('../../Utils/maths.js');
+const { sum } = require('../../Utils/maths.js');
 
 // https://adventofcode.com/2025/day/12
 
@@ -107,6 +107,32 @@ const generateShapeArrays = (shapes, giftsToPlace) => {
   return shapesArray;
 };
 
+const generateShapesToPlaceMap = (shapes, giftsToPlace) => {
+  const shapesMap = new Map();
+
+  for (let i = 0; i < shapes.length; i++) {
+    if (giftsToPlace[i] == 0) continue;
+    const permutations = generateShapePermutations(shapes[i]);
+    const shapeKey = shapes[i].toString().replaceAll('\n', '_');
+    shapesMap.set(shapeKey, {
+      permutations,
+      num: giftsToPlace[i],
+    });
+  }
+  return shapesMap;
+};
+
+const getAreaShapesToPlace = (shapes, giftsToPlace) => {
+  let totalArea = 0;
+
+  for (let i = 0; i < shapes.length; i++) {
+    if (giftsToPlace[i] == 0) continue;
+    const area = shapes[i].getAllSetBitCoordinates().length;
+    totalArea += area * giftsToPlace[i];
+  }
+  return totalArea;
+};
+
 const generateShapesMap = (shapes, recordNum = false) => {
   const shapesMap = new Map();
 
@@ -131,60 +157,157 @@ const generateShapesMap = (shapes, recordNum = false) => {
  * @param {*} shapes array of BitwiseShape instances
  */
 const placeGifts = async (region, shapes) => {
-  const shapeArrays = generateShapeArrays(shapes, region.gifts);
+  const shapesToPlaceMap = generateShapesToPlaceMap(shapes, region.gifts);
+  const placedShapesMap = new Map();
+
+  for (const value of shapesToPlaceMap.values()) {
+    for (const permutation of value.permutations) {
+      const shapeKey = permutation.toString().replaceAll('\n', '_');
+      placedShapesMap.set(shapeKey, 0);
+    }
+  }
 
   let initialState = new BitwiseField(region.width, region.height);
-  let allShapesFit = false;
 
   const cache = new Map();
 
-  const shapesMap = generateShapesMap(shapeArrays.flat());
-
-  const placeGift = (gifts, state) => {
-    const newGifts = [...gifts];
-    const giftsToPlaceMap = new Map([...shapesMap.entries()]);
-
-    for (const gift of newGifts) {
-      const giftKey = gift.toString();
-      giftsToPlaceMap.set(giftKey, giftsToPlaceMap.get(giftKey) + 1);
-    }
-
-    const key = [...giftsToPlaceMap.entries()].join(';') + state.toString();
+  const placeGift = (state, giftsToPlace, placedGifts) => {
+    const key =
+      'placed:' +
+      [...placedGifts.entries()]
+        .filter((gift) => gift[1] > 0)
+        .map((gift) => gift[0])
+        .join(';') +
+      ';toPlace:' +
+      [...giftsToPlace.entries()]
+        .map((gift) => [gift[0], gift[1].num])
+        .filter((gift) => gift[1] > 0)
+        .join(';') +
+      ';state:' +
+      state.rows.join('_');
 
     if (cache.has(key)) {
       return cache.get(key);
     }
 
-    const giftToPlace = newGifts.pop();
+    // if no more gifts to place, return true
+    if (giftsToPlace.size === 0) {
+      return true;
+    }
 
-    const availableSpots = state.getAllUnSetBitCoordinates();
+    const availableArea = state.getAllUnSetBitCoordinates().length;
+    const giftsToPlaceValues = [...giftsToPlace.values()];
+    const giftsToPlaceArea = sum(
+      giftsToPlaceValues.map((gift) => {
+        const { num, permutations } = gift;
+        const set = permutations[0].getAllSetBitCoordinates();
+        return num * set.length;
+      })
+    );
 
-    for (const spot of availableSpots) {
-      const { x, y } = spot;
-      const newState = state.tryPlace(giftToPlace, x, y);
+    // if area of remaining gifts to place larger than available area, return false
+    if (availableArea < giftsToPlaceArea) {
+      cache.set(key, false);
+      return false;
+    }
 
-      if (newState === null) continue;
+    // get the next gift to place
+    const [giftKey] = giftsToPlace.keys();
+    const gift = giftsToPlace.get(giftKey);
+    const giftArea = gift.permutations[0].getAllSetBitCoordinates().length;
 
-      if (newGifts.length > 0) {
-        return placeGift(newGifts, newState);
-      } else {
+    // get all clusters of empty coordinates in the region where a gift can be placed
+    const availableClusters = state
+      .getAllClusters(0)
+      .filter((cluster) => cluster.length >= giftArea);
+
+    // if no empty clusters large enough, return false
+    if (availableClusters.length === 0) {
+      cache.set(key, false);
+      return false;
+    }
+
+    const availableSpots = availableClusters.flat().filter((coord) => {
+      const { x, y } = coord;
+      // filter out coordinates that are too close to the edges to place a gift
+      // all gifts are 3 x 3
+      if (x + 3 <= state.width && y + 3 <= state.height) {
         return true;
       }
+      return false;
+    });
+
+    let allShapesFit = false;
+
+    const numGiftsPlaced = sum([...placedGifts.values()]);
+
+    if (numGiftsPlaced === 0) {
+      debugger;
     }
 
-    cache.set(key, false);
-    return false;
+    // for each permutation of the gift
+    for (const permutation of gift.permutations) {
+      // don't continue to test permutations if already succeeded
+      if (allShapesFit) {
+        break;
+      }
+
+      const permutationKey = permutation.toString().replaceAll('\n', '_');
+
+      // for each empty coordinate in the region
+      for (const spot of availableSpots) {
+        const { x, y } = spot;
+
+        // don't continue to test available spots if already succeeded
+        if (allShapesFit) {
+          break;
+        }
+
+        if (permutationKey === '###_##._##.') {
+          if (x === 4 && y === 0) {
+            debugger;
+          }
+        }
+
+        // try to place the gift
+        const newState = state.tryPlace(permutation, x, y);
+
+        // continue to next available spot if gift cannot be placed
+        if (newState === null) continue;
+
+        const newStateString = newState.toString();
+
+        // dup the placedGifts and record permutation as placed
+        const newPlacedGifts = new Map([...placedGifts.entries()]);
+        newPlacedGifts.set(
+          permutationKey,
+          newPlacedGifts.get(permutationKey) + 1
+        );
+
+        // dup the giftsToPlace and record gift as placed
+        const newGiftsToPlace = new Map([...giftsToPlace.entries()]);
+        newGiftsToPlace.set(giftKey, {
+          permutations: gift.permutations,
+          num: gift.num - 1,
+        });
+
+        // Remove gift from map if no more to place
+        if (newGiftsToPlace.get(giftKey).num === 0) {
+          newGiftsToPlace.delete(giftKey);
+        }
+
+        // try placing the next gift
+        allShapesFit = placeGift(newState, newGiftsToPlace, newPlacedGifts);
+      }
+    }
+    cache.set(key, allShapesFit);
+    if (allShapesFit) {
+      debugger;
+    }
+    return allShapesFit;
   };
 
-  for (const permutation of cartesianGenerator(...shapeArrays)) {
-    if (allShapesFit) {
-      break;
-    }
-
-    allShapesFit = placeGift(permutation, initialState, shapesMap);
-  }
-
-  return allShapesFit;
+  return placeGift(initialState, shapesToPlaceMap, placedShapesMap);
 };
 
 // how many of the regions can fit all of the presents listed?
@@ -219,6 +342,21 @@ const solve = async () => {
 
 // solve();
 
+let testArray = [
+  { x: 0, y: 0 },
+  { x: 0, y: 1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+];
+
+for (const obj of testArray) {
+  console.log(JSON.stringify(obj));
+  if (obj.x === 1 || obj.y === 1) {
+    testArray = testArray.filter((el) => el.x < 1 || el.y < 1);
+  }
+  console.log(JSON.stringify(testArray));
+}
+
 module.exports = {
   solve,
   formatData,
@@ -226,7 +364,9 @@ module.exports = {
   placeGifts,
   generateShapePermutations,
   generateShapeArrays,
+  generateShapesToPlaceMap,
   generateShapesMap,
+  getAreaShapesToPlace,
   partOne,
   partTwo,
 };

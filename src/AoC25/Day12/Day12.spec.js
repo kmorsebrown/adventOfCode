@@ -4,7 +4,9 @@ const {
   placeGifts,
   generateShapePermutations,
   generateShapeArrays,
+  generateShapesToPlaceMap,
   generateShapesMap,
+  getAreaShapesToPlace,
   partOne,
   partTwo,
 } = require('./Day12');
@@ -193,6 +195,35 @@ describe('Day12', () => {
         mockInput.regions[1].gifts
       );
       expect(actual.length).toEqual(6);
+    });
+  });
+  describe('getAreaShapesToPlace', () => {
+    it('returns 14 for [0, 0, 0, 0, 2, 0]', () => {
+      const actual = getAreaShapesToPlace(
+        mockShapes,
+        mockInput.regions[0].gifts
+      );
+      expect(actual).toEqual(14);
+    });
+  });
+  describe('generateShapesToPlaceMap', () => {
+    it('returns map of shape permutations for [0, 0, 0, 0, 2, 0]', () => {
+      const actual = generateShapesToPlaceMap(
+        mockShapes,
+        mockInput.regions[0].gifts
+      );
+      expect(actual.size).toEqual(1);
+      expect(actual.get('###_#.._###').num).toEqual(2);
+      expect(actual.get('###_#.._###').permutations.length).toEqual(4);
+    });
+    it('returns map of shape permutations for [1, 0, 1, 0, 2, 2]', () => {
+      const actual = generateShapesToPlaceMap(
+        mockShapes,
+        mockInput.regions[1].gifts
+      );
+      expect(actual.size).toEqual(4);
+      expect(actual.get('###_##._##.').num).toEqual(1);
+      expect(actual.get('###_.#._###').num).toEqual(2);
     });
   });
   describe('generateShapesMap', () => {
