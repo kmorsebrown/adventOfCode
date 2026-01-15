@@ -89,15 +89,18 @@ const generateShapePermutations = (shape) => {
 const generateShapesToPlaceMap = (shapes, giftsToPlace) => {
   const shapesMap = new Map();
 
-  for (let i = 0; i < shapes.length; i++) {
-    if (giftsToPlace[i] == 0) continue;
-    const permutations = generateShapePermutations(shapes[i]);
-    const shapeKey = shapes[i].toString().replaceAll('\n', '_');
-    shapesMap.set(shapeKey, {
-      permutations,
-      num: giftsToPlace[i],
-    });
-  }
+  giftsToPlace.forEach((count, i) => {
+    if (count > 0) {
+      const permutations = generateShapePermutations(shapes[i]);
+      const shapeKey = shapes[i].toString().replaceAll('\n', '_');
+
+      shapesMap.set(shapeKey, {
+        permutations,
+        num: count,
+      });
+    }
+  });
+
   return shapesMap;
 };
 
@@ -129,199 +132,132 @@ const generateShapesMap = (shapes, recordNum = false) => {
   return shapesMap;
 };
 
-/**
- *
- * @param {*} region BitwiseField instance
- * @param {*} giftsToPlace array of numbers
- * @param {*} shapes array of BitwiseShape instances
- */
+// based on
+// https://github.com/Salman964/PentoSolve/blob/main/client/src/lib/pentomino.ts
 const placeGifts = (region, shapes) => {
   const shapesToPlaceMap = generateShapesToPlaceMap(shapes, region.gifts);
-  const placedShapesMap = new Map();
 
-  for (const value of shapesToPlaceMap.values()) {
-    for (const permutation of value.permutations) {
-      const shapeKey = permutation.toString().replaceAll('\n', '_');
-      placedShapesMap.set(shapeKey, 0);
+  // Flatten the map into a list of specific gift instances to place.
+  const giftsList = [];
+  for (const [key, data] of shapesToPlaceMap) {
+    // We add one entry per required count
+    for (let i = 0; i < data.num; i++) {
+      giftsList.push({
+        permutations: data.permutations,
+        name: key,
+        area: data.permutations[0].area, // Assume all rotations have same area
+      });
     }
   }
 
-  let initialState = new BitwiseField(region.width, region.height);
-
-  const cache = new Map();
+  // Sort by Area Descending (Largest/Hardest pieces first)
+  // help fail fast if large piece doesn't fit
+  giftsList.sort((a, b) => b.area - a.area);
 
   const regionArea = region.width * region.height;
 
+  // AREA PRUNING:
   // all gifts fit in 3x3 grid
   const numGiftsWillDefFit = (region.width / 3) * (region.height / 3);
+
+  // SUCCESS: if Num Gifts that would fit if laid side by side >= gifts to place
+  // ALWAYS POSSIBLE => no need to check placement
   if (numGiftsWillDefFit >= sum(region.gifts)) {
     return true;
   }
 
-  //
-  const giftArea = getAreaShapesToPlace(shapes, region.gifts);
-
-  if (giftArea > regionArea) {
+  // FAILURE: Gift Area > Region Area => ALWAYS IMPOSSIBLE
+  const totalRequiredArea = getAreaShapesToPlace(shapes, region.gifts);
+  if (totalRequiredArea > regionArea) {
     return false;
   }
 
-  const placeGift = (state, giftsToPlace, placedGifts) => {
-    const key =
-      'placed:' +
-      [...placedGifts.entries()]
-        .filter((gift) => gift[1] > 0)
-        .map((gift) => gift[0])
-        .join(';') +
-      ';toPlace:' +
-      [...giftsToPlace.entries()]
-        .map((gift) => [gift[0], gift[1].num])
-        .filter((gift) => gift[1] > 0)
-        .join(';') +
-      ';state:' +
-      state.rows.join('_');
+  let initialState = new BitwiseField(region.width, region.height);
+  const cache = new Map();
 
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
+  const minGiftArea = Math.min([...giftsList.values()].map((g) => g.area));
 
-    // if no more gifts to place, return true
-    if (giftsToPlace.size === 0) {
+  // Helper to check if all gifts are placed without looping
+  let totalGiftsLeft = sum(region.gifts);
+
+  // Recursive puzzle placement
+  const placeGift = (giftIndex, state, currentAreaFilled) => {
+    // SUCCESS: No more gifts to place
+    if (totalGiftsLeft === 0) {
       return true;
     }
 
-    const availableArea = state.getAllUnSetBitCoordinates().length;
-    const giftsToPlaceValues = [...giftsToPlace.values()];
-    const giftsToPlaceArea = sum(
-      giftsToPlaceValues.map((gift) => {
-        const { num, permutations } = gift;
-        const set = permutations[0].getAllSetBitCoordinates();
-        return num * set.length;
-      })
-    );
+    // MEMOIZATION
+    const stateKey = `${state.rows.join('_')}|${giftIndex}`;
 
-    // if area of remaining gifts to place larger than available area, return false
-    if (availableArea < giftsToPlaceArea) {
-      cache.set(key, false);
+    if (cache.has(stateKey)) {
+      return cache.get(stateKey);
+    }
+
+    // AREA PRUNING: Is there enough empty space left to fit remaining gift area?
+    const availableEmptyCells = regionArea - currentAreaFilled;
+    const remainingGiftsArea = totalRequiredArea - currentAreaFilled;
+    if (availableEmptyCells < remainingGiftsArea) {
+      cache.set(stateKey, false);
       return false;
     }
 
-    // get the next gift to place
-    const [giftKey] = giftsToPlace.keys();
-    const gift = giftsToPlace.get(giftKey);
-    const giftArea = gift.permutations[0].getAllSetBitCoordinates().length;
+    const currentGift = giftsList[giftIndex];
 
-    // get all clusters of empty coordinates in the region where a gift can be placed
-    const availableClusters = state
-      .getAllClusters(0)
-      .filter((cluster) => cluster.length >= giftArea);
+    // try to cover this specific cell with every available gift
+    for (const [giftKey, giftData] of shapesToPlaceMap) {
+      if (giftData.num === 0) continue;
 
-    // if no empty clusters large enough, return false
-    if (availableClusters.length === 0) {
-      cache.set(key, false);
-      return false;
-    }
+      // for each permutation of the gift
+      for (const permutation of giftData.permutations) {
+        // One of the bits in the shape MUST land on (x, y)
+        for (const offset of permutation.offsets) {
+          const startX = x - offset.x;
+          const startY = y - offset.y;
 
-    let borderSpots = [];
-    const regionArea = state.width * state.height;
-    if (availableArea < regionArea) {
-      borderSpots = state.getUnsetNeighbors(false);
-    }
+          const newState = state.tryPlace(permutation, startX, startY);
 
-    const availableSpots = availableClusters.flat().filter((coord) => {
-      const { x, y } = coord;
-      // filter out coordinates that are too close to the edges to place a gift
-      // all gifts are 3 x 3
-      if (x + 3 <= state.width && y + 3 <= state.height) {
-        // at least one piece has been placed
-        if (availableArea < regionArea) {
+          // continue to next offset if gift cannot be placed at current offset
+          if (newState === null) continue;
+
+          // mutation for recursion
+          giftData.num--;
+          totalGiftsLeft--;
+
+          // Move to targetIndex + 1 because we know 'targetIndex' is now filled
           if (
-            borderSpots.length > 0 &&
-            borderSpots.filter((spot) => spot.x === x && spot.y === y).length >
-              0
+            placeGift(
+              newState,
+              targetIndex + 1,
+              currentAreaFilled + permutation.area
+            )
           ) {
-            // spot borders existing shape
             return true;
-          } else {
-            // not bordering existing piece
-            return false;
           }
+
+          // BACKTRACK
+          totalGiftsLeft++;
+          giftData.num++;
         }
+      }
+    }
+
+    // Leave this cell empty if solution couldn't be reached by filling with a piece
+    // We only try this if the current cell isn't filled by a piece
+    // and if we have "extra" space
+    if (availableEmptyCells > remainingGiftsArea) {
+      const result = placeGift(state, targetIndex + 1, currentAreaFilled);
+      if (result) {
+        cache.set(stateKey, true);
         return true;
       }
-      return false;
-    });
-
-    let allShapesFit = false;
-
-    const numGiftsPlaced = sum([...placedGifts.values()]);
-
-    if (numGiftsPlaced === 0) {
-      debugger;
     }
 
-    // for each permutation of the gift
-    for (const permutation of gift.permutations) {
-      // don't continue to test permutations if already succeeded
-      if (allShapesFit) {
-        break;
-      }
-
-      const permutationKey = permutation.toString().replaceAll('\n', '_');
-
-      // for each empty coordinate in the region
-      for (const spot of availableSpots) {
-        const { x, y } = spot;
-
-        // don't continue to test available spots if already succeeded
-        if (allShapesFit) {
-          break;
-        }
-
-        if (permutationKey === '###_##._##.') {
-          if (x === 4 && y === 0) {
-            debugger;
-          }
-        }
-
-        // try to place the gift
-        const newState = state.tryPlace(permutation, x, y);
-
-        // continue to next available spot if gift cannot be placed
-        if (newState === null) continue;
-
-        const newStateString = newState.toString();
-
-        // dup the placedGifts and record permutation as placed
-        const newPlacedGifts = new Map([...placedGifts.entries()]);
-        newPlacedGifts.set(
-          permutationKey,
-          newPlacedGifts.get(permutationKey) + 1
-        );
-
-        // dup the giftsToPlace and record gift as placed
-        const newGiftsToPlace = new Map([...giftsToPlace.entries()]);
-        newGiftsToPlace.set(giftKey, {
-          permutations: gift.permutations,
-          num: gift.num - 1,
-        });
-
-        // Remove gift from map if no more to place
-        if (newGiftsToPlace.get(giftKey).num === 0) {
-          newGiftsToPlace.delete(giftKey);
-        }
-
-        // try placing the next gift
-        allShapesFit = placeGift(newState, newGiftsToPlace, newPlacedGifts);
-      }
-    }
-    cache.set(key, allShapesFit);
-    if (allShapesFit) {
-      debugger;
-    }
-    return allShapesFit;
+    cache.set(stateKey, false);
+    return false;
   };
 
-  return placeGift(initialState, shapesToPlaceMap, placedShapesMap);
+  return placeGift(initialState, 0, 0);
 };
 
 // how many of the regions can fit all of the presents listed?
@@ -364,7 +300,7 @@ const solve = async () => {
   }
 };
 
-solve();
+//solve();
 
 module.exports = {
   solve,

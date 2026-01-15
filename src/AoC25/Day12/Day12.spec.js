@@ -183,7 +183,9 @@ describe('Day12', () => {
       );
       expect(actual.size).toEqual(1);
       expect(actual.get('###_#.._###').num).toEqual(2);
-      expect(actual.get('###_#.._###').permutations.length).toEqual(4);
+      expect(actual.get('###_#.._###').permutations).toHaveLength(4);
+      expect(actual.get('###_#.._###').permutations[0].offsets).toHaveLength(7);
+      expect(actual.get('###_#.._###').permutations[0].area).toEqual(7);
     });
     it('returns map of shape permutations for [1, 0, 1, 0, 2, 2]', () => {
       const actual = generateShapesToPlaceMap(
