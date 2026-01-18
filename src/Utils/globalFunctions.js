@@ -1,10 +1,10 @@
-const fs = require('fs');
+import fs from 'fs';
 
 // key consts
-const PART1_KEY = 'Part1';
-const PART2_KEY = 'Part2';
+export const PART1_KEY = 'Part1';
+export const PART2_KEY = 'Part2';
 
-async function getData(filePath) {
+export async function getData(filePath) {
   try {
     const data = await fs.promises.readFile(filePath, { encoding: 'utf8' });
     return data;
@@ -14,7 +14,7 @@ async function getData(filePath) {
   }
 }
 
-const appendFile = async (filePath, newLine) => {
+export const appendFile = async (filePath, newLine) => {
   try {
     await fs.promises.readFile(filePath);
     await fs.promises.appendFile(filePath, newLine);
@@ -24,7 +24,7 @@ const appendFile = async (filePath, newLine) => {
   }
 };
 
-class Graph {
+export class Graph {
   constructor() {
     this.adjacencyList = new Map();
   }
@@ -78,7 +78,7 @@ class Graph {
 }
 
 // Queue class
-class Queue {
+export class Queue {
   /*
     Could implement with an array, but it's inefficient for dequeue (removing from the front)
     because shift() has O(n) complexity (n = num elements) b/c all subsequent elements must be shifted
@@ -149,7 +149,7 @@ class Queue {
   }
 }
 
-function handleLargeArray(data) {
+export function handleLargeArray(data) {
   const MAX_ARRAY_LENGTH = Math.pow(2, 32) - 2; // Maximum allowed array length in JavaScript
 
   if (data.length > MAX_ARRAY_LENGTH) {
@@ -178,7 +178,7 @@ function handleLargeArray(data) {
 // https://www.geeksforgeeks.org/javascript/implementation-priority-queue-javascript/
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 
-class PriorityQueue {
+export class PriorityQueue {
   static #top = 0;
   static #parent(i) {
     return ((i + 1) >>> 1) - 1;
@@ -288,12 +288,4 @@ class PriorityQueue {
   }
 }
 
-module.exports = {
-  getData,
-  appendFile,
-  PART1_KEY,
-  PART2_KEY,
-  Graph,
-  Queue,
-  PriorityQueue,
-};
+// All exports are already done above as named exports

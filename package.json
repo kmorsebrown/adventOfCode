@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Advent of Code",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "2021": "rm -rf ./Results.txt && node src/AoC21/AoC2021solve.js",
     "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js",
