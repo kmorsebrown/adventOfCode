@@ -6,6 +6,14 @@ const parseStringOfInts = (str, separator) => {
     .filter((r) => !isNaN(r));
 };
 
+const splitLines = (data, filterEmpty = true) => {
+  return filterEmpty ? data.split('\n').filter(String) : data.split('\n');
+};
+
+const splitSections = (data) => {
+  return data.split('\n\n').filter(String);
+};
+
 const unique = (arr) => {
   const seen = new Set();
   return arr.filter((value) => {
@@ -53,4 +61,4 @@ const mergeOverlap = (arr) => {
   return res;
 };
 
-export { parseStringOfInts, unique, mergeOverlap };
+export { parseStringOfInts, splitLines, splitSections, unique, mergeOverlap };

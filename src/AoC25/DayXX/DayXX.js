@@ -1,36 +1,25 @@
 import { getData } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 
 // https://adventofcode.com/2025/day/XX
 
 // DAY=X npm run 2025
-export async function formatData(filepath) {
+const formatData = async (filepath) => {
   const data = await getData(filepath);
   return data;
-}
+};
 
 // Part One
 
-export async function partOne(input) {
+const partOne = async (input) => {
   return input;
-}
+};
 
 // Part Two
-export async function partTwo(input) {
+const partTwo = async (input) => {
   return input;
-}
+};
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/DayXXInput.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '11', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
+export { solve, formatData, partOne, partTwo };

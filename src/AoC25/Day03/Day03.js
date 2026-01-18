@@ -1,11 +1,12 @@
 import { getData } from '../../Utils/globalFunctions.js';
 import { parseStringOfInts, unique } from '../../Utils/parse.js';
 import { sum, sortDescending } from '../../Utils/maths.js';
+import { createSolver } from '../../Utils/createSolver.js';
 
 // https://adventofcode.com/2025/day/03
 
 // DAY=03 npm run 2025
-export async function formatData(filepath) {
+async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n');
 }
@@ -26,7 +27,7 @@ export async function formatData(filepath) {
 
 // Part One
 
-export function findMaxJoltage(bank, numBatteriesToTurnOn) {
+function findMaxJoltage(bank, numBatteriesToTurnOn) {
   // find unique joltages in bank and arrange from highest to lowest
   const uniqueJoltages = sortDescending(unique(parseStringOfInts(bank, '')));
 
@@ -71,27 +72,16 @@ export function findMaxJoltage(bank, numBatteriesToTurnOn) {
 
   return parseInt(onBatteries.join(''));
 }
-export async function partOne(input) {
+async function partOne(input) {
   return sum(input.map((bank) => findMaxJoltage(bank, 2)));
 }
 
 // Part Two
-export async function partTwo(input) {
+async function partTwo(input) {
   return sum(input.map((bank) => findMaxJoltage(bank, 12)));
 }
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day03Input.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '03', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+export { formatData, findMaxJoltage, partOne, partTwo, solve };
 

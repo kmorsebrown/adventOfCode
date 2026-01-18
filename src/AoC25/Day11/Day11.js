@@ -1,4 +1,5 @@
 import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 
 // https://adventofcode.com/2025/day/11
 
@@ -184,20 +185,7 @@ const partTwo = async (adj) => {
   }
 }
 
-const solve = async () => {
-  const dataPath = new URL('../puzzleInputs/Day11Input.txt', import.meta.url).pathname;
-
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+const solve = createSolver(formatData, partOne, partTwo, '11', import.meta.url);
 
 
 export {

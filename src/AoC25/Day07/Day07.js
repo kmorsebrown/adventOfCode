@@ -1,4 +1,5 @@
 import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 import { sum } from '../../Utils/maths.js';
 import {
   arrayifyGrid,
@@ -10,7 +11,7 @@ import { log } from 'console';
 // https://adventofcode.com/2025/day/7
 
 // DAY=7 npm run 2025
-export async function formatData(filepath) {
+async function formatData(filepath) {
   const data = await getData(filepath);
   return arrayifyGrid(data.split('\n'), '');
 }
@@ -25,7 +26,7 @@ const getStartPosition = (grid) => {
 }
 // Part One
 
-export function moveBeam(height, width, nextRow, current) {
+function moveBeam(height, width, nextRow, current) {
   if (nextRow) {
     const row = current.row;
     const col = current.col;
@@ -56,7 +57,7 @@ export function moveBeam(height, width, nextRow, current) {
   }
 }
 
-export async function partOne(input) {
+async function partOne(input) {
   let queue = new Queue();
   let queuedBeams = new Set();
 
@@ -94,8 +95,8 @@ export async function partOne(input) {
 
 // Part Two
 
-export function getNextRow() {};
-export async function partTwo(input) {
+function getNextRow() {};
+async function partTwo(input) {
   const start = getStartPosition(input);
 
   // key: col, val: num incoming beams
@@ -138,18 +139,7 @@ export async function partTwo(input) {
   return sum(beams);
 }
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day07Input.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '07', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+export { formatData, moveBeam, partOne, partTwo, solve };
 

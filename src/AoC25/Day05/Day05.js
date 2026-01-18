@@ -1,11 +1,12 @@
 import { getData } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 import { parseStringOfInts, mergeOverlap } from '../../Utils/parse.js';
 import { sortAscending, sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/5
 
 // DAY=05 npm run 2025
-export async function formatData(filepath) {
+async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n\n');
   const availableIds = splitData[1].split('\n').map((id) => parseInt(id));
@@ -23,7 +24,7 @@ const checkIfFresh = (range, id) => {
   return id >= range[0] && id <= range[1];
 };
 
-export async function partOne(input) {
+async function partOne(input) {
   const { freshIds, availableIds } = input;
   const mergedRanges = mergeOverlap(freshIds);
   const sortedIds = sortAscending(availableIds);
@@ -46,25 +47,14 @@ const getNumIdsInRange = (range) => {
   return range[1] - range[0] + 1;
 };
 
-export async function partTwo(input) {
+async function partTwo(input) {
   const { freshIds, availableIds } = input;
   const mergedRanges = mergeOverlap(freshIds);
 
   return sum(mergedRanges.map((range) => getNumIdsInRange(range)));
 }
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day05Input.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '05', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+export { formatData, partOne, partTwo, solve };
 

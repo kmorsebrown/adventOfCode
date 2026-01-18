@@ -1,4 +1,5 @@
 import { getData } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 import { parseStringOfInts } from '../../Utils/parse.js';
 import {
   getDistance,
@@ -156,20 +157,13 @@ const partTwo = async (input) => {
   return finalConnection[0][0] * finalConnection[1][0];
 }
 
-const solve = async () => {
-  const dataPath = new URL('../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
-
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData, 1000),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+const solve = createSolver(
+  formatData,
+  (data) => partOne(data, 1000),
+  partTwo,
+  '08',
+  import.meta.url
+);
 
 
 export {

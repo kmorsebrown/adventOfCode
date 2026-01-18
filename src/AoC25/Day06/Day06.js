@@ -1,4 +1,5 @@
 import { getData } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 import { parseStringOfInts } from '../../Utils/parse.js';
 import { transpose, transposeRagged } from '../../Utils/grids.js';
 import { sum } from '../../Utils/maths.js';
@@ -6,25 +7,25 @@ import { sum } from '../../Utils/maths.js';
 // https://adventofcode.com/2025/day/6
 
 // DAY=6 npm run 2025
-export async function formatData(filepath) {
+async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n');
 }
 
 // Part One
 
-export async function formatDataPt1(splitData) {
+async function formatDataPt1(splitData) {
   const splitDataCopy = JSON.parse(JSON.stringify(splitData));
   const operations = splitDataCopy.pop().trim().replace(/\s+/g, ' ').split(' ');
   const integers = splitDataCopy.map((str) => parseStringOfInts(str, ' '));
   return transpose([...integers, operations]);
 }
 
-export function evaluateEquation(arr, operator) {
+function evaluateEquation(arr, operator) {
   return arr.reduce((a, b) => eval(`${a}${operator}${b}`));
 }
 
-export async function partOne(input) {
+async function partOne(input) {
   const problems = await formatDataPt1(input);
   return sum(
     problems.map((problem) => {
@@ -36,7 +37,7 @@ export async function partOne(input) {
 
 // Part Two
 
-export async function formatDataPt2(splitData) {
+async function formatDataPt2(splitData) {
   const splitDataCopy = JSON.parse(JSON.stringify(splitData));
   const operations = splitDataCopy.pop().trim().replace(/\s+/g, ' ').split(' ');
   const transposed = transpose(splitDataCopy.map((str) => str.split(''))).map(
@@ -59,7 +60,7 @@ export async function formatDataPt2(splitData) {
   return result.reverse();
 }
 
-export async function partTwo(input) {
+async function partTwo(input) {
   const problems = await formatDataPt2(input);
   return sum(
     problems.map((problem) => {
@@ -69,18 +70,15 @@ export async function partTwo(input) {
   );
 }
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day06Input.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '06', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+export {
+  formatData,
+  formatDataPt1,
+  evaluateEquation,
+  partOne,
+  formatDataPt2,
+  partTwo,
+  solve,
+};
 
