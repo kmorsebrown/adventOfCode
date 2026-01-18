@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2021/day/2
 
@@ -74,9 +72,10 @@ async function getPositionMultiplierWithAim(input) {
 }
 
 async function runDay02() {
-  const dataPath = require.resolve(
-    '../../../src/AoC21/puzzleInputs/Day02Input.txt'
-  );
+  const dataPath = new URL(
+    '../../puzzleInputs/Day02Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -90,9 +89,4 @@ async function runDay02() {
   }
 }
 
-module.exports = {
-  formatData,
-  getPositionMultiplier,
-  getPositionMultiplierWithAim,
-  runDay02,
-};
+export { formatData, getPositionMultiplier, getPositionMultiplierWithAim, runDay02 };

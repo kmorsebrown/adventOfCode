@@ -1,12 +1,16 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   createCalledNumArr,
   createBoardsArr,
   getBoardWinOrder,
   getWinningBoard,
   getWinningBoardsArr,
   getTotalScore,
-} = require('./Day04.js');
+} from './Day04.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('Day04', () => {
   const calledNumArr = [

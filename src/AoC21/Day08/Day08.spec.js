@@ -1,5 +1,9 @@
-const path = require('path');
-const { formatData, partOne, partTwo } = require('./Day08.js');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { formatData, partOne, partTwo } from './Day08.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe.skip('Day08', () => {
   describe('formatData', () => {

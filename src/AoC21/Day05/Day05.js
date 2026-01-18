@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2021/day/5
 
@@ -163,9 +161,10 @@ async function partTwo(coordinates) {
 }
 
 async function runDay05() {
-  const dataPath = require.resolve(
-    '../../../src/AoC21/puzzleInputs/Day05Input.txt'
-  );
+  const dataPath = new URL(
+    '../../puzzleInputs/Day05Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -179,7 +178,7 @@ async function runDay05() {
   }
 }
 
-module.exports = {
+export {
   formatData,
   createDiagram,
   markHorizLines,

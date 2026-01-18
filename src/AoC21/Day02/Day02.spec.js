@@ -1,9 +1,13 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   getPositionMultiplier,
   getPositionMultiplierWithAim,
-} = require('./Day02.js');
+} from './Day02.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('Day02', () => {
   describe('formatData', () => {

@@ -1,5 +1,6 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   createDiagram,
   markHorizLines,
@@ -7,7 +8,10 @@ const {
   markDiagLines,
   partOne,
   partTwo,
-} = require('./Day05.js');
+} from './Day05.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const formattedTestData = [
   {

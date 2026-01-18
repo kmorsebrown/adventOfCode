@@ -1,14 +1,15 @@
-const fs = require('fs');
-const path = require('path');
-const { getData, appendFile } = require(path.join(
-  path.dirname(__dirname),
-  'globalFunctions.js'
-));
-const { runDay01 } = require(path.join(__dirname, 'Day01', 'Day01.js'));
-const { runDay02 } = require(path.join(__dirname, 'Day02', 'Day02.js'));
-const { runDay03 } = require(path.join(__dirname, 'Day03', 'Day03.js'));
-const { runDay04 } = require(path.join(__dirname, 'Day04', 'Day04.js'));
-const { runDay05 } = require(path.join(__dirname, 'Day05', 'Day05.js'));
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { getData, appendFile } from '../Utils/globalFunctions.js';
+import { runDay01 } from './Day01/Day01.js';
+import { runDay02 } from './Day02/Day02.js';
+import { runDay03 } from './Day03/Day03.js';
+import { runDay04 } from './Day04/Day04.js';
+import { runDay05 } from './Day05/Day05.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function printResults() {
   const reportFilepath = path.join(
