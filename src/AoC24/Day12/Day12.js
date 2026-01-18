@@ -1,14 +1,14 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { getAllAdjacentCoords } = require('../../Utils/grids.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { getAllAdjacentCoords } from '../../Utils/grids.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2024/day/12
 
 // DAY=12 npm run 2024
-exports.formatData = async (fileregion) => {
+export async function formatData(fileregion) {
   const data = await getData(fileregion);
   return data.split('\n');
-};
+}
 
 // garden plot: single type of plant > a single letter on your map. each plot is a square & has 4 sides
 // region: multiple touching (horizontally or vertically) plots of the same type
@@ -20,7 +20,7 @@ exports.formatData = async (fileregion) => {
 
 // Part One
 
-exports.generateRegions = (grid) => {
+export function generateRegions(grid) {
   let queue = new Queue();
   let regions = new Map();
   let addedToRegion = new Set();
@@ -94,35 +94,33 @@ exports.generateRegions = (grid) => {
     queue.dequeue();
   }
   return regions;
-};
+}
 
-exports.partOne = async (input) => {
-  const regions = exports.generateRegions(input);
+export async function partOne(input) {
+  const regions = generateRegions(input);
   const prices = Array.from(regions.values());
   return sum(prices);
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   return input;
-};
+}
 
-exports.solve = async () => {
-  const dataregion = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day12Input.txt'
-  );
+export async function solve() {
+  const dataregion = new URL('../../puzzleInputs/Day12Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataregion);
+    const formattedData = await formatData(dataregion);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      // await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      // await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

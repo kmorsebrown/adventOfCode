@@ -1,17 +1,17 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const {
+import { getData } from '../../Utils/globalFunctions.js';
+import {
   getCoordinatesForAllMatches,
   getValueFromCoords,
   getAdjacentCoords,
-} = require('../../Utils/grids.js');
+} from '../../Utils/grids.js';
 
 // https://adventofcode.com/2024/day/06
 
 // DAY=6 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n').filter(String);
-};
+}
 
 // indicates the direction the guard is currently facing from the perspective of the map
 
@@ -25,7 +25,7 @@ const OBSTRUCTION = '#';
 
 // Part One
 
-exports.move = (map, position, dir) => {
+export function move(map, position, dir) {
   const args = {
     height: map.length,
     width: map[0].length,
@@ -52,9 +52,9 @@ exports.move = (map, position, dir) => {
       position: nextCoords,
     };
   }
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const startingPosition = getCoordinatesForAllMatches(input, '^')[0];
   const startingDir = 'N';
 
@@ -66,36 +66,34 @@ exports.partOne = async (input) => {
   while (currentDir !== 'off map') {
     distinctPositions.add(JSON.stringify(currentPosition));
 
-    let nextMove = exports.move(input, currentPosition, currentDir);
+    let nextMove = move(input, currentPosition, currentDir);
 
     currentPosition = nextMove.position;
     currentDir = nextMove.dir;
   }
 
   return distinctPositions.size;
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   return input;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day06Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day06Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      // await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      // await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

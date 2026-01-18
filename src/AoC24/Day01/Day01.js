@@ -1,12 +1,12 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const { sortAscending, sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import { sortAscending, sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2024/day/1
 
 // DAY=1 npm run 2024
 
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   let dataArr = data.split('\n').filter(String);
 
@@ -23,7 +23,7 @@ exports.formatData = async (filepath) => {
     left_list: left_list,
     right_list: right_list,
   };
-};
+}
 
 // Part One
 
@@ -32,7 +32,7 @@ exports.formatData = async (filepath) => {
 // holding up the two lists side by side (puzzle input) they aren't similar
 // reconcile the lists
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const { left_list, right_list } = input;
 
   // pair up the smallest number in the left list with the smallest number in the right list
@@ -47,10 +47,10 @@ exports.partOne = async (input) => {
 
   // find the total distance between the two lists
   return sum(diffs);
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   const { left_list, right_list } = input;
 
   // multiply each number on the left list by the number of times it appears on the right list
@@ -63,24 +63,22 @@ exports.partTwo = async (input) => {
     similarity_score += id * occurrences;
   });
   return similarity_score;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day01Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day01Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

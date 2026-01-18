@@ -1,12 +1,16 @@
-const { transform } = require('typescript');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   transformStone,
   transformStones,
   blink,
   partOne,
   partTwo,
-} = require('./Day11');
+} from './Day11.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day11/Day11.spec.js
 
@@ -24,7 +28,7 @@ describe('Day11', () => {
   ]);
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day11TestData.txt');
+      const args = new URL('./Day11TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

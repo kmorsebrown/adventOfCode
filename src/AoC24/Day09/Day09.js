@@ -1,18 +1,18 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
-const { unique } = require('../../Utils/parse.js');
-const { Readable } = require('stream');
+import { getData } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
+import { unique } from '../../Utils/parse.js';
+import { Readable } from 'stream';
 
 // https://adventofcode.com/2024/day/09
 
 // DAY=9 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
 
   return data;
-};
+}
 
-exports.parseData = (dataString) => {
+export function parseData(dataString) {
   function manipulateStringStream(inputString, manipulationFunction) {
     const inputStream = Readable.from(inputString);
     let result = [];
@@ -34,16 +34,16 @@ exports.parseData = (dataString) => {
     });
   }
 
-  return manipulateStringStream(dataString, exports.decodeCharacter)
+  return manipulateStringStream(dataString, decodeCharacter)
     .then((result) => {
       return result;
     })
     .catch((err) => {
       console.error(err);
     });
-};
+}
 
-exports.decodeCharacter = (character, index) => {
+export function decodeCharacter(character, index) {
   let numBlocks = parseInt(character, 10);
   // index is even
   if (index % 2 === 0) {
@@ -55,9 +55,9 @@ exports.decodeCharacter = (character, index) => {
   } else {
     return '.'.repeat(numBlocks).split('');
   }
-};
+}
 
-exports.rearrangeBlocks = (decodedArray) => {
+export function rearrangeBlocks(decodedArray) {
   let rearrangedArray = [...decodedArray];
   for (let i = 0; i < rearrangedArray.length; i++) {
     if (rearrangedArray[i] === '.') {
@@ -72,9 +72,9 @@ exports.rearrangeBlocks = (decodedArray) => {
     }
   }
   return rearrangedArray;
-};
+}
 
-exports.getFilesystemChecksum = (rearrangedArray) => {
+export function getFilesystemChecksum(rearrangedArray) {
   function arrayStream(inputArray, manipulationFunction) {
     const inputStream = Readable.from(inputArray);
     let result = [];
@@ -111,17 +111,17 @@ exports.getFilesystemChecksum = (rearrangedArray) => {
     .catch((err) => {
       console.error(err);
     });
-};
+}
 
-exports.partOne = async (input) => {
-  const parsedData = await exports.parseData(input);
-  const rearrangedData = exports.rearrangeBlocks(parsedData);
-  const checksum = await exports.getFilesystemChecksum(rearrangedData);
+export async function partOne(input) {
+  const parsedData = await parseData(input);
+  const rearrangedData = rearrangeBlocks(parsedData);
+  const checksum = await getFilesystemChecksum(rearrangedData);
   return checksum;
-};
+}
 
 // Part Two
-exports.parseDataPt2 = (dataString) => {
+export function parseDataPt2(dataString) {
   function manipulateStringStream(inputString, manipulationFunction) {
     const inputStream = Readable.from(inputString);
     let result = [];
@@ -143,15 +143,15 @@ exports.parseDataPt2 = (dataString) => {
     });
   }
 
-  return manipulateStringStream(dataString, exports.decodeCharacter)
+  return manipulateStringStream(dataString, decodeCharacter)
     .then((result) => {
       return result;
     })
     .catch((err) => {
       console.error(err);
     });
-};
-exports.rearrangeBlocksPt2 = (decodedArray) => {
+}
+export function rearrangeBlocksPt2(decodedArray) {
   const fileIds = unique(decodedArray.flat())
     .filter((e) => e !== '.')
     .reverse();
@@ -197,30 +197,28 @@ exports.rearrangeBlocksPt2 = (decodedArray) => {
     }
   }
   return rearrangedArray.flat();
-};
-exports.partTwo = async (input) => {
-  const parsedData = await exports.parseDataPt2(input);
-  const rearrangedData = exports.rearrangeBlocksPt2(parsedData);
-  const checksum = await exports.getFilesystemChecksum(rearrangedData);
+}
+export async function partTwo(input) {
+  const parsedData = await parseDataPt2(input);
+  const rearrangedData = rearrangeBlocksPt2(parsedData);
+  const checksum = await getFilesystemChecksum(rearrangedData);
   return checksum;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day09Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day09Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

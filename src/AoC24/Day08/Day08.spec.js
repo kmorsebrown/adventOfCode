@@ -1,4 +1,6 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   generateAntennaMap,
   generateDiffsMap,
@@ -7,7 +9,10 @@ const {
   getDiffs,
   partOne,
   partTwo,
-} = require('./Day08');
+} from './Day08.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day08/Day08.spec.js
 
@@ -124,7 +129,7 @@ describe('Day08', () => {
   ]);
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day08TestData.txt');
+      const args = new URL('./Day08TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

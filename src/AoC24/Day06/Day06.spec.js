@@ -1,4 +1,9 @@
-const { formatData, move, partOne, partTwo } = require('./Day06');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { formatData, move, partOne, partTwo } from './Day06.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day06/Day06.spec.js
 
@@ -17,7 +22,7 @@ describe('Day06', () => {
   ];
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day06TestData.txt');
+      const args = new URL('./Day06TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

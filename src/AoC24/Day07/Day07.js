@@ -1,11 +1,11 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2024/day/07
 
 // DAY=7 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n').filter(String);
   const formattedData = splitData.map((line) => {
@@ -17,7 +17,7 @@ exports.formatData = async (filepath) => {
     return objectifiedLine;
   });
   return formattedData;
-};
+}
 
 // Part One
 
@@ -26,7 +26,7 @@ exports.formatData = async (filepath) => {
 // Operators: * and +
 // Find: sum of the test values from just the equations that could possibly be true
 
-exports.combinations = (ops, results, i, r) => {
+export function combinations(ops, results, i, r) {
   if (i === r) {
     return results;
   } else {
@@ -43,11 +43,11 @@ exports.combinations = (ops, results, i, r) => {
         });
       });
     }
-    return exports.combinations(ops, newResults, i + 1, r);
+    return combinations(ops, newResults, i + 1, r);
   }
-};
+}
 
-exports.isEquationTrue = (expected, equationArr, optsArr) => {
+export function isEquationTrue(expected, equationArr, optsArr) {
   let result = 0;
   for (let i = 0; i < optsArr.length; i++) {
     if (i === 0) {
@@ -63,67 +63,65 @@ exports.isEquationTrue = (expected, equationArr, optsArr) => {
     }
   }
   return expected === result;
-};
+}
 
-exports.canEquationBeTrue = (equationObj, operators) => {
+export function canEquationBeTrue(equationObj, operators) {
   const { testValue, operands } = equationObj;
-  const combinations = exports.combinations(
+  const combinationsArr = combinations(
     operators,
     [],
     0,
     operands.length - 1
   );
 
-  for (let i = 0; i < combinations.length; i++) {
-    const passes = exports.isEquationTrue(testValue, operands, combinations[i]);
+  for (let i = 0; i < combinationsArr.length; i++) {
+    const passes = isEquationTrue(testValue, operands, combinationsArr[i]);
     if (passes) {
       return true;
     }
   }
   return false;
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let validTestValues = [];
 
   for (let i = 0; i < input.length; i++) {
-    if (exports.canEquationBeTrue(input[i], ['+', '*'])) {
+    if (canEquationBeTrue(input[i], ['+', '*'])) {
       validTestValues.push(input[i].testValue);
     }
   }
 
   return sum(validTestValues);
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   let validTestValues = [];
 
   for (let i = 0; i < input.length; i++) {
-    if (exports.canEquationBeTrue(input[i], ['+', '*', '||'])) {
+    if (canEquationBeTrue(input[i], ['+', '*', '||'])) {
       validTestValues.push(input[i].testValue);
     }
   }
 
   return sum(validTestValues);
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day07Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day07Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

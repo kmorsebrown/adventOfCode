@@ -1,18 +1,18 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const {
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import {
   arrayifyGrid,
   getCoordinatesForAllMatches,
   getAdjacentMatches,
-} = require('../../Utils/grids.js');
-const { sum } = require('../../Utils/maths.js');
+} from '../../Utils/grids.js';
+import { sum } from '../../Utils/maths.js';
 // https://adventofcode.com/2024/day/10
 
 // DAY=10 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   let parsedData = data.split('\n');
   return arrayifyGrid(parsedData, '');
-};
+}
 
 const TRAILHEAD = 0;
 const TRAILEND = 9;
@@ -75,10 +75,10 @@ async function generateTrailheadScores(grid, increment) {
   return trailheadScores;
 }
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const trailheadScores = await generateTrailheadScores(input, 1);
   return sum(trailheadScores);
-};
+}
 
 // Part Two
 
@@ -146,27 +146,25 @@ async function generateTrailheadRatings(grid, increment) {
   return trailheadRatings;
 }
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   const trailheadRatings = await generateTrailheadRatings(input, 1);
   return sum(trailheadRatings);
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day10Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day10Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();
