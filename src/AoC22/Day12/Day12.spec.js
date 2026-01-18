@@ -1,5 +1,10 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   getCoords,
   getPossibleMoves,
@@ -7,7 +12,7 @@ const {
   findShortestPath,
   getStartPoints,
   partTwo,
-} = require('./Day12.js');
+} from './Day12.js';
 
 // npm test src/AoC22/Day12/Day12.spec.js
 

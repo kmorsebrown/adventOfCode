@@ -1,20 +1,24 @@
-const fs = require('fs');
-const path = require('path');
-const { appendFile } = require('../Utils/globalFunctions.js');
-const { runDay01 } = require('./Day01/Day01.js');
-const { runDay02 } = require('./Day02/Day02.js');
-const { runDay03 } = require('./Day03/Day03.js');
-const { runDay04 } = require('./Day04/Day04.js');
-const { runDay05 } = require('./Day05/Day05.js');
-const { runDay06 } = require('./Day06/Day06.js');
-const { runDay07 } = require('./Day07/Day07.js');
-const { runDay08 } = require('./Day08/Day08.js');
-const { runDay09 } = require('./Day09/Day09.js');
-const { runDay10 } = require('./Day10/Day10.js');
-const { runDay11 } = require('./Day11/Day11.js');
-// const { runDay12 } = require('./Day12/Day12.js');
-// const { runDay13 } = require('./Day13/Day13.js');
-// const { runDay14 } = require('./Day14/Day14.js');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { appendFile } from '../Utils/globalFunctions.js';
+import { runDay01 } from './Day01/Day01.js';
+import { runDay02 } from './Day02/Day02.js';
+import { runDay03 } from './Day03/Day03.js';
+import { runDay04 } from './Day04/Day04.js';
+import { runDay05 } from './Day05/Day05.js';
+import { runDay06 } from './Day06/Day06.js';
+import { runDay07 } from './Day07/Day07.js';
+import { runDay08 } from './Day08/Day08.js';
+import { runDay09 } from './Day09/Day09.js';
+import { runDay10 } from './Day10/Day10.js';
+import { runDay11 } from './Day11/Day11.js';
+// import { runDay12 } from './Day12/Day12.js';
+// import { runDay13 } from './Day13/Day13.js';
+// import { runDay14 } from './Day14/Day14.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function printResult(title, filepath, resultsArr) {
   await appendFile(filepath, `\n\n${title}`);

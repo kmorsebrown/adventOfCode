@@ -1,5 +1,10 @@
-const path = require('path');
-const { formatData, partOne, partTwo } = require('./DayXX.js');
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import { formatData, partOne, partTwo } from './DayXX.js';
 
 // npm test src/AoC22/DayXX/DayXX.spec.js
 

@@ -1,11 +1,16 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   findDupLetters,
   getPrioritySum,
   getGroups,
   getBadges,
-} = require('./Day03.js');
+} from './Day03.js';
 
 describe('Day03', () => {
   describe('formatData', () => {

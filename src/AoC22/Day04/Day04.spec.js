@@ -1,9 +1,14 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   getCountOfFullyContainedOverlaps,
   getNumOverlaps,
-} = require('./Day04.js');
+} from './Day04.js';
 
 describe('Day04', () => {
   describe('formatData', () => {

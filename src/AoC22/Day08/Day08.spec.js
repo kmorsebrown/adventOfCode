@@ -1,5 +1,10 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   countEdgeTrees,
   getTreesAbove,
@@ -10,7 +15,7 @@ const {
   getScenicScore,
   partOne,
   partTwo,
-} = require('./Day08.js');
+} from './Day08.js';
 
 // npm test src/AoC22/Day08/Day08.spec.js
 

@@ -1,12 +1,17 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   getWorryWhileInspect,
   getTestResult,
   partOne,
   getInspectedTotal,
   partTwo,
-} = require('./Day11.js');
+} from './Day11.js';
 
 // npm test src/AoC22/Day11/Day11.spec.js
 
