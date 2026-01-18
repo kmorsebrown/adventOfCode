@@ -50,11 +50,14 @@ describe('Day01', () => {
       expect(actual).toEqual(-3);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('partTwo', () => {
+    it('returns 1 for )', async () => {
+      const actual = await partTwo(')');
+      expect(actual).toEqual(1);
+    });
+    it('returns 5 for ()())', async () => {
+      const actual = await partTwo('()())');
+      expect(actual).toEqual(5);
     });
   });
 });

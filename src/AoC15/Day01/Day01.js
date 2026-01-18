@@ -26,7 +26,23 @@ const partOne = async (input) => {
 
 // Part Two
 const partTwo = async (input) => {
-  return 'x';
+  let floor = 0;
+  let position = 0;
+  for (const char of input) {
+    position += 1;
+
+    if (char === '(') {
+      floor += 1;
+    }
+    if (char === ')') {
+      floor -= 1;
+    }
+
+    if (floor === -1) {
+      break;
+    }
+  }
+  return position;
 };
 
 const solve = createSolver(formatData, partOne, partTwo, '01', import.meta.url);
