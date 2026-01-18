@@ -179,7 +179,7 @@ const isOdd = (num) => {
   return num % 2 == 1;
 };
 
-module.exports = {
+export {
   sum,
   sortDescending,
   sortAscending,

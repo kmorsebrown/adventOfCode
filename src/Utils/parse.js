@@ -53,8 +53,4 @@ const mergeOverlap = (arr) => {
   return res;
 };
 
-module.exports = {
-  parseStringOfInts,
-  unique,
-  mergeOverlap,
-};
+export { parseStringOfInts, unique, mergeOverlap };

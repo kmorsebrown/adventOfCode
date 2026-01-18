@@ -15,7 +15,7 @@
     "test:2022": "jest --testPathPattern=src/AoC22 --collectCoverage=true --collectCoverageFrom=src/AoC22/**/*.{ts,js}",
     "test:2023": "jest --testPathPattern=src/AoC23 --collectCoverage=true --collectCoverageFrom=src/AoC23/**/*.{ts,js}",
     "test:2024": "jest --testPathPattern=src/AoC24 --collectCoverage=true --collectCoverageFrom=src/AoC24/**/*.{ts,js}",
-    "test:2025": "jest --testPathPattern=src/AoC24 --collectCoverage=true --collectCoverageFrom=src/AoC25/**/*.{ts,js}",
+    "test:2025": "jest --testPathPattern=src/AoC25 --collectCoverage=true --collectCoverageFrom=src/AoC25/**/*.{ts,js}",
     "test:utils": "jest --testPathPattern=src/Utils --collectCoverage=true --collectCoverageFrom=src/Utils/**/*.{ts,js}"
   },
   "repository": {
