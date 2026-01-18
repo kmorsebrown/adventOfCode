@@ -165,8 +165,6 @@ const solve = async () => {
       await partOne(formattedData, 1000),
       await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 08');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);

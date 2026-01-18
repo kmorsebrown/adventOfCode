@@ -13,7 +13,7 @@ import {
 describe('Day01', () => {
   describe('formatData', () => {
     it('Formats the data into an array of strings', async () => {
-      const args = require.resolve('./Day01Pt1TestData.txt');
+      const args = new URL('./Day01Pt1TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual([
         '1abc2',
@@ -23,7 +23,7 @@ describe('Day01', () => {
       ]);
     });
     it('Formats different data into an array of strings', async () => {
-      const args = require.resolve('./Day01Pt2TestData.txt');
+      const args = new URL('./Day01Pt2TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual([
         'two1nine',
@@ -92,7 +92,9 @@ describe('Day01', () => {
   });
   describe('partTwo', () => {
     it('returns sum of calibration values', async () => {
-      const args = await formatData(require.resolve('./Day01Pt2TestData.txt'));
+      const args = await formatData(
+        new URL('./Day01Pt2TestData.txt', import.meta.url).pathname
+      );
       const actual = await partTwo(args);
       expect(actual).toEqual(281);
     });

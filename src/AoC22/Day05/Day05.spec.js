@@ -9,7 +9,6 @@ import {
   formatMovesData,
   moveCrates,
   getTopCrates,
-  useCratemover9001,
 } from './Day05.js';
 
 describe('Day05', () => {

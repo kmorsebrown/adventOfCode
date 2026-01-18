@@ -4,7 +4,7 @@ import path from 'path';
 describe('globalFunctions', () => {
   describe('getData', () => {
     it('Reads text file', async () => {
-      const args = require.resolve('./testDataForSpec.txt');
+      const args = new URL('./testDataForSpec.txt', import.meta.url).pathname;
       const actual = await getData(args);
       expect(actual).toEqual('Hello.');
     });

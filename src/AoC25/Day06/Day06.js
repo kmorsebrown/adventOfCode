@@ -78,8 +78,6 @@ export async function solve() {
       await partOne(formattedData),
       await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 06');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);

@@ -28,7 +28,7 @@ describe('Day03', () => {
   ];
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day03TestData.txt');
+      const args = new URL('./Day03TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(formattedData);
     });
