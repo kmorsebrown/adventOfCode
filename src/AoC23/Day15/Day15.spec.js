@@ -1,10 +1,15 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   runHASH,
   runHASHMAP,
   partOne,
   partTwo,
-} = require('./Day15');
+} from './Day15.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day15/Day15.spec.js
 
@@ -24,7 +29,7 @@ describe('Day15', () => {
   ];
   describe('formatData', () => {
     it('Formats the data into an array of strings', async () => {
-      const args = require.resolve('./Day15TestData.txt');
+      const args = new URL('./Day15TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockData);
     });

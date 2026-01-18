@@ -1,10 +1,10 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2024/day/13
 
 // DAY=13 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const machines = data.split('\n\n');
 
@@ -23,14 +23,14 @@ exports.formatData = async (filepath) => {
       P: { x: parseInt(P_arr[0][0]), y: parseInt(P_arr[1][0]) },
     };
   });
-};
+}
 
 const A_TOKENS = 3;
 const B_TOKENS = 1;
 
 // Part One
 
-exports.solveAandB = (machine, maxButtonPress) => {
+export function solveAandB(machine, maxButtonPress) {
   const AX = machine.A.x,
     BX = machine.B.x,
     PX = machine.P.x;
@@ -49,22 +49,22 @@ exports.solveAandB = (machine, maxButtonPress) => {
   }
 
   return undefined;
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let results = [];
   input.forEach((machine) => {
-    const tokens = exports.solveAandB(machine, 100);
+    const tokens = solveAandB(machine, 100);
     if (tokens) {
       results.push(tokens.A * A_TOKENS + tokens.B * B_TOKENS);
     }
   });
   return sum(results);
-};
+}
 
 // Part Two
 
-exports.solveAandBpt2 = (machine) => {
+export function solveAandBpt2(machine) {
   const AX = machine.A.x,
     BX = machine.B.x,
     PX = machine.P.x;
@@ -81,38 +81,35 @@ exports.solveAandBpt2 = (machine) => {
   }
 
   return undefined;
-};
+}
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   let results = [];
   input.forEach((machine) => {
     machine.P.x += 10000000000000;
     machine.P.y += 10000000000000;
 
-    const tokens = exports.solveAandBpt2(machine);
+    const tokens = solveAandBpt2(machine);
     if (tokens) {
       results.push(tokens.A * A_TOKENS + tokens.B * B_TOKENS);
     }
   });
   return sum(results);
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day13Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day13Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

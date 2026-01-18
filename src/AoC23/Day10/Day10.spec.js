@@ -1,4 +1,6 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   getStartCoordinates,
   getPipeFromDir,
@@ -7,7 +9,10 @@ const {
   getNextStep,
   partOne,
   partTwo,
-} = require('./Day10');
+} from './Day10.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day10/Day10.spec.js
 
@@ -55,12 +60,12 @@ describe('Day10', () => {
   const WEST = 'WEST';
   describe('formatData', () => {
     it('Formats the data A', async () => {
-      const args = require.resolve('./Day10TestDataA.txt');
+      const args = new URL('./Day10TestDataA.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockDataA);
     });
     it('Formats the data B', async () => {
-      const args = require.resolve('./Day10TestDataB.txt');
+      const args = new URL('./Day10TestDataB.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockDataB);
     });

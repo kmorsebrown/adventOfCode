@@ -1,19 +1,19 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
-const {
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
+import {
   arrayifyGrid,
   getCoordinatesForMatch,
   getAdjacentCoords,
-} = require('../../Utils/grids.js');
-const { log } = require('console');
+} from '../../Utils/grids.js';
+import { log } from 'console';
 
 // https://adventofcode.com/2025/day/7
 
 // DAY=7 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return arrayifyGrid(data.split('\n'), '');
-};
+}
 
 const getStartPosition = (grid) => {
   for (const [i, row] of grid.entries()) {
@@ -22,10 +22,10 @@ const getStartPosition = (grid) => {
       return match[0];
     }
   }
-};
+}
 // Part One
 
-exports.moveBeam = (height, width, nextRow, current) => {
+export function moveBeam(height, width, nextRow, current) {
   if (nextRow) {
     const row = current.row;
     const col = current.col;
@@ -54,9 +54,9 @@ exports.moveBeam = (height, width, nextRow, current) => {
       return [southCoord];
     }
   }
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let queue = new Queue();
   let queuedBeams = new Set();
 
@@ -70,7 +70,7 @@ exports.partOne = async (input) => {
   while (!queue.isEmpty()) {
     let current = queue.front();
 
-    let nextBeams = exports.moveBeam(
+    let nextBeams = moveBeam(
       input.length,
       input[0].length,
       input[current.row + 1],
@@ -90,12 +90,12 @@ exports.partOne = async (input) => {
     queue.dequeue();
   }
   return numSplits;
-};
+}
 
 // Part Two
 
-exports.getNextRow = () => {};
-exports.partTwo = async (input) => {
+export function getNextRow() {};
+export async function partTwo(input) {
   const start = getStartPosition(input);
 
   // key: col, val: num incoming beams
@@ -109,7 +109,7 @@ exports.partTwo = async (input) => {
   for (let i = 1; i < input.length; i += 2) {
     let nextRow = new Map();
     currentRow.forEach((numBeams, col) => {
-      let nextBeams = exports.moveBeam(
+      let nextBeams = moveBeam(
         input.length,
         input[0].length,
         input[i + 1],
@@ -136,25 +136,20 @@ exports.partTwo = async (input) => {
   }
   const beams = [...currentRow.values()];
   return sum(beams);
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day07Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day07Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 07');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

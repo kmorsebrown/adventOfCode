@@ -1,10 +1,10 @@
-const {
+import {
   formatData,
   rotateDial,
   rotateDialPt2,
   partOne,
   partTwo,
-} = require('./Day01');
+} from './Day01.js';
 
 // npm test -- src/AoC25/Day01/Day01.spec.js
 
@@ -24,7 +24,7 @@ describe('Day01', () => {
 
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day01TestData.txt');
+      const args = new URL('./Day01TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });
@@ -121,7 +121,6 @@ describe('Day01', () => {
   describe('partTwo', () => {
     it('Password 6', async () => {
       const args = mockInput;
-      console.error(mockInput);
       const actual = await partTwo(args);
       expect(actual).toEqual(6);
     });

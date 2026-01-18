@@ -1,5 +1,9 @@
-const path = require('path');
-const { formatData, getNumIncreases, getSumIncreases } = require('./Day01.js');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { formatData, getNumIncreases, getSumIncreases } from './Day01.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('Day01', () => {
   describe('formatData', () => {

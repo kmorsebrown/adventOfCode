@@ -1,11 +1,16 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   translateMoves,
   calculateScore,
   translateGuide,
   calculateRealScore,
-} = require('./Day02.js');
+} from './Day02.js';
 
 describe('Day02', () => {
   describe('formatData', () => {

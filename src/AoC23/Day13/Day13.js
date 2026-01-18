@@ -1,9 +1,9 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { transposeArrStr } = require('../../Utils/grids.js');
-const _ = require('lodash');
+import { getData } from '../../Utils/globalFunctions.js';
+import { transposeArrStr } from '../../Utils/grids.js';
+import _ from 'lodash';
 
 // https://adventofcode.com/2023/day/13
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
   data = data.split('\n\n');
   data = data.map((grid) => grid.split('\n'));
@@ -12,7 +12,7 @@ exports.formatData = async (filepath) => {
 
 // Part One
 
-exports.checkForReflection = (grid, idx) => {
+export function checkForReflection(grid, idx) {
   if (grid[idx] === grid[idx - 1]) {
     const maxReflectionSize = Math.min(idx, grid.length - idx);
 
@@ -23,12 +23,12 @@ exports.checkForReflection = (grid, idx) => {
   }
   return false;
 };
-exports.getReflectionData = (grid) => {
+export function getReflectionData(grid) {
   const transposedGrid = transposeArrStr(grid);
 
   // check for horizontal reflection
   for (let i = 1; i < grid.length; i++) {
-    if (exports.checkForReflection(grid, i)) {
+    if (checkForReflection(grid, i)) {
       return {
         reflectionAxis: 'horiz',
         reflectionIdx: [i - 1, i],
@@ -38,7 +38,7 @@ exports.getReflectionData = (grid) => {
 
   // check for vertical reflection (using transposed grid)
   for (let i = 1; i < transposedGrid.length; i++) {
-    if (exports.checkForReflection(transposedGrid, i)) {
+    if (checkForReflection(transposedGrid, i)) {
       return {
         reflectionAxis: 'vert',
         reflectionIdx: [i - 1, i],
@@ -47,8 +47,8 @@ exports.getReflectionData = (grid) => {
   }
 };
 
-exports.partOne = async (input) => {
-  const reflections = input.map((grid) => exports.getReflectionData(grid));
+export async function partOne(input) {
+  const reflections = input.map((grid) => getReflectionData(grid));
   let result = 0;
 
   reflections.forEach((grid) => {
@@ -67,7 +67,7 @@ exports.partOne = async (input) => {
 
 // Part Two
 
-exports.findNumCharDiffs = (stringA, stringB) => {
+export function findNumCharDiffs(stringA, stringB) {
   let numDiffs = 0;
   for (let i = 0; i < stringA.length; i++) {
     if (stringA[i] !== stringB[i]) {
@@ -78,7 +78,7 @@ exports.findNumCharDiffs = (stringA, stringB) => {
   return numDiffs;
 };
 
-exports.getReflectionIdxWithSmudge = (grid) => {
+export function getReflectionIdxWithSmudge(grid) {
   console.log('input:\n', grid);
 
   for (let i = 0; i < grid.length; i++) {
@@ -91,17 +91,17 @@ exports.getReflectionIdxWithSmudge = (grid) => {
       .join('');
     let bottomHalf = grid.slice(i).slice(0, maxReflectionSize).join('');
 
-    if (exports.findNumCharDiffs(topHalf, bottomHalf) === 1) {
+    if (findNumCharDiffs(topHalf, bottomHalf) === 1) {
       return i;
     }
   }
 };
 
-exports.getReflectionDataWithSmudges = (grid) => {
+export function getReflectionDataWithSmudges(grid) {
   const transposedGrid = transposeArrStr(grid);
 
   // check for horizontal reflection w/smudges
-  const horizSmudgeIdx = exports.getReflectionIdxWithSmudge(grid);
+  const horizSmudgeIdx = getReflectionIdxWithSmudge(grid);
   if (horizSmudgeIdx >= 0) {
     return {
       reflectionAxis: 'horiz',
@@ -110,7 +110,7 @@ exports.getReflectionDataWithSmudges = (grid) => {
   }
 
   // check for vertical reflection w/smudges (using transposed grid)
-  const vertSmudgeIdx = exports.getReflectionIdxWithSmudge(transposedGrid);
+  const vertSmudgeIdx = getReflectionIdxWithSmudge(transposedGrid);
   if (vertSmudgeIdx >= 0) {
     return {
       reflectionAxis: 'vert',
@@ -119,9 +119,9 @@ exports.getReflectionDataWithSmudges = (grid) => {
   }
 };
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   const reflections = input.map((grid) =>
-    exports.getReflectionDataWithSmudges(grid)
+    getReflectionDataWithSmudges(grid)
   );
   let result = 0;
 
@@ -139,16 +139,14 @@ exports.partTwo = async (input) => {
   return result;
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day13Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day13Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -157,4 +155,3 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();

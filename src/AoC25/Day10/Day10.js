@@ -1,16 +1,16 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const {
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import {
   sum,
   isEven,
   generateRange,
   combinationRepetitionGenerator,
-} = require('../../Utils/maths.js');
+} from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/10
 
 // DAY=10 npm run 2025
-const formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const machines = data.split('\n');
 
@@ -32,7 +32,7 @@ const formatData = async (filepath) => {
     formatted.push({ lightDiagram, buttonSchematics, joltageRequirement });
   }
   return formatted;
-};
+}
 
 const maskLightDiagram = (diagram) => {
   return diagram.reduce((mask, char, i) => {
@@ -249,9 +249,8 @@ const partTwo = async (input) => {
 };
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day10Input.txt'
-  );
+  const dataPath = new URL('../puzzleInputs/Day10Input.txt', import.meta.url)
+    .pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -259,19 +258,15 @@ const solve = async () => {
       await partOne(formattedData),
       await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 10');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
 };
 
-solve();
 
-module.exports = {
+export {
   solve,
-  formatData,
   fewestButtonPressesForLights,
   maskLightDiagram,
   maskButtonSchematic,

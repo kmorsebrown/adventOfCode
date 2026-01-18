@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2022/day/4
 
@@ -56,10 +54,11 @@ async function getNumOverlaps(input) {
   return overlapsCount;
 }
 
-async function runDay04() {
-  const dataPath = require.resolve(
-    '../../../src/AoC22/puzzleInputs/Day04Input.txt'
-  );
+async function solve() {
+  const dataPath = new URL(
+    '../puzzleInputs/Day04Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -73,9 +72,4 @@ async function runDay04() {
   }
 }
 
-module.exports = {
-  formatData,
-  getCountOfFullyContainedOverlaps,
-  getNumOverlaps,
-  runDay04,
-};
+export { formatData, getCountOfFullyContainedOverlaps, getNumOverlaps, solve };

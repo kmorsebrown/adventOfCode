@@ -1,10 +1,15 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   sumCalories,
   getHighestTotal,
   getSumTopThree,
-} = require('./Day01.js');
+} from './Day01.js';
 
 describe('Day01', () => {
   describe('formatData', () => {

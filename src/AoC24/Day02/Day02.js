@@ -1,11 +1,11 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
 
 // https://adventofcode.com/2024/day/02
 
 // DAY=2 npm run 2024
 
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   // Puzzle input consists of many reports: one report per line
   // Each report is a list of numbers, levels, separated by spaces
   const data = await getData(filepath);
@@ -14,7 +14,7 @@ exports.formatData = async (filepath) => {
     .filter(String)
     .map((level) => parseStringOfInts(level, ' '));
   return reports;
-};
+}
 
 // Part One
 
@@ -25,7 +25,7 @@ exports.formatData = async (filepath) => {
     - Any two adjacent levels differ by at least one and at most three.
 */
 
-exports.isSafe = (array) => {
+export function isSafe(array) {
   const checkDir = (a, b) => {
     return a - b > 0 ? 'inc' : 'dec';
   };
@@ -56,19 +56,19 @@ exports.isSafe = (array) => {
     isSafe: badLevels.size === 0 ? true : false,
     badLevels: badLevels,
   };
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let numSafeReports = 0;
 
   input.forEach((report) => {
-    if (exports.isSafe(report).isSafe) {
+    if (isSafe(report).isSafe) {
       numSafeReports += 1;
     }
   });
 
   return numSafeReports;
-};
+}
 
 // Part Two
 
@@ -89,8 +89,8 @@ const checkDiff = (a, b) => {
   return diff >= 1 && diff <= 3;
 };
 
-exports.isSafePtTwo = (array) => {
-  const initialEval = exports.isSafe(array);
+export function isSafePtTwo(array) {
+  const initialEval = isSafe(array);
 
   // if report is safe without modification, return true
   if (initialEval.isSafe) {
@@ -102,7 +102,7 @@ exports.isSafePtTwo = (array) => {
       const arrayWithoutOneLevel = array.slice(0, i).concat(array.slice(i + 1));
 
       // check if the report is now safe without the current level
-      const newEval = exports.isSafe(arrayWithoutOneLevel);
+      const newEval = isSafe(arrayWithoutOneLevel);
 
       // if removing the current level makes the report safe, return true
       if (newEval.isSafe) {
@@ -113,36 +113,33 @@ exports.isSafePtTwo = (array) => {
     // if report is still unsafe, return false
     return false;
   }
-};
+}
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   let numSafeReports = 0;
 
   input.forEach((report) => {
-    if (exports.isSafePtTwo(report)) {
+    if (isSafePtTwo(report)) {
       numSafeReports += 1;
     }
   });
 
   return numSafeReports;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day02Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

@@ -1,10 +1,15 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   getDirections,
   formatData,
   partOne,
   calculateLcmForAll,
   partTwo,
-} = require('./Day08');
+} from './Day08.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day08/Day08.spec.js
 
@@ -38,24 +43,24 @@ describe('Day08', () => {
   };
   describe('getDirections', () => {
     it('Returns directions RL', async () => {
-      const args = require.resolve('./Day08TestDataA.txt');
+      const args = new URL('./Day08TestDataA.txt', import.meta.url).pathname;
       const actual = await getDirections(args);
       expect(actual).toEqual(mockInstruxA);
     });
     it('Returns directions LLR', async () => {
-      const args = require.resolve('./Day08TestDataB.txt');
+      const args = new URL('./Day08TestDataB.txt', import.meta.url).pathname;
       const actual = await getDirections(args);
       expect(actual).toEqual(mockInstruxB);
     });
   });
   describe('formatData', () => {
     it('Formats the node definitions into an object', async () => {
-      const args = require.resolve('./Day08TestDataA.txt');
+      const args = new URL('./Day08TestDataA.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockNodesA);
     });
     it('Formats the node definitions into an object', async () => {
-      const args = require.resolve('./Day08TestDataB.txt');
+      const args = new URL('./Day08TestDataB.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockNodesB);
     });

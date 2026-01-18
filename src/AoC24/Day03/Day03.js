@@ -1,4 +1,4 @@
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2024/day/03
 
@@ -11,26 +11,26 @@ const { getData } = require('../../Utils/globalFunctions.js');
   Invalid characters should be ignored,
   even if they look like they're part of a mul instruction
 */
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data;
-};
+}
 
 // Part One
 
-exports.partOneRegex = /mul\(\d{1,3},\d{1,3}\)/g;
-exports.partTwoRegex = /mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\)/g;
+export const partOneRegex = /mul\(\d{1,3},\d{1,3}\)/g;
+export const partTwoRegex = /mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\)/g;
 
-exports.extractMatches = (regex, string) => {
+export function extractMatches(regex, string) {
   const matches = string.matchAll(regex);
   const instructions = [];
   for (const match of matches) {
     instructions.push(match[0]);
   }
   return instructions;
-};
+}
 
-exports.extractMultipliers = (array, checkConditionals = false) => {
+export function extractMultipliers(array, checkConditionals = false) {
   const convertInstructions = (string) => {
     string = string.replace(/(mul\()/g, '');
     string = string.replace(/\)/g, '');
@@ -66,11 +66,11 @@ exports.extractMultipliers = (array, checkConditionals = false) => {
 
     return multipliers;
   }
-};
+}
 
-exports.partOne = async (input) => {
-  const instructions = exports.extractMatches(exports.partOneRegex, input);
-  const multipliers = exports.extractMultipliers(instructions);
+export async function partOne(input) {
+  const instructions = extractMatches(partOneRegex, input);
+  const multipliers = extractMultipliers(instructions);
 
   let result = 0;
 
@@ -78,13 +78,13 @@ exports.partOne = async (input) => {
     result += pair[0] * pair[1];
   });
   return result;
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
-  const instructions = exports.extractMatches(exports.partTwoRegex, input);
+export async function partTwo(input) {
+  const instructions = extractMatches(partTwoRegex, input);
 
-  const multipliers = exports.extractMultipliers(instructions, true);
+  const multipliers = extractMultipliers(instructions, true);
 
   let result = 0;
 
@@ -93,24 +93,21 @@ exports.partTwo = async (input) => {
   });
 
   return result;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day03Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day03Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

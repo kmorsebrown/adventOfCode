@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2022/day/3
 
@@ -88,10 +86,11 @@ async function getBadges(rucksackGroups) {
   return badgeArr;
 }
 
-async function runDay03() {
-  const dataPath = require.resolve(
-    '../../../src/AoC22/puzzleInputs/Day03Input.txt'
-  );
+async function solve() {
+  const dataPath = new URL(
+    '../puzzleInputs/Day03Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -108,11 +107,4 @@ async function runDay03() {
   }
 }
 
-module.exports = {
-  formatData,
-  findDupLetters,
-  getPrioritySum,
-  getGroups,
-  getBadges,
-  runDay03,
-};
+export { formatData, findDupLetters, getPrioritySum, getGroups, getBadges, solve };

@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2022/day/1
 
@@ -37,10 +35,11 @@ async function getSumTopThree(input) {
   return topThree.reduce((a, b) => a + b, 0);
 }
 
-async function runDay01() {
-  const dataPath = require.resolve(
-    '../../../src/AoC22/puzzleInputs/Day01Input.txt'
-  );
+async function solve() {
+  const dataPath = new URL(
+    '../puzzleInputs/Day01Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -55,10 +54,4 @@ async function runDay01() {
   }
 }
 
-module.exports = {
-  getHighestTotal,
-  formatData,
-  sumCalories,
-  getSumTopThree,
-  runDay01,
-};
+export { getHighestTotal, formatData, sumCalories, getSumTopThree, solve };

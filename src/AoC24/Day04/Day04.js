@@ -1,19 +1,19 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const {
+import { getData } from '../../Utils/globalFunctions.js';
+import {
   arrayifyGrid,
   rotateOneEighty,
   transpose,
   getAdjacentCoords,
   getValueFromCoords,
-} = require('../../Utils/grids.js');
+} from '../../Utils/grids.js';
 
 // https://adventofcode.com/2024/day/04
 
 // DAY=4 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return arrayifyGrid(data.split('\n').filter(String), '');
-};
+}
 
 // Part One
 
@@ -28,12 +28,12 @@ exports.formatData = async (filepath) => {
     overlapping other words
 */
 
-exports.concatAndValidate = (arr, str) => {
+export function concatAndValidate(arr, str) {
   const stringToCheck = arr.join('');
   return stringToCheck === str;
-};
+}
 
-exports.getCoordinatesForAllCases = (two_d_array, str) => {
+export function getCoordinatesForAllCases(two_d_array, str) {
   let coordinates = [];
   two_d_array.forEach((row, ri) => {
     row.forEach((el, ci) => {
@@ -46,9 +46,9 @@ exports.getCoordinatesForAllCases = (two_d_array, str) => {
     });
   });
   return coordinates;
-};
+}
 
-exports.getDirectionsToCheck = ({ width, height, row, col, string }) => {
+export function getDirectionsToCheck({ width, height, row, col, string }) {
   let dirArr = [];
   let len = string.length;
 
@@ -69,17 +69,17 @@ exports.getDirectionsToCheck = ({ width, height, row, col, string }) => {
   }
 
   return dirArr;
-};
+}
 
-exports.getPartOneMatches = async (input, word) => {
-  const coords = exports.getCoordinatesForAllCases(input, word[0]);
+export async function getPartOneMatches(input, word) {
+  const coords = getCoordinatesForAllCases(input, word[0]);
   const width = input[0].length;
   const height = input.length;
   let matches = 0;
 
   for (let i = 0; i < coords.length; i++) {
     const { row, col } = coords[i];
-    const dirsToCheck = exports.getDirectionsToCheck({
+    const dirsToCheck = getDirectionsToCheck({
       width: width,
       height: height,
       row: row,
@@ -102,24 +102,24 @@ exports.getPartOneMatches = async (input, word) => {
         wordCoords.push(adjCoords);
         wordToCheck.push(getValueFromCoords(input, adjCoords));
       }
-      const isMatch = exports.concatAndValidate(wordToCheck, word);
+      const isMatch = concatAndValidate(wordToCheck, word);
       if (isMatch) {
         matches += 1;
       }
     });
   }
   return matches;
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const rotatedInput = rotateOneEighty(input);
   const results = await Promise.all([
-    await exports.getPartOneMatches(input, 'XMAS'),
-    await exports.getPartOneMatches(rotatedInput, 'XMAS'),
+    await getPartOneMatches(input, 'XMAS'),
+    await getPartOneMatches(rotatedInput, 'XMAS'),
   ]);
 
   return results[0] + results[1];
-};
+}
 
 // Part Two
 
@@ -135,7 +135,7 @@ exports.partOne = async (input) => {
     S_S      M_M
 */
 
-exports.removeSides = (input) => {
+export function removeSides(input) {
   let newGrid = JSON.parse(JSON.stringify(input));
 
   newGrid.pop();
@@ -149,17 +149,16 @@ exports.removeSides = (input) => {
   newGrid = transpose(newGrid);
 
   return newGrid;
-};
+}
 
-exports.partTwo = async (input, word) => {
+export async function partTwo(input, word) {
   const width = input[0].length;
   const height = input.length;
   const reverseWord = word.split('').reverse().join('');
 
   let matches = 0;
 
-  const coords = exports
-    .getCoordinatesForAllCases(exports.removeSides(input), 'A')
+  const coords = getCoordinatesForAllCases(removeSides(input), 'A')
     .map((el) => {
       return {
         row: el.row + 1,
@@ -194,35 +193,32 @@ exports.partTwo = async (input, word) => {
     SE2NW.unshift(getValueFromCoords(input, wordCoords.SE));
 
     const NE2SW_isMatch =
-      exports.concatAndValidate(NE2SW, word) ||
-      exports.concatAndValidate(NE2SW, reverseWord);
+      concatAndValidate(NE2SW, word) ||
+      concatAndValidate(NE2SW, reverseWord);
     const SE2NW_isMatch =
-      exports.concatAndValidate(SE2NW, word) ||
-      exports.concatAndValidate(SE2NW, reverseWord);
+      concatAndValidate(SE2NW, word) ||
+      concatAndValidate(SE2NW, reverseWord);
 
     if (NE2SW_isMatch && SE2NW_isMatch) {
       matches += 1;
     }
   }
   return matches;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day04Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day04Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData, 'MAS'),
+      await partOne(formattedData),
+      await partTwo(formattedData, 'MAS'),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

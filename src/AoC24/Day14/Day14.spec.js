@@ -1,4 +1,4 @@
-const {
+import {
   formatData,
   moveRobot,
   moveRobots,
@@ -6,7 +6,7 @@ const {
   getRobotsPerQuadrant,
   partOne,
   partTwo,
-} = require('./Day14');
+} from './Day14.js';
 
 // npm test -- src/AoC24/Day14/Day14.spec.js
 
@@ -27,7 +27,7 @@ describe('Day14', () => {
   ];
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day14TestData.txt');
+      const args = new URL('./Day14TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

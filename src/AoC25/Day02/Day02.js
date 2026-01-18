@@ -1,16 +1,16 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { sum, sortAscending } = require('../../Utils/maths.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { sum, sortAscending } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/02
 
 // DAY=02 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const formatted = data.split(',').map((range) => {
     return range.trim().split('-');
   });
   return formatted;
-};
+}
 
 function* generateRange(start, end) {
   for (let i = start; i <= end; i++) {
@@ -33,7 +33,7 @@ const splitId = (id) => {
     return [parseInt(firstHalf), parseInt(secondHalf)];
   }
 };
-exports.getSubstring = (id, n) => {
+export function getSubstring(id, n) {
   if (id.length % n != 0) {
     console.error(`Invalid Input: ${id.length} is not divisible by ${n}`);
     return;
@@ -42,7 +42,7 @@ exports.getSubstring = (id, n) => {
   let parts = Math.floor(id.length / n);
 
   return id.substring(0, parts);
-};
+}
 
 const roundUpToEven = (num) => {
   return '1' + '0'.repeat(num.length);
@@ -53,7 +53,7 @@ const roundDownToEven = (num) => {
 };
 
 // https://www.geeksforgeeks.org/dsa/find-all-factors-of-a-natural-number/
-exports.findDivisors = (id) => {
+export function findDivisors(id) {
   let divisors = [];
   let n = id.length;
 
@@ -74,10 +74,10 @@ exports.findDivisors = (id) => {
     }
   }
   return sortAscending(divisors);
-};
+}
 
 // Part One
-exports.filterRangesPartOne = (ranges) => {
+export function filterRangesPartOne(ranges) {
   return ranges
     .map((range) => {
       const startId = range[0];
@@ -121,9 +121,9 @@ exports.filterRangesPartOne = (ranges) => {
       return [newStartId, newEndId];
     })
     .filter(Boolean);
-};
+}
 
-exports.findDuplicatesInRangePartOne = (range) => {
+export function findDuplicatesInRangePartOne(range) {
   const startId = range[0];
   const splitStartId = splitId(startId);
 
@@ -149,21 +149,21 @@ exports.findDuplicatesInRangePartOne = (range) => {
     ...generateRange(parseInt(startIdFirstHalf), parseInt(endIdFirstHalf)),
   ];
   return invalidIdFirstHalves.map((num) => `${num}${num}`);
-};
+}
 
-exports.partOne = async (input) => {
-  const filteredRanges = exports.filterRangesPartOne(input);
+export async function partOne(input) {
+  const filteredRanges = filterRangesPartOne(input);
 
   const invalidIds = filteredRanges
-    .map((range) => exports.findDuplicatesInRangePartOne(range))
+    .map((range) => findDuplicatesInRangePartOne(range))
     .flat();
 
   return sum(invalidIds);
-};
+}
 
 // Part Two
 
-exports.filterRangesPartTwo = (ranges) => {
+export function filterRangesPartTwo(ranges) {
   let newRanges = [];
 
   ranges.forEach((range) => {
@@ -191,20 +191,20 @@ exports.filterRangesPartTwo = (ranges) => {
   });
 
   return newRanges;
-};
-exports.findInvalidIds = (range) => {
+}
+export function findInvalidIds(range) {
   const startId = range[0];
   const endId = range[1];
 
   const idList = [...generateRange(parseInt(startId), parseInt(endId))];
 
-  const divisors = exports.findDivisors(startId);
+  const divisors = findDivisors(startId);
 
   let invalidIds = new Set();
 
   divisors.forEach((divisor) => {
     const substrings = [
-      ...new Set(idList.map((id) => exports.getSubstring(String(id), divisor))),
+      ...new Set(idList.map((id) => getSubstring(String(id), divisor))),
     ];
     for (const str of substrings) {
       const possibleInvalidId = str.repeat(divisor);
@@ -221,35 +221,30 @@ exports.findInvalidIds = (range) => {
     }
   });
   return [...invalidIds];
-};
+}
 
-exports.partTwo = async (input) => {
-  const filteredRanges = exports.filterRangesPartTwo(input);
+export async function partTwo(input) {
+  const filteredRanges = filterRangesPartTwo(input);
 
   const invalidIds = filteredRanges
-    .map((range) => exports.findInvalidIds(range))
+    .map((range) => findInvalidIds(range))
     .flat();
 
   return sum(invalidIds);
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day02Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 02');
-    console.log(results);
     return results;
   } catch (err) {
     console.error(err);
   }
-};
+}
 
-exports.solve();

@@ -1,5 +1,10 @@
-const path = require('path');
-const { formatData, getNumCharactersProcessed } = require('./Day06.js');
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import { formatData, getNumCharactersProcessed } from './Day06.js';
 
 describe('Day06', () => {
   describe('formatData', () => {

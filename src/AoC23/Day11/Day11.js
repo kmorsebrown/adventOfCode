@@ -1,14 +1,14 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum, sortAscending } = require('../../Utils/maths.js');
-const _ = require('lodash');
+import { getData } from '../../Utils/globalFunctions.js';
+import { sum, sortAscending } from '../../Utils/maths.js';
+import _ from 'lodash';
 
 // https://adventofcode.com/2023/day/11
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
   return data.split('\n');
 };
 
-exports.getGalaxyCoords = (data) => {
+export function getGalaxyCoords(data) {
   let galaxies = new Map();
 
   let currentGalaxyId = 1;
@@ -24,11 +24,11 @@ exports.getGalaxyCoords = (data) => {
   return galaxies;
 };
 
-exports.expandUniverse = (data, increase) => {
+export function expandUniverse(data, increase) {
   const universeWidth = data[0].length;
   const universeLength = data.length;
 
-  const galaxies = exports.getGalaxyCoords(data);
+  const galaxies = getGalaxyCoords(data);
 
   const rowsWithGalaxies = Array.from(galaxies.values()).map((obj) => obj.y);
   const colsWithGalaxies = Array.from(galaxies.values()).map((obj) => obj.x);
@@ -60,7 +60,7 @@ exports.expandUniverse = (data, increase) => {
   return galaxies;
 };
 
-exports.getDistance = (map, keyA, keyB) => {
+export function getDistance(map, keyA, keyB) {
   const galaxyA = map.get(keyA);
   const galaxyB = map.get(keyB);
 
@@ -75,14 +75,14 @@ exports.getDistance = (map, keyA, keyB) => {
   which I'm preserving in comments because I'm very proud of myself for 
   correctly guessing the Part 2 twist
 */
-exports.getSumOfDistancesBetweenAllGalaxies = async (input, expansion) => {
+export async function getSumOfDistancesBetweenAllGalaxies(input, expansion) {
   // part 1 version of function did not have the "expansion" arg
 
   // remove the row/col that already exists from the amount the indexes will be increased
   const increase = expansion - 1;
   // above line new for part 2
 
-  let galaxy = exports.expandUniverse(input, increase);
+  let galaxy = expandUniverse(input, increase);
   // part 1 version of expandUniverse() callback had args set as (input, 1)
 
   let galaxyKeys = Array.from([...galaxy.keys()]);
@@ -92,23 +92,21 @@ exports.getSumOfDistancesBetweenAllGalaxies = async (input, expansion) => {
   while (galaxyKeys.length > 1) {
     let keyA = galaxyKeys.shift();
     for (const key of galaxyKeys) {
-      distances.push(exports.getDistance(galaxy, keyA, key));
+      distances.push(getDistance(galaxy, keyA, key));
     }
   }
 
   return sum(distances);
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day11Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day11Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.getSumOfDistancesBetweenAllGalaxies(formattedData, 2),
-      await exports.getSumOfDistancesBetweenAllGalaxies(formattedData, 1000000),
+      await getSumOfDistancesBetweenAllGalaxies(formattedData, 2),
+      await getSumOfDistancesBetweenAllGalaxies(formattedData, 1000000),
     ]);
     console.log(results);
     return results;
@@ -117,4 +115,3 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();

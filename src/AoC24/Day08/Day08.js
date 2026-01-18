@@ -1,17 +1,17 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { unique } = require('../../Utils/parse.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { unique } from '../../Utils/parse.js';
 
 // https://adventofcode.com/2024/day/08
 
 // DAY=8 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n').map((e) => e.split(''));
   return splitData;
-};
+}
 
 // Part One
-exports.generateAntennaMap = (input) => {
+export function generateAntennaMap(input) {
   const height = input.length;
   const width = input[0].length;
   const frequencies = unique(input.flat()).filter((e) => e != '.');
@@ -29,9 +29,9 @@ exports.generateAntennaMap = (input) => {
   }
 
   return antenna;
-};
+}
 
-exports.getDiffs = (value, diffsMap) => {
+export function getDiffs(value, diffsMap) {
   for (let i = 0; i < value.length; i++) {
     for (let j = i + 1; j < value.length; j++) {
       const diffsKey = [value[i], value[j]];
@@ -42,19 +42,19 @@ exports.getDiffs = (value, diffsMap) => {
       diffsMap.set(diffsKey, diffObj);
     }
   }
-};
+}
 
-exports.generateDiffsMap = (antennaMap) => {
+export function generateDiffsMap(antennaMap) {
   const diffsMap = new Map();
 
   [...antennaMap.values()].forEach((value) =>
-    exports.getDiffs(value, diffsMap)
+    getDiffs(value, diffsMap)
   );
 
   return diffsMap;
-};
+}
 
-exports.plotAntinodes = (antennas, diff, height, width, antinodesSet) => {
+export function plotAntinodes(antennas, diff, height, width, antinodesSet) {
   const { r_diff, c_diff } = diff;
   const A = antennas[0];
   const B = antennas[1];
@@ -73,22 +73,22 @@ exports.plotAntinodes = (antennas, diff, height, width, antinodesSet) => {
   if (inBounds(antiNodeB.r, antiNodeB.c)) {
     antinodesSet.add(JSON.stringify(antiNodeB));
   }
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const antinodes = new Set();
-  const antennaMap = exports.generateAntennaMap(input);
-  const diffsMap = exports.generateDiffsMap(antennaMap);
+  const antennaMap = generateAntennaMap(input);
+  const diffsMap = generateDiffsMap(antennaMap);
 
   diffsMap.forEach((value, key) => {
-    exports.plotAntinodes(key, value, input.length, input[0].length, antinodes);
+    plotAntinodes(key, value, input.length, input[0].length, antinodes);
   });
 
   return antinodes.size;
-};
+}
 
 // Part Two
-exports.plotAntinodesPt2 = (antennas, diff, height, width, antinodesSet) => {
+export function plotAntinodesPt2(antennas, diff, height, width, antinodesSet) {
   const { r_diff, c_diff } = diff;
   const A = antennas[0];
   const B = antennas[1];
@@ -120,14 +120,14 @@ exports.plotAntinodesPt2 = (antennas, diff, height, width, antinodesSet) => {
 
   A_antinodes.forEach((antiNode) => antinodesSet.add(JSON.stringify(antiNode)));
   B_antinodes.forEach((antiNode) => antinodesSet.add(JSON.stringify(antiNode)));
-};
-exports.partTwo = async (input) => {
+}
+export async function partTwo(input) {
   const antinodes = new Set();
-  const antennaMap = exports.generateAntennaMap(input);
-  const diffsMap = exports.generateDiffsMap(antennaMap);
+  const antennaMap = generateAntennaMap(input);
+  const diffsMap = generateDiffsMap(antennaMap);
 
   diffsMap.forEach((value, key) => {
-    exports.plotAntinodesPt2(
+    plotAntinodesPt2(
       key,
       value,
       input.length,
@@ -137,24 +137,21 @@ exports.partTwo = async (input) => {
   });
 
   return antinodes.size;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day08Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

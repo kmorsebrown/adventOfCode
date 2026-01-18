@@ -1,4 +1,4 @@
-const { isNumeric } = require('./maths.js');
+import { isNumeric } from './maths.js';
 const isFirst = (Idx) => {
   return Idx === 0;
 };
@@ -476,7 +476,7 @@ class Point {
   }
 }
 
-module.exports = {
+export {
   isFirst,
   isLast,
   transpose,

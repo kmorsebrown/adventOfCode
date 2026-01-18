@@ -1,12 +1,12 @@
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2023/day/8
-exports.getDirections = async (filepath) => {
+export async function getDirections(filepath) {
   const data = await getData(filepath);
   return data.split('\n\n').shift();
 };
 1;
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
   data = data.split('\n\n').pop();
   data = data.replace(/[()]+/g, '').split('\n');
@@ -22,7 +22,7 @@ exports.formatData = async (filepath) => {
 
 // Part One
 
-exports.partOne = async (instrux, nodes) => {
+export async function partOne(instrux, nodes) {
   let currentNode = 'AAA';
   let steps = 0;
   let i = 0;
@@ -43,7 +43,7 @@ exports.partOne = async (instrux, nodes) => {
 
 // Part Two
 
-exports.calculateLcmForAll = (arr) => {
+export function calculateLcmForAll(arr) {
   /*
   The Euclidean algorithm is a way to find the greatest common divisor of two positive integers.
   GCD of two numbers is the largest number that divides both of them.
@@ -88,7 +88,7 @@ exports.calculateLcmForAll = (arr) => {
   return n;
 };
 
-exports.partTwo = async (instrux, nodes) => {
+export async function partTwo(instrux, nodes) {
   let currentNodes = Object.keys(nodes).filter((node) => node[2] === 'A');
   let steps = 0;
   let i = 0;
@@ -112,20 +112,18 @@ exports.partTwo = async (instrux, nodes) => {
     totalSteps.push(steps);
   });
 
-  return exports.calculateLcmForAll(totalSteps);
+  return calculateLcmForAll(totalSteps);
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day08Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
 
   try {
-    const directions = await exports.getDirections(dataPath);
-    const formattedData = await exports.formatData(dataPath);
+    const directions = await getDirections(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(directions, formattedData),
-      await exports.partTwo(directions, formattedData),
+      await partOne(directions, formattedData),
+      await partTwo(directions, formattedData),
     ]);
     console.log(results);
     return results;
@@ -134,4 +132,3 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();

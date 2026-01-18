@@ -1,6 +1,6 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const _ = require('lodash');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import _ from 'lodash';
 
 // https://adventofcode.com/2024/day/14
 
@@ -9,7 +9,7 @@ const _ = require('lodash');
 const X_IDX = 0;
 const Y_IDX = 1;
 
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const robotStrings = data.split('\n');
   return robotStrings.map((robot) => {
@@ -19,11 +19,11 @@ exports.formatData = async (filepath) => {
       v: parseStringOfInts(splitString[Y_IDX].replace('v=', ''), ','),
     };
   });
-};
+}
 
 // Part One
 
-exports.moveRobot = (robot, width, height) => {
+export function moveRobot(robot, width, height) {
   const startPos = robot.p;
   const velocity = robot.v;
 
@@ -51,32 +51,32 @@ exports.moveRobot = (robot, width, height) => {
     p: [newX, newY],
     v: velocity,
   };
-};
+}
 
-exports.moveRobots = (robots, width, height) => {
+export function moveRobots(robots, width, height) {
   let movedRobots = [];
   for (let i = 0; i < robots.length; i++) {
-    const movedRobot = exports.moveRobot(robots[i], width, height);
+    const movedRobot = moveRobot(robots[i], width, height);
     movedRobots.push(movedRobot);
   }
   return movedRobots;
-};
+}
 
-exports.getRobotPositionsAfterXSeconds = (robots, seconds, width, height) => {
+export function getRobotPositionsAfterXSeconds(robots, seconds, width, height) {
   let currentRobots = [...robots];
   if (seconds > 0) {
     let s = 1;
     while (s <= seconds) {
-      const movedRobots = exports.moveRobots(currentRobots, width, height);
+      const movedRobots = moveRobots(currentRobots, width, height);
       currentRobots = movedRobots;
       s++;
     }
   }
 
   return currentRobots;
-};
+}
 
-exports.getRobotsPerQuadrant = (robots, width, height) => {
+export function getRobotsPerQuadrant(robots, width, height) {
   const center = [Math.floor(width / 2), Math.floor(height / 2)];
 
   const north = _.range(0, center[1]);
@@ -111,40 +111,37 @@ exports.getRobotsPerQuadrant = (robots, width, height) => {
   }
 
   return quadrants;
-};
+}
 
-exports.partOne = async (input, seconds, width, height) => {
-  const movedRobots = exports.getRobotPositionsAfterXSeconds(
+export async function partOne(input, seconds, width, height) {
+  const movedRobots = getRobotPositionsAfterXSeconds(
     input,
     seconds,
     width,
     height
   );
-  const quadrants = exports.getRobotsPerQuadrant(movedRobots, width, height);
+  const quadrants = getRobotsPerQuadrant(movedRobots, width, height);
   return quadrants.ne * quadrants.nw * quadrants.sw * quadrants.se;
-};
+}
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   return input;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day14Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day14Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData, 100, 101, 103),
-      // await exports.partTwo(formattedData),
+      await partOne(formattedData, 100, 101, 103),
+      // await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

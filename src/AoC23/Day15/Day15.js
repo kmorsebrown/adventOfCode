@@ -1,15 +1,15 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2023/day/15
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split(',');
 };
 
 // Part One
 
-exports.runHASH = (string) => {
+export function runHASH(string) {
   let currentValue = 0;
   for (let i = 0; i < string.length; i++) {
     currentValue += string.charCodeAt(i);
@@ -19,19 +19,19 @@ exports.runHASH = (string) => {
   return currentValue;
 };
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let results = [];
-  input.forEach((step) => results.push(exports.runHASH(step)));
+  input.forEach((step) => results.push(runHASH(step)));
   return sum(results);
 };
 
 // Part Two
 
-exports.runHASHMAP = (map, str) => {
+export function runHASHMAP(map, str) {
   const label = str.replace(/[^A-Z]+/gi, '');
   const operator = str.replace(/[^=-]+/gi, '');
   const focalLength = Number(str.replace(/[^0-9]+/gi, ''));
-  const box = exports.runHASH(label);
+  const box = runHASH(label);
 
   let boxContents = [];
   let boxLenses = [];
@@ -58,10 +58,10 @@ exports.runHASHMAP = (map, str) => {
   }
   map.set(box, boxContents);
 };
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   let map = new Map();
 
-  input.forEach((str) => exports.runHASHMAP(map, str));
+  input.forEach((str) => runHASHMAP(map, str));
 
   let focusingPower = 0;
   for (const [key, value] of map) {
@@ -74,16 +74,14 @@ exports.partTwo = async (input) => {
   return focusingPower;
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day15Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day15Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -92,4 +90,3 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();

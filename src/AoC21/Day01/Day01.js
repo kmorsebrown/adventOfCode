@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import fs from 'fs';
+import path from 'path';
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2021/day/1
 
@@ -42,10 +42,11 @@ async function getSumIncreases(input) {
   return numSumIncreases;
 }
 
-async function runDay01() {
-  const dataPath = require.resolve(
-    '../../../src/AoC21/puzzleInputs/Day01Input.txt'
-  );
+async function solve() {
+  const dataPath = new URL(
+    '../puzzleInputs/Day01Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -59,9 +60,4 @@ async function runDay01() {
   }
 }
 
-module.exports = {
-  formatData,
-  getNumIncreases,
-  getSumIncreases,
-  runDay01,
-};
+export { formatData, getNumIncreases, getSumIncreases, solve };

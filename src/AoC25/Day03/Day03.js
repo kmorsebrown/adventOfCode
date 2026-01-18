@@ -1,14 +1,14 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts, unique } = require('../../Utils/parse.js');
-const { sum, sortDescending } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts, unique } from '../../Utils/parse.js';
+import { sum, sortDescending } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/03
 
 // DAY=03 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n');
-};
+}
 
 //
 
@@ -26,7 +26,7 @@ exports.formatData = async (filepath) => {
 
 // Part One
 
-exports.findMaxJoltage = (bank, numBatteriesToTurnOn) => {
+export function findMaxJoltage(bank, numBatteriesToTurnOn) {
   // find unique joltages in bank and arrange from highest to lowest
   const uniqueJoltages = sortDescending(unique(parseStringOfInts(bank, '')));
 
@@ -70,33 +70,28 @@ exports.findMaxJoltage = (bank, numBatteriesToTurnOn) => {
   }
 
   return parseInt(onBatteries.join(''));
-};
-exports.partOne = async (input) => {
-  return sum(input.map((bank) => exports.findMaxJoltage(bank, 2)));
-};
+}
+export async function partOne(input) {
+  return sum(input.map((bank) => findMaxJoltage(bank, 2)));
+}
 
 // Part Two
-exports.partTwo = async (input) => {
-  return sum(input.map((bank) => exports.findMaxJoltage(bank, 12)));
-};
+export async function partTwo(input) {
+  return sum(input.map((bank) => findMaxJoltage(bank, 12)));
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day03Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day03Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 03');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

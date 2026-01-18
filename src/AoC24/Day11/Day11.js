@@ -1,10 +1,10 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2024/day/11
 
 // DAY=11 npm run 2024
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const array = data.split(' ');
   const stones = new Map();
@@ -12,11 +12,11 @@ exports.formatData = async (filepath) => {
     stones.set(array[i], 1);
   }
   return stones;
-};
+}
 
 // Part One
 
-exports.transformStone = (stone) => {
+export function transformStone(stone) {
   if (stone === '0') {
     // If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
     return ['1'];
@@ -36,12 +36,12 @@ exports.transformStone = (stone) => {
     // the old stone's number multiplied by 2024 is engraved on the new stone.
     return [`${parseInt(stone, 10) * 2024}`];
   }
-};
-exports.transformStones = (stones = new Map()) => {
+}
+export function transformStones(stones = new Map()) {
   const transformedStones = new Map();
 
   for (const [stone, numStones] of stones) {
-    let newStones = exports.transformStone(stone);
+    let newStones = transformStone(stone);
     newStones.forEach((newStone) => {
       if (transformedStones.has(newStone)) {
         transformedStones.set(
@@ -55,20 +55,20 @@ exports.transformStones = (stones = new Map()) => {
   }
 
   return transformedStones;
-};
+}
 
-exports.blink = (input, blinks) => {
+export function blink(input, blinks) {
   const queue = new Queue();
-  let blink = 0;
+  let blinkNum = 0;
   let result;
 
   queue.enqueue(input);
 
   while (!queue.isEmpty()) {
-    blink += 1;
+    blinkNum += 1;
     const stones = queue.front();
-    const transformedStones = exports.transformStones(stones);
-    if (blink < blinks) {
+    const transformedStones = transformStones(stones);
+    if (blinkNum < blinks) {
       queue.enqueue(transformedStones);
     } else {
       result = transformedStones;
@@ -76,36 +76,33 @@ exports.blink = (input, blinks) => {
     queue.dequeue();
   }
   return result;
-};
+}
 
-exports.partOne = async (input, blinks) => {
-  const transformedStones = exports.blink(input, blinks);
+export async function partOne(input, blinks) {
+  const transformedStones = blink(input, blinks);
   return sum(Array.from(transformedStones.values()));
-};
+}
 
 // Part Two
 
-exports.partTwo = async (input, blinks) => {
-  const result = await exports.partOne(input, blinks);
+export async function partTwo(input, blinks) {
+  const result = await partOne(input, blinks);
   return result;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC24/puzzleInputs/Day11Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day11Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData, 25),
-      await exports.partTwo(formattedData, 75),
+      await partOne(formattedData, 25),
+      await partTwo(formattedData, 75),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();

@@ -1,5 +1,6 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   getMappedNum,
   partOne,
@@ -7,7 +8,10 @@ const {
   getLocationNum,
   getLowestLocationNumberInRange,
   partTwo,
-} = require('./Day05');
+} from './Day05.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day05/Day05.spec.js
 
@@ -70,7 +74,7 @@ describe('Day05', () => {
   ]);
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day05TestData.txt');
+      const args = new URL('./Day05TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(formattedData);
     });

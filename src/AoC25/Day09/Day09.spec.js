@@ -1,10 +1,10 @@
-const {
+import {
   formatData,
   partOne,
   partTwo,
   getArea,
   checkIfRectangleInPolygon,
-} = require('./Day09');
+} from './Day09.js';
 
 // npm test -- src/AoC25/Day09/Day09.spec.js
 
@@ -21,7 +21,7 @@ describe('Day09', () => {
   ];
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day09TestData.txt');
+      const args = new URL('./Day09TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

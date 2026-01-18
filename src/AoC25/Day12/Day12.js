@@ -1,7 +1,7 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const { BitwiseShape, BitwiseField } = require('../../Utils/bitwise.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import { BitwiseShape, BitwiseField } from '../../Utils/bitwise.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/12
 
@@ -34,7 +34,7 @@ const formatData = async (filepath) => {
     shapes: formattedShapes,
     regions: formattedRegions,
   };
-};
+}
 
 // Part One
 
@@ -84,7 +84,7 @@ const generateShapePermutations = (shape) => {
   }
 
   return shapePermutations;
-};
+}
 
 const generateShapesToPlaceMap = (shapes, giftsToPlace) => {
   const shapesMap = new Map();
@@ -99,7 +99,7 @@ const generateShapesToPlaceMap = (shapes, giftsToPlace) => {
     });
   }
   return shapesMap;
-};
+}
 
 const getAreaShapesToPlace = (shapes, giftsToPlace) => {
   let totalArea = 0;
@@ -110,7 +110,7 @@ const getAreaShapesToPlace = (shapes, giftsToPlace) => {
     totalArea += area * giftsToPlace[i];
   }
   return totalArea;
-};
+}
 
 const generateShapesMap = (shapes, recordNum = false) => {
   const shapesMap = new Map();
@@ -127,7 +127,7 @@ const generateShapesMap = (shapes, recordNum = false) => {
     }
   }
   return shapesMap;
-};
+}
 
 /**
  *
@@ -322,7 +322,7 @@ const placeGifts = (region, shapes) => {
   };
 
   return placeGift(initialState, shapesToPlaceMap, placedShapesMap);
-};
+}
 
 // how many of the regions can fit all of the presents listed?
 const partOne = async (input) => {
@@ -338,17 +338,15 @@ const partOne = async (input) => {
     num += fitsGifts ? 1 : 0;
   }
   return num;
-};
+}
 
 // Part Two
 const partTwo = async (input) => {
   return input;
-};
+}
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day12Input.txt'
-  );
+  const dataPath = new URL('../puzzleInputs/Day12Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -356,17 +354,14 @@ const solve = async () => {
       await partOne(formattedData),
       // await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 12');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-solve();
 
-module.exports = {
+export {
   solve,
   formatData,
   placeGifts,

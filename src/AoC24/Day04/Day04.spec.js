@@ -1,4 +1,4 @@
-const {
+import {
   formatData,
   concatAndValidate,
   getCoordinatesForAllCases,
@@ -7,7 +7,7 @@ const {
   removeSides,
   partOne,
   partTwo,
-} = require('./Day04');
+} from './Day04.js';
 
 // npm test -- src/AoC24/Day04/Day04.spec.js
 
@@ -83,7 +83,7 @@ describe('Day04', () => {
 
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day04TestData.txt');
+      const args = new URL('./Day04TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockTestPuzzle);
     });

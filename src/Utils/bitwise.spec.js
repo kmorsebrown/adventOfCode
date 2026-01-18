@@ -1,4 +1,4 @@
-const {
+import {
   convertRowToBitwise,
   flipHorizontal,
   flipVertical,
@@ -9,7 +9,8 @@ const {
   BitwiseShape,
   BitwiseGrid,
   BitwiseField,
-} = require('./bitwise.js');
+} from './bitwise.js';
+import { jest } from '@jest/globals';
 // npm test -- src/Utils/grids.spec.js
 
 describe('bitwiseGrids', () => {

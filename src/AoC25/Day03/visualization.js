@@ -1,5 +1,5 @@
-const { parseStringOfInts, unique } = require('../../Utils/parse.js');
-const { sortDescending } = require('../../Utils/maths.js');
+import { parseStringOfInts, unique } from '../../Utils/parse.js';
+import { sortDescending } from '../../Utils/maths.js';
 
 // ANSI color codes for terminal output
 const colors = {
@@ -282,11 +282,11 @@ const runVisualization = async () => {
 };
 
 // Run if executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   runVisualization().catch(console.error);
 }
 
-module.exports = {
+export {
   visualizeBatterySelection,
   runVisualization,
 };

@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const { getData } = require('../../Utils/globalFunctions.js');
+import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2021/day/3
 
@@ -156,10 +154,11 @@ async function getLifeSupportRating(input) {
   return oxGenRating * co2ScrubRating;
 }
 
-async function runDay03() {
-  const dataPath = require.resolve(
-    '../../../src/AoC21/puzzleInputs/Day01Input.txt'
-  );
+async function solve() {
+  const dataPath = new URL(
+    '../puzzleInputs/Day03Input.txt',
+    import.meta.url
+  ).pathname;
 
   try {
     const input = await formatData(dataPath);
@@ -173,12 +172,7 @@ async function runDay03() {
   }
 }
 
-module.exports = {
-  formatData,
-  getPowerConsumption,
-  getLifeSupportRating,
-  runDay03,
-};
+export { formatData, getPowerConsumption, getLifeSupportRating, solve };
 
 //Post-solve refactor with help from Kevin Talley :)
 

@@ -1,12 +1,11 @@
-const {
+import {
   formatData,
   formatDataPt1,
   formatDataPt2,
   evaluateEquation,
-  parseCephalopodMath,
   partOne,
   partTwo,
-} = require('./Day06');
+} from './Day06.js';
 
 // npm test -- src/AoC25/Day06/Day06.spec.js
 
@@ -33,7 +32,7 @@ describe('Day06', () => {
 
   describe('formatData', () => {
     it('Formats the data into an array of strings', async () => {
-      const args = require.resolve('./Day06TestData.txt');
+      const args = new URL('./Day06TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

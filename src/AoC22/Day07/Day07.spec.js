@@ -1,5 +1,10 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatData,
   getSumFiles,
   getLowestLevelDirs,
@@ -11,7 +16,7 @@ const {
   getTopLevelDrSize,
   getUnusedSpace,
   partTwo,
-} = require('./Day07.js');
+} from './Day07.js';
 
 // npm test src/AoC22/Day07/Day07.spec.js
 

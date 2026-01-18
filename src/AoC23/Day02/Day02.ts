@@ -1,5 +1,3 @@
-import * as path from 'path';
-
 import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2023/day/2
@@ -144,9 +142,7 @@ export async function partTwo(input: Game[]): Promise<number> {
 }
 
 export async function solve() {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day02Input.txt'
-  );
+  const dataPath = new URL('../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -165,4 +161,3 @@ export async function solve() {
   }
 }
 
-solve();

@@ -1,4 +1,4 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2025/day/11
 
@@ -16,7 +16,7 @@ const formatData = async (filepath) => {
   }
 
   return serverRack;
-};
+}
 
 // Part One
 
@@ -54,7 +54,7 @@ const partOne = async (input) => {
   dfs('you');
 
   return numPaths;
-};
+}
 
 // Part Two
 
@@ -99,7 +99,7 @@ const getNumPaths = async (
   }
 
   return ways.get(destination) || 0;
-};
+}
 
 const partTwo = async (adj) => {
   const baseIndegree = new Map();
@@ -182,12 +182,10 @@ const partTwo = async (adj) => {
     // If ANY function fails, the whole thing rejects immediately
     console.error('One of the functions failed', error);
   }
-};
+}
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day11Input.txt'
-  );
+  const dataPath = new URL('../puzzleInputs/Day11Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -195,17 +193,14 @@ const solve = async () => {
       await partOne(formattedData),
       await partTwo(formattedData),
     ]);
-    console.log('\n' + 'Day 11');
-    console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-solve();
 
-module.exports = {
+export {
   solve,
   formatData,
   partOne,

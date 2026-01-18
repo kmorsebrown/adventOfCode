@@ -1,4 +1,6 @@
-const { formatData, partOne, getNumPaths, partTwo } = require('./Day11');
+import {
+  formatData, partOne, getNumPaths, partTwo
+} from './Day11.js';
 
 // npm test -- src/AoC25/Day11/Day11.spec.js
 
@@ -34,7 +36,7 @@ describe('Day11', () => {
 
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day11TestData.txt');
+      const args = new URL('./Day11TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInputPt1);
       expect(actual.get('you')).toEqual(['bbb', 'ccc']);

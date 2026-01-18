@@ -722,7 +722,7 @@ class BitwiseField extends BitwiseGrid {
   }
 }
 
-module.exports = {
+export {
   convertRowToBitwise,
   flipHorizontal,
   flipVertical,

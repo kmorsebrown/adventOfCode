@@ -1,9 +1,9 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2023/day/9
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
   data = data.split('\n');
   data = data.map((row) => parseStringOfInts(row, ' '));
@@ -12,7 +12,7 @@ exports.formatData = async (filepath) => {
 
 // For each sequence create a new sequence from the difference between each number in the sequence
 // until all numbers are 0
-exports.getLastStepHistory = (sequence) => {
+export function getLastStepHistory(sequence) {
   let output = [sequence[sequence.length - 1]];
 
   const getNextHistory = (seq) => {
@@ -33,7 +33,7 @@ exports.getLastStepHistory = (sequence) => {
 };
 
 // Part One
-exports.getNextNumberInSequence = (history) => {
+export function getNextNumberInSequence(history) {
   let revHist = history.reverse();
   let nextNum = 0;
   while (revHist.length > 0) {
@@ -42,17 +42,17 @@ exports.getNextNumberInSequence = (history) => {
   return nextNum;
 };
 
-exports.partOne = async (input) => {
-  let lastStepHist = input.map((seq) => exports.getLastStepHistory(seq));
+export async function partOne(input) {
+  let lastStepHist = input.map((seq) => getLastStepHistory(seq));
   let nextNums = lastStepHist.map((his) =>
-    exports.getNextNumberInSequence(his)
+    getNextNumberInSequence(his)
   );
   return sum(nextNums);
 };
 
 // Part Two
 
-exports.getFirstStepHistory = (sequence) => {
+export function getFirstStepHistory(sequence) {
   let output = [sequence[0]];
 
   const getPrevHistory = (seq) => {
@@ -71,7 +71,7 @@ exports.getFirstStepHistory = (sequence) => {
   getPrevHistory(sequence);
   return output;
 };
-exports.getPrevNumberInSequence = (history) => {
+export function getPrevNumberInSequence(history) {
   let revHist = history.reverse();
   let prevNum = 0;
   while (revHist.length > 0) {
@@ -79,24 +79,22 @@ exports.getPrevNumberInSequence = (history) => {
   }
   return prevNum;
 };
-exports.partTwo = async (input) => {
-  let firstStepHist = input.map((seq) => exports.getFirstStepHistory(seq));
+export async function partTwo(input) {
+  let firstStepHist = input.map((seq) => getFirstStepHistory(seq));
   let prevNums = firstStepHist.map((his) =>
-    exports.getPrevNumberInSequence(his)
+    getPrevNumberInSequence(his)
   );
   return sum(prevNums);
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day09Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../puzzleInputs/Day09Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -105,4 +103,3 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();

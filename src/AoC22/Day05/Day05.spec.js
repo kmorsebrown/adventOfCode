@@ -1,11 +1,15 @@
-const path = require('path');
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   formatCratesData,
   formatMovesData,
   moveCrates,
   getTopCrates,
-  useCratemover9001,
-} = require('./Day05.js');
+} from './Day05.js';
 
 describe('Day05', () => {
   describe('formatCratesData', () => {
