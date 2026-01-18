@@ -142,7 +142,7 @@ export async function partTwo(input: Game[]): Promise<number> {
 }
 
 export async function solve() {
-  const dataPath = new URL('../../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
+  const dataPath = new URL('../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -161,4 +161,3 @@ export async function solve() {
   }
 }
 
-solve();

@@ -98,9 +98,9 @@ async function getTopCrates(input) {
   return topBoxes.join('');
 }
 
-async function runDay05() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day05Input.txt',
+    '../puzzleInputs/Day05Input.txt',
     import.meta.url
   ).pathname;
   try {
@@ -118,4 +118,4 @@ async function runDay05() {
   }
 }
 
-export { formatCratesData, formatMovesData, moveCrates, getTopCrates, runDay05 };
+export { formatCratesData, formatMovesData, moveCrates, getTopCrates, solve };

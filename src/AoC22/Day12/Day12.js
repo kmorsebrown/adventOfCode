@@ -203,9 +203,9 @@ async function partTwo(input, startArr, endPosition) {
   return Math.min(...results);
 }
 
-async function runDay12() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day12Input.txt',
+    '../puzzleInputs/Day12Input.txt',
     import.meta.url
   ).pathname;
 
@@ -227,6 +227,6 @@ async function runDay12() {
   }
 }
 
-runDay12();
+solve();
 
-export { formatData, getCoords, getPossibleMoves, generateGraph, findShortestPath, getStartPoints, partTwo, runDay12 };
+export { formatData, getCoords, getPossibleMoves, generateGraph, findShortestPath, getStartPoints, partTwo, solve };

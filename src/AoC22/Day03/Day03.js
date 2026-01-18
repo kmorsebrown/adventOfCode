@@ -86,9 +86,9 @@ async function getBadges(rucksackGroups) {
   return badgeArr;
 }
 
-async function runDay03() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day03Input.txt',
+    '../puzzleInputs/Day03Input.txt',
     import.meta.url
   ).pathname;
 
@@ -107,4 +107,4 @@ async function runDay03() {
   }
 }
 
-export { formatData, findDupLetters, getPrioritySum, getGroups, getBadges, runDay03 };
+export { formatData, findDupLetters, getPrioritySum, getGroups, getBadges, solve };

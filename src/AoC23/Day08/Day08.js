@@ -116,7 +116,7 @@ export async function partTwo(instrux, nodes) {
 };
 
 export async function solve() {
-  const dataPath = new URL('../../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
+  const dataPath = new URL('../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
 
   try {
     const directions = await getDirections(dataPath);
@@ -132,4 +132,3 @@ export async function solve() {
   }
 };
 
-solve();

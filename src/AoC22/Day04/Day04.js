@@ -54,9 +54,9 @@ async function getNumOverlaps(input) {
   return overlapsCount;
 }
 
-async function runDay04() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day04Input.txt',
+    '../puzzleInputs/Day04Input.txt',
     import.meta.url
   ).pathname;
 
@@ -72,4 +72,4 @@ async function runDay04() {
   }
 }
 
-export { formatData, getCountOfFullyContainedOverlaps, getNumOverlaps, runDay04 };
+export { formatData, getCountOfFullyContainedOverlaps, getNumOverlaps, solve };

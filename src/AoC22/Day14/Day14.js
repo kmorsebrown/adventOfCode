@@ -18,9 +18,9 @@ async function partTwo(input) {
   return input;
 }
 
-async function runDay14() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day14Input.txt',
+    '../puzzleInputs/Day14Input.txt',
     import.meta.url
   ).pathname;
 
@@ -36,4 +36,4 @@ async function runDay14() {
   }
 }
 
-export { formatData, partOne, partTwo, runDay14 };
+export { formatData, partOne, partTwo, solve };

@@ -42,9 +42,9 @@ async function getSumIncreases(input) {
   return numSumIncreases;
 }
 
-async function runDay01() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day01Input.txt',
+    '../puzzleInputs/Day01Input.txt',
     import.meta.url
   ).pathname;
 
@@ -60,4 +60,4 @@ async function runDay01() {
   }
 }
 
-export { formatData, getNumIncreases, getSumIncreases, runDay01 };
+export { formatData, getNumIncreases, getSumIncreases, solve };

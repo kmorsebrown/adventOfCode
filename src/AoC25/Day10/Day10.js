@@ -249,7 +249,7 @@ const partTwo = async (input) => {
 };
 
 const solve = async () => {
-  const dataPath = new URL('../../puzzleInputs/Day10Input.txt', import.meta.url)
+  const dataPath = new URL('../puzzleInputs/Day10Input.txt', import.meta.url)
     .pathname;
 
   try {
@@ -266,10 +266,6 @@ const solve = async () => {
   }
 };
 
-// Only run solve() when this file is executed directly
-if (import.meta.url.endsWith(process.argv[1])) {
-  solve();
-}
 
 export {
   solve,

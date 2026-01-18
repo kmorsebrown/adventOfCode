@@ -14,7 +14,8 @@ async function runDays() {
     if (dayNum.length === 1) {
       dayNum = `0${dayNum}`;
     }
-    await import(`./Day${dayNum}/Day${dayNum}.js`);
+    const { solve } = await import(`./Day${dayNum}/Day${dayNum}.js`);
+    await solve();
   } else {
     const dayList = fs
       .readdirSync(__dirname)
@@ -23,7 +24,10 @@ async function runDays() {
       );
 
     for (const day of dayList) {
-      await import(path.join(__dirname, path.join(day, `${day}.js`)));
+      const { solve } = await import(
+        path.join(__dirname, path.join(day, `${day}.js`))
+      );
+      await solve();
     }
   }
 }

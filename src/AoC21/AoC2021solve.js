@@ -1,56 +1,37 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { appendFile } from '../Utils/globalFunctions.js';
-import { runDay01 } from './Day01/Day01.js';
-import { runDay02 } from './Day02/Day02.js';
-import { runDay03 } from './Day03/Day03.js';
-import { runDay04 } from './Day04/Day04.js';
-import { runDay05 } from './Day05/Day05.js';
+
+// DAY=1 npm run 2021
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function printResults() {
-  const reportFilepath = path.join(
-    path.dirname(path.dirname(__dirname)),
-    'Results.txt'
-  );
+let dayNum = process.env.DAY;
 
-  await fs.promises.writeFile(reportFilepath, 'Advent of Code 2021', {
-    encoding: 'utf8',
-    flag: 'w',
-  });
+async function runDays() {
+  if (dayNum) {
+    if (dayNum.length === 1) {
+      dayNum = `0${dayNum}`;
+    }
+    const { solve } = await import(`./Day${dayNum}/Day${dayNum}.js`);
+    const results = await solve();
+    console.log(results);
+  } else {
+    const dayList = fs
+      .readdirSync(__dirname)
+      .filter(
+        (filename) => filename.startsWith('Day') && !filename.endsWith('XX')
+      );
 
-  // Run Day 01
-  await appendFile(reportFilepath, '\n\nDay 1: Sonar Sweep');
-  const day01resultsArr = await runDay01();
-  await appendFile(reportFilepath, `\n - Part One: ${day01resultsArr[0]}`);
-  await appendFile(reportFilepath, `\n - Part Two: ${day01resultsArr[1]}`);
-
-  // Run Day 02
-  await appendFile(reportFilepath, '\n\nDay 2: Dive!');
-  const day02resultsArr = await runDay02();
-  await appendFile(reportFilepath, `\n - Part One: ${day02resultsArr[0]}`);
-  await appendFile(reportFilepath, `\n - Part Two: ${day02resultsArr[1]}`);
-
-  // Run Day 03
-  await appendFile(reportFilepath, '\n\nDay 3: Binary Diagnostic');
-  const day03resultsArr = await runDay03();
-  await appendFile(reportFilepath, `\n - Part One: ${day03resultsArr[0]}`);
-  await appendFile(reportFilepath, `\n - Part Two: ${day03resultsArr[1]}`);
-
-  // Run Day 04
-  await appendFile(reportFilepath, '\n\nDay 4: Giant Squid');
-  const day04resultsArr = await runDay04();
-  await appendFile(reportFilepath, `\n - Part One: ${day04resultsArr[0]}`);
-  await appendFile(reportFilepath, `\n - Part Two: ${day04resultsArr[1]}`);
-
-  // Run Day 05
-  await appendFile(reportFilepath, '\n\nDay 5: Hydrothermal Venture');
-  const day05resultsArr = await runDay05();
-  await appendFile(reportFilepath, `\n - Part One: ${day05resultsArr[0]}`);
-  await appendFile(reportFilepath, `\n - Part Two: ${day05resultsArr[1]}`);
+    for (const day of dayList) {
+      console.log(`${day}:`);
+      const { solve } = await import(path.join(__dirname, path.join(day, `${day}.js`)));
+      const results = await solve();
+      console.log(results);
+      console.log('\n');
+    }
+  }
 }
 
-printResults();
+runDays();

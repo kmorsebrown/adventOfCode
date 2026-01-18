@@ -210,9 +210,9 @@ async function partTwo(inspectedTotalArr) {
   return mostActive * secondMostActive;
 }
 
-async function runDay11() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day11Input.txt',
+    '../puzzleInputs/Day11Input.txt',
     import.meta.url
   ).pathname;
 
@@ -228,4 +228,4 @@ async function runDay11() {
   }
 }
 
-export { formatData, getWorryWhileInspect, getTestResult, partOne, getInspectedTotal, partTwo, runDay11 };
+export { formatData, getWorryWhileInspect, getTestResult, partOne, getInspectedTotal, partTwo, solve };

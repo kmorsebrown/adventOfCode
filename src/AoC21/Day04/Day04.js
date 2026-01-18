@@ -254,9 +254,9 @@ async function getTotalScore(boards, boardIndex) {
   const winningBoard = boards[boardIndex];
   return winningBoard.totalScore;
 }
-async function runDay04() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day04Input.txt',
+    '../puzzleInputs/Day04Input.txt',
     import.meta.url
   ).pathname;
 
@@ -287,5 +287,5 @@ export {
   getWinningBoardsArr,
   getBoardWinOrder,
   getTotalScore,
-  runDay04,
+  solve,
 };

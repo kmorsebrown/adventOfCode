@@ -35,9 +35,9 @@ async function getSumTopThree(input) {
   return topThree.reduce((a, b) => a + b, 0);
 }
 
-async function runDay01() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day01Input.txt',
+    '../puzzleInputs/Day01Input.txt',
     import.meta.url
   ).pathname;
 
@@ -54,4 +54,4 @@ async function runDay01() {
   }
 }
 
-export { getHighestTotal, formatData, sumCalories, getSumTopThree, runDay01 };
+export { getHighestTotal, formatData, sumCalories, getSumTopThree, solve };

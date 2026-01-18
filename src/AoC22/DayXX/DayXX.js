@@ -20,7 +20,7 @@ async function partTwo(input) {
 
 async function runDayXX() {
   const dataPath = new URL(
-    '../../puzzleInputs/DayXXInput.txt',
+    '../puzzleInputs/DayXXInput.txt',
     import.meta.url
   ).pathname;
 

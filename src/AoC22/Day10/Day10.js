@@ -86,9 +86,9 @@ async function partTwo(input) {
   return render;
 }
 
-async function runDay10() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day10Input.txt',
+    '../puzzleInputs/Day10Input.txt',
     import.meta.url
   ).pathname;
 
@@ -104,4 +104,4 @@ async function runDay10() {
   }
 }
 
-export { formatData, getAddxNum, getCycleMap, partOne, partTwo, runDay10 };
+export { formatData, getAddxNum, getCycleMap, partOne, partTwo, solve };

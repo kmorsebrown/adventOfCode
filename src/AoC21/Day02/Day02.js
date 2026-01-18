@@ -71,9 +71,9 @@ async function getPositionMultiplierWithAim(input) {
   return depth * horizPosition;
 }
 
-async function runDay02() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day02Input.txt',
+    '../puzzleInputs/Day02Input.txt',
     import.meta.url
   ).pathname;
 
@@ -89,4 +89,4 @@ async function runDay02() {
   }
 }
 
-export { formatData, getPositionMultiplier, getPositionMultiplierWithAim, runDay02 };
+export { formatData, getPositionMultiplier, getPositionMultiplierWithAim, solve };

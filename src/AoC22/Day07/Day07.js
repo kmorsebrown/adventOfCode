@@ -168,9 +168,9 @@ function partTwo(map) {
   return smallestLargeEnoughDirSize;
 }
 
-async function runDay07() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day07Input.txt',
+    '../puzzleInputs/Day07Input.txt',
     import.meta.url
   ).pathname;
 
@@ -187,4 +187,4 @@ async function runDay07() {
   }
 }
 
-export { formatData, getSumFiles, getLowestLevelDirs, getParentDirs, getChildDirTotal, getCompletedDirs, getDirTotals, partOne, getTopLevelDrSize, getUnusedSpace, partTwo, runDay07 };
+export { formatData, getSumFiles, getLowestLevelDirs, getParentDirs, getChildDirTotal, getCompletedDirs, getDirTotals, partOne, getTopLevelDrSize, getUnusedSpace, partTwo, solve };

@@ -108,7 +108,7 @@ export async function partTwo(input) {
 }
 
 export async function solve() {
-  const dataregion = new URL('../../puzzleInputs/Day12Input.txt', import.meta.url).pathname;
+  const dataregion = new URL('../puzzleInputs/Day12Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataregion);
@@ -123,4 +123,3 @@ export async function solve() {
   }
 }
 
-solve();

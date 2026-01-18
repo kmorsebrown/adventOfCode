@@ -222,7 +222,7 @@ export async function partTwo(input) {
 };
 
 export async function solve() {
-  const dataPath = new URL('../../puzzleInputs/Day10Input.txt', import.meta.url).pathname;
+  const dataPath = new URL('../puzzleInputs/Day10Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -237,7 +237,6 @@ export async function solve() {
   }
 };
 
-solve();
 
 // const mockDataA = ['-L|F7', '7S-7|', 'L|7||', '-L-J|', 'L|-JF'];
 // this.partOne(mockDataA);

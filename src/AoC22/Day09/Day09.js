@@ -187,9 +187,9 @@ async function partTwo(movesArr, numKnots) {
   return unique.length;
 }
 
-async function runDay09() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day09Input.txt',
+    '../puzzleInputs/Day09Input.txt',
     import.meta.url
   ).pathname;
 
@@ -205,4 +205,4 @@ async function runDay09() {
   }
 }
 
-export { formatData, moveHead, moveTail, followDirections, partOne, partTwo, runDay09 };
+export { formatData, moveHead, moveTail, followDirections, partOne, partTwo, solve };

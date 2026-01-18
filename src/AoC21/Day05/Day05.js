@@ -160,9 +160,9 @@ async function partTwo(coordinates) {
     .reduce((a, v) => (v > 1 ? a + 1 : a), 0);
 }
 
-async function runDay05() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day05Input.txt',
+    '../puzzleInputs/Day05Input.txt',
     import.meta.url
   ).pathname;
 
@@ -186,5 +186,5 @@ export {
   markDiagLines,
   partOne,
   partTwo,
-  runDay05,
+  solve,
 };

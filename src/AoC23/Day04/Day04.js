@@ -113,7 +113,7 @@ async function partTwo(input) {
 }
 
 async function solve() {
-  const dataPath = new URL('../../puzzleInputs/Day04Input.txt', import.meta.url).pathname;
+  const dataPath = new URL('../puzzleInputs/Day04Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -128,7 +128,6 @@ async function solve() {
   }
 }
 
-solve();
 
 export {
   formatData,

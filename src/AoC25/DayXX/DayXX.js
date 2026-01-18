@@ -20,7 +20,7 @@ export async function partTwo(input) {
 }
 
 export async function solve() {
-  const dataPath = new URL('../../puzzleInputs/DayXXInput.txt', import.meta.url).pathname;
+  const dataPath = new URL('../puzzleInputs/DayXXInput.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -36,7 +36,3 @@ export async function solve() {
   }
 }
 
-// Only run solve() when this file is executed directly
-if (import.meta.url.endsWith(process.argv[1])) {
-  solve();
-}

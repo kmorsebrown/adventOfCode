@@ -43,9 +43,9 @@ async function getNumCharactersProcessed(input, markerType) {
   return i;
 }
 
-async function runDay06() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day06Input.txt',
+    '../puzzleInputs/Day06Input.txt',
     import.meta.url
   ).pathname;
 
@@ -61,4 +61,4 @@ async function runDay06() {
   }
 }
 
-export { formatData, getNumCharactersProcessed, runDay06 };
+export { formatData, getNumCharactersProcessed, solve };

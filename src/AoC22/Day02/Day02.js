@@ -120,9 +120,9 @@ async function calculateRealScore(input) {
   return gameScore;
 }
 
-async function runDay02() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day02Input.txt',
+    '../puzzleInputs/Day02Input.txt',
     import.meta.url
   ).pathname;
 
@@ -146,5 +146,5 @@ export {
   calculateScore,
   translateGuide,
   calculateRealScore,
-  runDay02,
+  solve,
 };

@@ -154,9 +154,9 @@ async function getLifeSupportRating(input) {
   return oxGenRating * co2ScrubRating;
 }
 
-async function runDay03() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day03Input.txt',
+    '../puzzleInputs/Day03Input.txt',
     import.meta.url
   ).pathname;
 
@@ -172,7 +172,7 @@ async function runDay03() {
   }
 }
 
-export { formatData, getPowerConsumption, getLifeSupportRating, runDay03 };
+export { formatData, getPowerConsumption, getLifeSupportRating, solve };
 
 //Post-solve refactor with help from Kevin Talley :)
 

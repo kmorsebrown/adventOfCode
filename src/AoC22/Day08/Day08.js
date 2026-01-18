@@ -131,9 +131,9 @@ async function partTwo(input) {
   return Math.max(...scenicScoreArr);
 }
 
-async function runDay08() {
+async function solve() {
   const dataPath = new URL(
-    '../../puzzleInputs/Day08Input.txt',
+    '../puzzleInputs/Day08Input.txt',
     import.meta.url
   ).pathname;
 
@@ -149,4 +149,4 @@ async function runDay08() {
   }
 }
 
-export { formatData, countEdgeTrees, getTreesAbove, getTreesBelow, getTreesLeft, getTreesRight, partOne, getDirectionScore, getScenicScore, partTwo, runDay08 };
+export { formatData, countEdgeTrees, getTreesAbove, getTreesBelow, getTreesLeft, getTreesRight, partOne, getDirectionScore, getScenicScore, partTwo, solve };
