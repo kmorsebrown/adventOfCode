@@ -20,6 +20,6 @@ const partTwo = async (input) => {
   return input;
 };
 
-const solve = createSolver(formatData, partOne, partTwo, '11', import.meta.url);
+const solve = createSolver(formatData, partOne, partTwo, 'XX', import.meta.url);
 
 export { solve, formatData, partOne, partTwo };
