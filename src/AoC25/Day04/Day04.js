@@ -72,11 +72,12 @@ const partOne = async (input) => {
 // Part Two
 
 const removeRolls = async (grid, accessibleRolls) => {
-  let newGrid = grid;
+  // Create a deep copy to avoid mutating the original grid
+  let newGrid = grid.map(row => [...row]);
   accessibleRolls.forEach((currentRoll) => {
     const { row, col } = currentRoll;
 
-    grid[row][col] = '.';
+    newGrid[row][col] = '.';
   });
 
   return newGrid;
@@ -90,7 +91,7 @@ const findAndRemoveAccessibleRolls = async (
   let newGrid = await removeRolls(grid, accessibleRolls);
   let newNumRollsRemoved = numRollsRemoved + accessibleRolls.size;
 
-  let newAccessibleRolls = await findAccessiblePaper(grid);
+  let newAccessibleRolls = await findAccessiblePaper(newGrid);
 
   if (newAccessibleRolls.size === 0) {
     return newNumRollsRemoved;
