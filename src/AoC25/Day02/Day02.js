@@ -1,10 +1,11 @@
 import { getData, Queue } from '../../Utils/globalFunctions.js';
 import { sum, sortAscending } from '../../Utils/maths.js';
+import { createSolver } from '../../Utils/createSolver.js';
 
 // https://adventofcode.com/2025/day/02
 
 // DAY=02 npm run 2025
-export async function formatData(filepath) {
+async function formatData(filepath) {
   const data = await getData(filepath);
   const formatted = data.split(',').map((range) => {
     return range.trim().split('-');
@@ -33,7 +34,7 @@ const splitId = (id) => {
     return [parseInt(firstHalf), parseInt(secondHalf)];
   }
 };
-export function getSubstring(id, n) {
+function getSubstring(id, n) {
   if (id.length % n != 0) {
     console.error(`Invalid Input: ${id.length} is not divisible by ${n}`);
     return;
@@ -53,7 +54,7 @@ const roundDownToEven = (num) => {
 };
 
 // https://www.geeksforgeeks.org/dsa/find-all-factors-of-a-natural-number/
-export function findDivisors(id) {
+function findDivisors(id) {
   let divisors = [];
   let n = id.length;
 
@@ -77,7 +78,7 @@ export function findDivisors(id) {
 }
 
 // Part One
-export function filterRangesPartOne(ranges) {
+function filterRangesPartOne(ranges) {
   return ranges
     .map((range) => {
       const startId = range[0];
@@ -123,7 +124,7 @@ export function filterRangesPartOne(ranges) {
     .filter(Boolean);
 }
 
-export function findDuplicatesInRangePartOne(range) {
+function findDuplicatesInRangePartOne(range) {
   const startId = range[0];
   const splitStartId = splitId(startId);
 
@@ -151,7 +152,7 @@ export function findDuplicatesInRangePartOne(range) {
   return invalidIdFirstHalves.map((num) => `${num}${num}`);
 }
 
-export async function partOne(input) {
+async function partOne(input) {
   const filteredRanges = filterRangesPartOne(input);
 
   const invalidIds = filteredRanges
@@ -163,7 +164,7 @@ export async function partOne(input) {
 
 // Part Two
 
-export function filterRangesPartTwo(ranges) {
+function filterRangesPartTwo(ranges) {
   let newRanges = [];
 
   ranges.forEach((range) => {
@@ -192,7 +193,7 @@ export function filterRangesPartTwo(ranges) {
 
   return newRanges;
 }
-export function findInvalidIds(range) {
+function findInvalidIds(range) {
   const startId = range[0];
   const endId = range[1];
 
@@ -223,7 +224,7 @@ export function findInvalidIds(range) {
   return [...invalidIds];
 }
 
-export async function partTwo(input) {
+async function partTwo(input) {
   const filteredRanges = filterRangesPartTwo(input);
 
   const invalidIds = filteredRanges
@@ -233,18 +234,18 @@ export async function partTwo(input) {
   return sum(invalidIds);
 }
 
-export async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day02Input.txt', import.meta.url).pathname;
+const solve = createSolver(formatData, partOne, partTwo, '02', import.meta.url);
 
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.error(err);
-  }
-}
+export {
+  formatData,
+  getSubstring,
+  filterRangesPartOne,
+  findDuplicatesInRangePartOne,
+  partOne,
+  filterRangesPartTwo,
+  findDivisors,
+  findInvalidIds,
+  partTwo,
+  solve,
+};
 

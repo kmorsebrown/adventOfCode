@@ -4,6 +4,7 @@ import {
   getCoordinatesForAllMatches,
   getAdjacentMatches,
 } from '../../Utils/grids.js';
+import { createSolver } from '../../Utils/createSolver.js';
 
 // https://adventofcode.com/2025/day/04
 
@@ -114,21 +115,7 @@ const partTwo = async (input) => {
   return numRollsRemoved;
 };
 
-async function solve() {
-  const dataPath = new URL('../puzzleInputs/Day04Input.txt', import.meta.url)
-    .pathname;
-
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-}
+const solve = createSolver(formatData, partOne, partTwo, '04', import.meta.url);
 
 export {
   formatData,

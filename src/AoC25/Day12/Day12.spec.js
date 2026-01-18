@@ -6,8 +6,8 @@ import {
   generateShapesMap,
   getAreaShapesToPlace,
   partOne,
-  partTwo,
 } from './Day12.js';
+import { getTestDataPath } from '../../Utils/paths.js';
 import { BitwiseShape, BitwiseField } from '../../Utils/bitwise.js';
 
 // npm test -- src/AoC25/Day12/Day12.spec.js
@@ -59,7 +59,7 @@ describe('Day12', () => {
   });
   describe('formatData', () => {
     it('Formats the data', async () => {
-      const args = new URL('./Day12TestData.txt', import.meta.url).pathname;
+      const args = getTestDataPath('12', import.meta.url);
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });
@@ -227,13 +227,6 @@ describe('Day12', () => {
     it('returns the number of regions that can fit shapes', async () => {
       const actual = await partOne(mockInput);
       expect(actual).toEqual(2);
-    });
-  });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
     });
   });
 });

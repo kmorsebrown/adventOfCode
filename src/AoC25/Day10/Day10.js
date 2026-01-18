@@ -1,4 +1,5 @@
 import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { createSolver } from '../../Utils/createSolver.js';
 import { parseStringOfInts } from '../../Utils/parse.js';
 import {
   sum,
@@ -248,21 +249,7 @@ const partTwo = async (input) => {
   );
 };
 
-const solve = async () => {
-  const dataPath = new URL('../puzzleInputs/Day10Input.txt', import.meta.url)
-    .pathname;
-
-  try {
-    const formattedData = await formatData(dataPath);
-    const results = await Promise.all([
-      await partOne(formattedData),
-      await partTwo(formattedData),
-    ]);
-    return results;
-  } catch (err) {
-    console.log(err);
-  }
-};
+const solve = createSolver(formatData, partOne, partTwo, '10', import.meta.url);
 
 
 export {

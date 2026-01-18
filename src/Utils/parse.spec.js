@@ -1,6 +1,26 @@
-import { parseStringOfInts, mergeOverlap, unique } from './parse.js';
+import {
+  parseStringOfInts,
+  splitLines,
+  splitSections,
+  mergeOverlap,
+  unique,
+} from './parse.js';
+
+const lines = '34\n25\n27';
+
+const sections = 'a\nb\n\n27 35';
 
 describe('parse', () => {
+  describe('splitLines', () => {
+    it('splits data by newline', () => {
+      expect(splitLines(lines, true)).toEqual(['34', '25', '27']);
+    });
+  });
+  describe('splitSections', () => {
+    it('splits data by sections', () => {
+      expect(splitSections(sections)).toEqual(['a\nb', '27 35']);
+    });
+  });
   describe('parseStringOfInts', () => {
     it('parses integers from space seperated string', () => {
       const input = '83 86  6 31 17  9 48 53';
