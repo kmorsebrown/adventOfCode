@@ -1,7 +1,7 @@
 import { formatData, partOne, partTwo } from './DayXX.js';
 import { getTestDataPath } from '../../Utils/paths.js';
 
-// npm test -- src/AoC25/DayXX/DayXX.spec.js
+// npm test -- src/AoC15/DayXX/DayXX.spec.js
 
 describe('DayXX', () => {
   const mockInput = [];

@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "2015": "node src/AoC15/AoC2015solve.js",
     "2021": "rm -rf ./Results.txt && node src/AoC21/AoC2021solve.js",
     "2022": "rm -rf ./Results.txt && node src/AoC22/AoC2022solve.js",
     "2023": "rm -rf ./dist && mkdir ./dist && tsc && cp -r src/AoC23/puzzleInputs dist/AoC23/ && node dist/AoC23/AoC2023solve.js",

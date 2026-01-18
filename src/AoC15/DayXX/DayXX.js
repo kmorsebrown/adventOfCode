@@ -1,9 +1,9 @@
 import { getData } from '../../Utils/globalFunctions.js';
 import { createSolver } from '../../Utils/createSolver.js';
 
-// https://adventofcode.com/2025/day/XX
+// https://adventofcode.com/2015/day/XX
 
-// DAY=X npm run 2025
+// DAY=X npm run 2015
 const formatData = async (filepath) => {
   const data = await getData(filepath);
   return data;
