@@ -1,11 +1,11 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts, mergeOverlap } = require('../../Utils/parse.js');
-const { sortAscending, sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts, mergeOverlap } from '../../Utils/parse.js';
+import { sortAscending, sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/5
 
 // DAY=05 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const splitData = data.split('\n\n');
   const availableIds = splitData[1].split('\n').map((id) => parseInt(id));
@@ -15,7 +15,7 @@ exports.formatData = async (filepath) => {
       .map((range) => parseStringOfInts(range, '-')),
     availableIds: availableIds,
   };
-};
+}
 
 // Part One
 
@@ -23,7 +23,7 @@ const checkIfFresh = (range, id) => {
   return id >= range[0] && id <= range[1];
 };
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   const { freshIds, availableIds } = input;
   const mergedRanges = mergeOverlap(freshIds);
   const sortedIds = sortAscending(availableIds);
@@ -39,30 +39,28 @@ exports.partOne = async (input) => {
   });
 
   return freshAvailableIds.size;
-};
+}
 
 // Part Two
 const getNumIdsInRange = (range) => {
   return range[1] - range[0] + 1;
 };
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   const { freshIds, availableIds } = input;
   const mergedRanges = mergeOverlap(freshIds);
 
   return sum(mergedRanges.map((range) => getNumIdsInRange(range)));
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day05Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day05Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 05');
     console.log(results);
@@ -70,6 +68,6 @@ exports.solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

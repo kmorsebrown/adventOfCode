@@ -1,18 +1,18 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const {
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import {
   arrayifyGrid,
   getCoordinatesForAllMatches,
   getAdjacentMatches,
-} = require('../../Utils/grids.js');
+} from '../../Utils/grids.js';
 
 // https://adventofcode.com/2025/day/04
 
 // DAY=04 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   let parsedData = data.split('\n');
   return arrayifyGrid(parsedData, '');
-};
+}
 
 /*
   rolls of paper (@) arranged in a grid
@@ -35,7 +35,7 @@ exports.formatData = async (filepath) => {
 
 // Part One
 
-exports.findAccessiblePaper = async (grid) => {
+export async function findAccessiblePaper(grid) {
   let queue = new Queue();
   const paperRollsCoords = getCoordinatesForAllMatches(grid, '@');
 
@@ -62,16 +62,16 @@ exports.findAccessiblePaper = async (grid) => {
   }
 
   return accessibleRolls;
-};
+}
 
-exports.partOne = async (input) => {
-  const accessibleRolls = await exports.findAccessiblePaper(input);
+export async function partOne(input) {
+  const accessibleRolls = await findAccessiblePaper(input);
   return accessibleRolls.size;
-};
+}
 
 // Part Two
 
-exports.removeRolls = async (grid, accessibleRolls) => {
+export async function removeRolls(grid, accessibleRolls) {
   let newGrid = grid;
   accessibleRolls.forEach((currentRoll) => {
     const { row, col } = currentRoll;
@@ -80,17 +80,17 @@ exports.removeRolls = async (grid, accessibleRolls) => {
   });
 
   return newGrid;
-};
+}
 
 const findAndRemoveAccessibleRolls = async (
   grid,
   accessibleRolls,
   numRollsRemoved
 ) => {
-  let newGrid = await exports.removeRolls(grid, accessibleRolls);
+  let newGrid = await removeRolls(grid, accessibleRolls);
   let newNumRollsRemoved = numRollsRemoved + accessibleRolls.size;
 
-  let newAccessibleRolls = await exports.findAccessiblePaper(grid);
+  let newAccessibleRolls = await findAccessiblePaper(grid);
 
   if (newAccessibleRolls.size === 0) {
     return newNumRollsRemoved;
@@ -103,26 +103,24 @@ const findAndRemoveAccessibleRolls = async (
   );
 };
 
-exports.partTwo = async (input) => {
-  const accessibleRolls = await exports.findAccessiblePaper(input);
+export async function partTwo(input) {
+  const accessibleRolls = await findAccessiblePaper(input);
   const numRollsRemoved = await findAndRemoveAccessibleRolls(
     input,
     accessibleRolls,
     0
   );
   return numRollsRemoved;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day04Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day04Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 04');
     console.log(results);
@@ -130,6 +128,6 @@ exports.solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

@@ -1,4 +1,4 @@
-exports.parseStringOfInts = (str, separator) => {
+const parseStringOfInts = (str, separator) => {
   return str
     .trim()
     .split(separator)
@@ -6,7 +6,7 @@ exports.parseStringOfInts = (str, separator) => {
     .filter((r) => !isNaN(r));
 };
 
-exports.unique = (arr) => {
+const unique = (arr) => {
   const seen = new Set();
   return arr.filter((value) => {
     // typeof null is 'object'
@@ -29,7 +29,7 @@ exports.unique = (arr) => {
 };
 
 // https://www.geeksforgeeks.org/dsa/merging-intervals/
-exports.mergeOverlap = (arr) => {
+const mergeOverlap = (arr) => {
   if (arr.length === 0) return [];
 
   // Sort intervals based on start values
@@ -51,4 +51,10 @@ exports.mergeOverlap = (arr) => {
   }
 
   return res;
+};
+
+module.exports = {
+  parseStringOfInts,
+  unique,
+  mergeOverlap,
 };

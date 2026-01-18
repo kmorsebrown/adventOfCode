@@ -1,10 +1,5 @@
-const {
-  getData,
-  Queue,
-  Graph,
-  PriorityQueue,
-} = require('./globalFunctions.js');
-const path = require('path');
+import { getData, Queue, Graph, PriorityQueue } from './globalFunctions.js';
+import path from 'path';
 
 describe('globalFunctions', () => {
   describe('getData', () => {

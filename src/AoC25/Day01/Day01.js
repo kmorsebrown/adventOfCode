@@ -1,20 +1,20 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
+import { getData, Queue } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2025/day/1
 
 // DAY=1 npm run 2025
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   let dataArr = data.split('\n').filter(String);
   return dataArr;
-};
+}
 
 // Part One
 /*
   count the number of times the dial is left pointing at 0
   after any rotation in the sequence
 */
-exports.rotateDial = (start, rotation) => {
+export function rotateDial(start, rotation) {
   const direction = rotation.slice(0, 1);
   const distanceValue = parseInt(rotation.slice(1, rotation.length), 10);
 
@@ -23,32 +23,32 @@ exports.rotateDial = (start, rotation) => {
   // if direction L, towards lower numbers
   // left from 0 by 1 click = 99
   if (direction === 'L') {
-    return exports.validateLeftTurn(start - distanceValue);
+    return validateLeftTurn(start - distanceValue);
   }
 
   // if direction R, towards higher numbers
   // right from 99 by 1 click = 0
 
   if (direction === 'R') {
-    return exports.validateRightTurn(start + distanceValue);
+    return validateRightTurn(start + distanceValue);
   }
-};
+}
 
-exports.validateLeftTurn = (num) => {
+export function validateLeftTurn(num) {
   if (num >= 0) {
     return num;
   }
-  return exports.validateLeftTurn(100 + num);
-};
+  return validateLeftTurn(100 + num);
+}
 
-exports.validateRightTurn = (num) => {
+export function validateRightTurn(num) {
   if (num <= 99) {
     return num;
   }
-  return exports.validateRightTurn(num - 100);
-};
+  return validateRightTurn(num - 100);
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let numZeroes = 0;
   let dialPointedAt = 50;
 
@@ -60,7 +60,7 @@ exports.partOne = async (input) => {
 
   while (!queue.isEmpty()) {
     let rotation = queue.front();
-    let result = exports.rotateDial(dialPointedAt, rotation);
+    let result = rotateDial(dialPointedAt, rotation);
 
     if (result === 0) {
       numZeroes += 1;
@@ -71,7 +71,7 @@ exports.partOne = async (input) => {
   }
 
   return numZeroes;
-};
+}
 
 // Part Two
 
@@ -80,34 +80,34 @@ exports.partOne = async (input) => {
   regardless of whether it happens during a rotation or at the end of one
 */
 
-exports.validateLeftTurnPt2 = (startNum, num, zeroCount) => {
+export function validateLeftTurnPt2(startNum, num, zeroCount) {
   if (num > 0) {
     return { dialPointedAt: num, zeroCount: zeroCount };
   }
   if (num === 0) {
     return { dialPointedAt: num, zeroCount: zeroCount + 1 };
   }
-  return exports.validateLeftTurnPt2(
+  return validateLeftTurnPt2(
     100 + num,
     100 + num,
     startNum === 0 ? zeroCount : zeroCount + 1
   );
-};
+}
 
-exports.validateRightTurnPt2 = (num, zeroCount) => {
+export function validateRightTurnPt2(num, zeroCount) {
   if (num === 0) {
     return { dialPointedAt: num, zeroCount: zeroCount + 1 };
   }
   if (num <= 99) {
     return { dialPointedAt: num, zeroCount: zeroCount };
   }
-  return exports.validateRightTurnPt2(
+  return validateRightTurnPt2(
     num - 100,
     num - 100 === 0 ? zeroCount : zeroCount + 1
   );
-};
+}
 
-exports.rotateDialPt2 = (start, rotation, zeroCount) => {
+export function rotateDialPt2(start, rotation, zeroCount) {
   const direction = rotation.slice(0, 1);
   const distanceValue = parseInt(rotation.slice(1, rotation.length), 10);
 
@@ -116,18 +116,18 @@ exports.rotateDialPt2 = (start, rotation, zeroCount) => {
   // if direction L, towards lower numbers
   // left from 0 by 1 click = 99
   if (direction === 'L') {
-    return exports.validateLeftTurnPt2(start, start - distanceValue, zeroCount);
+    return validateLeftTurnPt2(start, start - distanceValue, zeroCount);
   }
 
   // if direction R, towards higher numbers
   // right from 99 by 1 click = 0
 
   if (direction === 'R') {
-    return exports.validateRightTurnPt2(start + distanceValue, zeroCount);
+    return validateRightTurnPt2(start + distanceValue, zeroCount);
   }
-};
+}
 
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   let numZeroes = 0;
   let dialPointedAt = 50;
 
@@ -139,7 +139,7 @@ exports.partTwo = async (input) => {
 
   while (!queue.isEmpty()) {
     let rotation = queue.front();
-    let result = exports.rotateDialPt2(dialPointedAt, rotation, numZeroes);
+    let result = rotateDialPt2(dialPointedAt, rotation, numZeroes);
 
     numZeroes = result.zeroCount;
     dialPointedAt = result.dialPointedAt;
@@ -148,18 +148,16 @@ exports.partTwo = async (input) => {
   }
 
   return numZeroes;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day01Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day01Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log('\n' + 'Day 01');
     console.log(results);
@@ -167,6 +165,6 @@ exports.solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

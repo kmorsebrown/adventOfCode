@@ -1,4 +1,4 @@
-const {
+import {
   sum,
   sortDescending,
   sortAscending,
@@ -9,7 +9,7 @@ const {
   cartesianGenerator,
   getCombinations,
   combinationRepetitionGenerator,
-} = require('./maths.js');
+} from './maths.js';
 // npm test -- src/Utils/maths.spec.js
 
 describe('maths', () => {

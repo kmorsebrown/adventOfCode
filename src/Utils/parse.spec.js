@@ -1,4 +1,4 @@
-const { parseStringOfInts, mergeOverlap, unique } = require('./parse.js');
+import { parseStringOfInts, mergeOverlap, unique } from './parse.js';
 
 describe('parse', () => {
   describe('parseStringOfInts', () => {

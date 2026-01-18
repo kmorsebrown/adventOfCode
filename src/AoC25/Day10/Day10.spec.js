@@ -1,4 +1,6 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   fewestButtonPressesForLights,
   maskLightDiagram,
@@ -10,12 +12,15 @@ const {
   getMatchingPatternCombos,
   getButtonComboPatterns,
   partTwo,
-} = require('./Day10');
+} from './Day10.js';
 
-const {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import {
   combinationRepetitionGenerator,
   getCombinations,
-} = require('../../Utils/maths.js');
+} from '../../Utils/maths.js';
 
 // npm test -- src/AoC25/Day10/Day10.spec.js
 
@@ -134,7 +139,7 @@ describe('Day10', () => {
   ]);
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day10TestData.txt');
+      const args = new URL('./Day10TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

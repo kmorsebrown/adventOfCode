@@ -1,4 +1,4 @@
-const {
+import {
   isFirst,
   isLast,
   transpose,
@@ -15,7 +15,7 @@ const {
   getCoordinatesForAllMatches,
   checkPointOnSegment,
   checkPointInPolygon,
-} = require('./grids.js');
+} from './grids.js';
 // npm test -- src/Utils/grids.spec.js
 
 describe('grids', () => {

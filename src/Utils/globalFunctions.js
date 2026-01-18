@@ -4,7 +4,7 @@ import fs from 'fs';
 export const PART1_KEY = 'Part1';
 export const PART2_KEY = 'Part2';
 
-export async function getData(filePath) {
+async function getData(filePath) {
   try {
     const data = await fs.promises.readFile(filePath, { encoding: 'utf8' });
     return data;
@@ -14,7 +14,7 @@ export async function getData(filePath) {
   }
 }
 
-export const appendFile = async (filePath, newLine) => {
+const appendFile = async (filePath, newLine) => {
   try {
     await fs.promises.readFile(filePath);
     await fs.promises.appendFile(filePath, newLine);
@@ -24,7 +24,7 @@ export const appendFile = async (filePath, newLine) => {
   }
 };
 
-export class Graph {
+class Graph {
   constructor() {
     this.adjacencyList = new Map();
   }
@@ -78,7 +78,7 @@ export class Graph {
 }
 
 // Queue class
-export class Queue {
+class Queue {
   /*
     Could implement with an array, but it's inefficient for dequeue (removing from the front)
     because shift() has O(n) complexity (n = num elements) b/c all subsequent elements must be shifted
@@ -149,7 +149,7 @@ export class Queue {
   }
 }
 
-export function handleLargeArray(data) {
+function handleLargeArray(data) {
   const MAX_ARRAY_LENGTH = Math.pow(2, 32) - 2; // Maximum allowed array length in JavaScript
 
   if (data.length > MAX_ARRAY_LENGTH) {
@@ -178,7 +178,7 @@ export function handleLargeArray(data) {
 // https://www.geeksforgeeks.org/javascript/implementation-priority-queue-javascript/
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 
-export class PriorityQueue {
+class PriorityQueue {
   static #top = 0;
   static #parent(i) {
     return ((i + 1) >>> 1) - 1;
@@ -288,4 +288,11 @@ export class PriorityQueue {
   }
 }
 
-// All exports are already done above as named exports
+module.exports = {
+  getData,
+  appendFile,
+  Graph,
+  Queue,
+  handleLargeArray,
+  PriorityQueue,
+};

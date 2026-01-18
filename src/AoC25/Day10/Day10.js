@@ -1,16 +1,16 @@
-const { getData, Queue } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const {
+import { getData, Queue } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import {
   sum,
   isEven,
   generateRange,
   combinationRepetitionGenerator,
-} = require('../../Utils/maths.js');
+} from '../../Utils/maths.js';
 
 // https://adventofcode.com/2025/day/10
 
 // DAY=10 npm run 2025
-const formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   const machines = data.split('\n');
 
@@ -32,13 +32,13 @@ const formatData = async (filepath) => {
     formatted.push({ lightDiagram, buttonSchematics, joltageRequirement });
   }
   return formatted;
-};
+}
 
 const maskLightDiagram = (diagram) => {
   return diagram.reduce((mask, char, i) => {
     return char === '#' ? mask | (1 << i) : mask;
   }, 0);
-};
+}
 
 const maskButtonSchematic = (button) => {
   // start with 0000
@@ -49,7 +49,7 @@ const maskButtonSchematic = (button) => {
   }
   // console.log(`${JSON.stringify(button)}: ${mask}`);
   return mask;
-};
+}
 
 // Part One
 
@@ -88,7 +88,7 @@ const fewestButtonPressesForLights = (lightDiagram, buttonSchematics) => {
     }
     queue.dequeue();
   }
-};
+}
 
 const partOne = async (input) => {
   const buttonPresses = input.map((machine) =>
@@ -96,7 +96,7 @@ const partOne = async (input) => {
   );
 
   return sum(buttonPresses);
-};
+}
 
 // Part Two
 
@@ -115,7 +115,7 @@ const generatePatterns = (length) => {
     arr = arr.concat(newArr);
   }
   return arr;
-};
+}
 
 const getPatternMap = (length, buttons) => {
   const patterns = generatePatterns(length);
@@ -140,7 +140,7 @@ const getPatternMap = (length, buttons) => {
     patternMap.set(pattern, combosForPattern);
   }
   return patternMap;
-};
+}
 
 const getButtonComboPatterns = (length, buttons) => {
   let combinations = [];
@@ -176,7 +176,7 @@ const getButtonComboPatterns = (length, buttons) => {
     }
   }
   return comboPatterns;
-};
+}
 
 const getMatchingPatternCombos = (state, combinations) => {
   const pattern = state.map((el) => (isEven(el) ? 0 : 1)).join(',');
@@ -189,7 +189,7 @@ const getMatchingPatternCombos = (state, combinations) => {
     }
   }
   return filtered;
-};
+}
 
 const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
   const buttonComboPatterns = getPatternMap(
@@ -235,7 +235,7 @@ const fewestButtonPressesForJoltage = (targetJoltage, buttonSchematics) => {
   };
 
   return getNumPresses(targetJoltage);
-};
+}
 
 const partTwo = async (input) => {
   return sum(
@@ -246,12 +246,10 @@ const partTwo = async (input) => {
       )
     )
   );
-};
+}
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day10Input.txt'
-  );
+  const dataPath = new URL('../../puzzleInputs/Day10Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -265,7 +263,7 @@ const solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
 solve();
 
@@ -282,4 +280,4 @@ module.exports = {
   getMatchingPatternCombos,
   getButtonComboPatterns,
   partTwo,
-};
+}

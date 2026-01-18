@@ -1,17 +1,17 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const {
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import {
   getDistance,
   sortDescending,
   sortAscending,
-} = require('../../Utils/maths.js');
+} from '../../Utils/maths.js';
 // https://adventofcode.com/2025/day/8
 
 // DAY=8 npm run 2025
-const formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n').map((str) => parseStringOfInts(str, ','));
-};
+}
 
 // Part One
 const getAllDistances = (points) => {
@@ -51,7 +51,7 @@ const getAllDistances = (points) => {
     }
     return 0;
   });
-};
+}
 
 const partOne = async (input, numConnections) => {
   const distanceData = [...getAllDistances(input)].slice(0, numConnections);
@@ -95,7 +95,7 @@ const partOne = async (input, numConnections) => {
   ).slice(0, 3);
 
   return topThreeCircuits.reduce((a, b) => a * b);
-};
+}
 
 // Part Two
 /*
@@ -154,12 +154,10 @@ const partTwo = async (input) => {
   }
 
   return finalConnection[0][0] * finalConnection[1][0];
-};
+}
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day08Input.txt'
-  );
+  const dataPath = new URL('../../puzzleInputs/Day08Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -173,7 +171,7 @@ const solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
 solve();
 
@@ -183,4 +181,4 @@ module.exports = {
   getAllDistances,
   partOne,
   partTwo,
-};
+}

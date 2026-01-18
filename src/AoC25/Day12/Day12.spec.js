@@ -1,4 +1,6 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   placeGifts,
   generateShapePermutations,
@@ -7,8 +9,11 @@ const {
   getAreaShapesToPlace,
   partOne,
   partTwo,
-} = require('./Day12');
-const { BitwiseShape, BitwiseField } = require('../../Utils/bitwise.js');
+} from './Day12.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+import { BitwiseShape, BitwiseField } from '../../Utils/bitwise.js';
 
 // npm test -- src/AoC25/Day12/Day12.spec.js
 
@@ -59,7 +64,7 @@ describe('Day12', () => {
   });
   describe('formatData', () => {
     it('Formats the data', async () => {
-      const args = require.resolve('./Day12TestData.txt');
+      const args = new URL('./Day12TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockInput);
     });

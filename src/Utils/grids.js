@@ -1,4 +1,4 @@
-const { isNumeric } = require('./maths.js');
+import isNumeric from './maths.js';
 const isFirst = (Idx) => {
   return Idx === 0;
 };

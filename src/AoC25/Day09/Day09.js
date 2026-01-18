@@ -1,25 +1,25 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
-const { combinations } = require('../../Utils/maths.js');
-const {
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
+import { combinations } from '../../Utils/maths.js';
+import {
   checkPointInPolygon,
   checkSegmentsIntersect,
   checkSegmentsColinear,
-} = require('../../Utils/grids.js');
+} from '../../Utils/grids.js';
 
 // https://adventofcode.com/2025/day/9
 
 // DAY=9 npm run 2025
-const formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n').map((str) => parseStringOfInts(str, ','));
-};
+}
 
 const getArea = (t1, t2) => {
   const length = Math.abs(t1[1] - t2[1]) + 1;
   const width = Math.abs(t1[0] - t2[0]) + 1;
   return length * width;
-};
+}
 
 // Part One
 
@@ -56,7 +56,7 @@ const partOne = async (input) => {
   }
 
   return largestArea;
-};
+}
 
 // Part Two
 
@@ -135,7 +135,7 @@ const checkIfRectangleInPolygon = (p1, p2, polygon) => {
     }
     return true;
   }
-};
+}
 
 const partTwo = async (input) => {
   const areas = new Map();
@@ -178,12 +178,10 @@ const partTwo = async (input) => {
   }
 
   return largestArea;
-};
+}
 
 const solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC25/puzzleInputs/Day09Input.txt'
-  );
+  const dataPath = new URL('../../puzzleInputs/Day09Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -197,7 +195,7 @@ const solve = async () => {
   } catch (err) {
     console.log(err);
   }
-};
+}
 
 solve();
 
@@ -208,4 +206,4 @@ module.exports = {
   partTwo,
   getArea,
   checkIfRectangleInPolygon,
-};
+}
