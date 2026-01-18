@@ -8,11 +8,11 @@ import {
 // https://adventofcode.com/2025/day/04
 
 // DAY=04 npm run 2025
-export async function formatData(filepath) {
+const formatData = async (filepath) => {
   const data = await getData(filepath);
   let parsedData = data.split('\n');
   return arrayifyGrid(parsedData, '');
-}
+};
 
 /*
   rolls of paper (@) arranged in a grid
@@ -35,7 +35,7 @@ export async function formatData(filepath) {
 
 // Part One
 
-export async function findAccessiblePaper(grid) {
+const findAccessiblePaper = async (grid) => {
   let queue = new Queue();
   const paperRollsCoords = getCoordinatesForAllMatches(grid, '@');
 
@@ -62,16 +62,16 @@ export async function findAccessiblePaper(grid) {
   }
 
   return accessibleRolls;
-}
+};
 
-export async function partOne(input) {
+const partOne = async (input) => {
   const accessibleRolls = await findAccessiblePaper(input);
   return accessibleRolls.size;
-}
+};
 
 // Part Two
 
-export async function removeRolls(grid, accessibleRolls) {
+const removeRolls = async (grid, accessibleRolls) => {
   let newGrid = grid;
   accessibleRolls.forEach((currentRoll) => {
     const { row, col } = currentRoll;
@@ -80,7 +80,7 @@ export async function removeRolls(grid, accessibleRolls) {
   });
 
   return newGrid;
-}
+};
 
 const findAndRemoveAccessibleRolls = async (
   grid,
@@ -103,7 +103,7 @@ const findAndRemoveAccessibleRolls = async (
   );
 };
 
-export async function partTwo(input) {
+const partTwo = async (input) => {
   const accessibleRolls = await findAccessiblePaper(input);
   const numRollsRemoved = await findAndRemoveAccessibleRolls(
     input,
@@ -111,10 +111,11 @@ export async function partTwo(input) {
     0
   );
   return numRollsRemoved;
-}
+};
 
-export async function solve() {
-  const dataPath = new URL('../../puzzleInputs/Day04Input.txt', import.meta.url).pathname;
+const solve = async () => {
+  const dataPath = new URL('../../puzzleInputs/Day04Input.txt', import.meta.url)
+    .pathname;
 
   try {
     const formattedData = await formatData(dataPath);
@@ -128,9 +129,19 @@ export async function solve() {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 // Only run solve() when this file is executed directly
 if (import.meta.url.endsWith(process.argv[1])) {
   solve();
 }
+
+export {
+  formatData,
+  findAccessiblePaper,
+  partOne,
+  removeRolls,
+  findAndRemoveAccessibleRolls,
+  partTwo,
+  solve,
+};

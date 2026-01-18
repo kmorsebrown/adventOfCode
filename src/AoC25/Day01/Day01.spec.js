@@ -121,7 +121,6 @@ describe('Day01', () => {
   describe('partTwo', () => {
     it('Password 6', async () => {
       const args = mockInput;
-      console.error(mockInput);
       const actual = await partTwo(args);
       expect(actual).toEqual(6);
     });
