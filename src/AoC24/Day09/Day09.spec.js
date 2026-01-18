@@ -161,6 +161,7 @@ describe('Day09', () => {
     ['7', '7', '7'],
     ['.'],
     ['8', '8', '8', '8'],
+    [],
     ['9', '9'],
   ];
   const mockRearrangedPt2 = [
@@ -277,11 +278,11 @@ describe('Day09', () => {
   describe('parseDataPt2', () => {
     it('decodes a short string of data', async () => {
       const actual = await parseDataPt2('12345');
-      expect(actual).toEqual(mockParsedShort);
+      expect(actual).toEqual(mockParsedShortPt2);
     });
     it('decodes a medium string of data', async () => {
       const actual = await parseDataPt2(mockInputLong);
-      expect(actual).toEqual(mockParsedLong);
+      expect(actual).toEqual(mockParsedLongPt2);
     });
   });
   describe('rearrangeBlocksPt2', () => {

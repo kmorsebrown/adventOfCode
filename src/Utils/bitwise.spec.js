@@ -10,6 +10,7 @@ import {
   BitwiseGrid,
   BitwiseField,
 } from './bitwise.js';
+import { jest } from '@jest/globals';
 // npm test -- src/Utils/grids.spec.js
 
 describe('bitwiseGrids', () => {

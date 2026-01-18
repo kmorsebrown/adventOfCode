@@ -1,5 +1,6 @@
 import { getData, Queue, Graph, PriorityQueue } from './globalFunctions.js';
 import path from 'path';
+import { jest } from '@jest/globals';
 
 describe('globalFunctions', () => {
   describe('getData', () => {
@@ -195,12 +196,13 @@ describe('globalFunctions', () => {
       graph.addEdge('B', 'D');
       graph.addEdge('C', 'D');
 
-      console.log = jest.fn();
+      const spy = jest.spyOn(console, 'log').mockImplementation();
       graph.printGraph();
 
-      expect(console.log).toHaveBeenCalledWith('A -> B C D ');
-      expect(console.log).toHaveBeenCalledWith('B -> A D ');
-      expect(console.log).toHaveBeenCalledWith('C -> A D ');
+      expect(spy).toHaveBeenCalledWith('A -> B C D ');
+      expect(spy).toHaveBeenCalledWith('B -> A D ');
+      expect(spy).toHaveBeenCalledWith('C -> A D ');
+      spy.mockRestore();
     });
   });
 
