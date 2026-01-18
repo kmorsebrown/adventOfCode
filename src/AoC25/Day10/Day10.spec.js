@@ -1,5 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   fewestButtonPressesForLights,
@@ -13,9 +11,6 @@ import {
   getButtonComboPatterns,
   partTwo,
 } from './Day10.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 import {
   combinationRepetitionGenerator,

@@ -1,5 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   placeGifts,
@@ -10,9 +8,6 @@ import {
   partOne,
   partTwo,
 } from './Day12.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 import { BitwiseShape, BitwiseField } from '../../Utils/bitwise.js';
 
 // npm test -- src/AoC25/Day12/Day12.spec.js

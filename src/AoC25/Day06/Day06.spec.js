@@ -1,17 +1,11 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   formatDataPt1,
   formatDataPt2,
   evaluateEquation,
-  parseCephalopodMath,
   partOne,
   partTwo,
 } from './Day06.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC25/Day06/Day06.spec.js
 

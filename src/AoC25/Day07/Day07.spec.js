@@ -1,11 +1,6 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData, moveBeam, partOne, partTwo
 } from './Day07.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC25/Day07/Day07.spec.js
 

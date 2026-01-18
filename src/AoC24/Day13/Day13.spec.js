@@ -1,5 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   solveAandB,
@@ -7,9 +5,6 @@ import {
   solveAandBpt2,
   partTwo,
 } from './Day13.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day13/Day13.spec.js
 

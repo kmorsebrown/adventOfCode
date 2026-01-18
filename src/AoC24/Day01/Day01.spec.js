@@ -1,9 +1,4 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { formatData, partOne, partTwo } from './Day01.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day01/Day01.spec.js
 

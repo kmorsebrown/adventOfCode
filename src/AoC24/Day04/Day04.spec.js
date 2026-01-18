@@ -1,5 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   concatAndValidate,
@@ -10,9 +8,6 @@ import {
   partOne,
   partTwo,
 } from './Day04.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day04/Day04.spec.js
 

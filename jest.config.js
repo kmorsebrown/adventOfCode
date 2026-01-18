@@ -12,6 +12,10 @@ export default {
       'ts-jest',
       {
         useESM: true,
+        tsconfig: {
+          allowJs: true,
+          module: 'esnext',
+        },
       },
     ],
   },

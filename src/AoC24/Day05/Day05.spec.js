@@ -1,5 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
 import {
   formatData,
   sortingMap,
@@ -10,9 +8,6 @@ import {
   reorderIncorrectlyOrderedUpdates,
   partTwo,
 } from './Day05.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC24/Day05/Day05.spec.js
 

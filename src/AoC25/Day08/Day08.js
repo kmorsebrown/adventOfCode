@@ -173,12 +173,14 @@ const solve = async () => {
   }
 }
 
-solve();
+// Only run solve() when this file is executed directly
+if (import.meta.url.endsWith(process.argv[1])) {
+  solve();
+}
 
-module.exports = {
+export {
   solve,
-  formatData,
   getAllDistances,
   partOne,
   partTwo,
-}
+};
