@@ -1,5 +1,5 @@
 import { getData } from '../../Utils/globalFunctions.js';
-import { sum } from '../../Utils/maths.js';
+import { sum, sortAscending } from '../../Utils/maths.js';
 import { splitLines, parseStringOfInts } from '../../Utils/parse.js';
 import { createSolver } from '../../Utils/createSolver.js';
 
@@ -38,10 +38,23 @@ const partOne = async (input) => {
 };
 
 // Part Two
+
+/**
+ *
+ * @param {number[]} dimensions
+ */
+const getRibbonLength = (dimensions) => {
+  const asc = sortAscending(dimensions);
+  return 2 * (asc[0] + asc[1]) + asc[0] * asc[1] * asc[2];
+};
 const partTwo = async (input) => {
-  return 'x';
+  let total = 0;
+  for (const gift of input) {
+    total += getRibbonLength(gift);
+  }
+  return total;
 };
 
 const solve = createSolver(formatData, partOne, partTwo, '02', import.meta.url);
 
-export { solve, formatData, getSurfaceArea, partOne, partTwo };
+export { solve, formatData, getSurfaceArea, partOne, getRibbonLength, partTwo };

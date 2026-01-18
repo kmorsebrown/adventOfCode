@@ -1,4 +1,10 @@
-import { formatData, getSurfaceArea, partOne, partTwo } from './Day02.js';
+import {
+  formatData,
+  getSurfaceArea,
+  partOne,
+  getRibbonLength,
+  partTwo,
+} from './Day02.js';
 import { getTestDataPath } from '../../Utils/paths.js';
 
 // npm test -- src/AoC15/Day02/Day02.spec.js
@@ -31,11 +37,20 @@ describe('Day02', () => {
       expect(actual).toEqual(58 + 43);
     });
   });
-  describe.skip('partTwo', () => {
-    it('TK', async () => {
-      const args = [];
-      const actual = await partTwo(args);
-      expect(actual).toEqual(0);
+  describe('getRibbonLength', () => {
+    it('returns 34 for 2x3x4', () => {
+      const actual = getRibbonLength([2, 3, 4]);
+      expect(actual).toEqual(34);
+    });
+    it('returns 14 for 1x1x10', () => {
+      const actual = getRibbonLength([1, 1, 10]);
+      expect(actual).toEqual(14);
+    });
+  });
+  describe('partTwo', () => {
+    it('returns the total amount of ribbon', async () => {
+      const actual = await partTwo(mockInput);
+      expect(actual).toEqual(34 + 14);
     });
   });
 });
