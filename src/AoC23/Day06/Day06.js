@@ -1,9 +1,9 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
 
 // https://adventofcode.com/2023/day/6
 
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
   data = data.split('\n');
 
@@ -16,9 +16,9 @@ exports.formatData = async (filepath) => {
       recordDist: millimeters[index],
     };
   });
-};
+}
 
-exports.getMinMaxHoldTimeToWin = (race) => {
+export function getMinMaxHoldTimeToWin(race) {
   const { time, recordDist } = race;
 
   // I had to look up quadratic equations for the first time since high school
@@ -34,51 +34,49 @@ exports.getMinMaxHoldTimeToWin = (race) => {
       Math.abs((-1 * time - Math.sqrt(Math.pow(time, 2) - 4 * recordDist)) / 2)
     ) - 1,
   ];
-};
+}
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   // Determine the number of ways you can beat the record in each race
   let numWaysToWin = [];
   input.forEach((race) => {
-    let [min, max] = exports.getMinMaxHoldTimeToWin(race);
+    let [min, max] = getMinMaxHoldTimeToWin(race);
     numWaysToWin.push(max - min + 1);
   });
   // What do you get if you multiply these numbers together?
   return numWaysToWin.reduce((a, b) => a * b);
-};
+}
 
 // Part Two
-exports.formatDataPart2 = async (filepath) => {
+export async function formatDataPart2(filepath) {
   let data = await getData(filepath);
   data = data.split('\n');
   return {
     time: parseInt(data[0].replace(/\D/g, '')),
     recordDist: parseInt(data[1].replace(/\D/g, '')),
   };
-};
+}
 
-exports.partTwo = async (input) => {
-  let [min, max] = exports.getMinMaxHoldTimeToWin(input);
+export async function partTwo(input) {
+  let [min, max] = getMinMaxHoldTimeToWin(input);
   return max - min + 1;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day06Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day06Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
-    const formattedDataPart2 = await exports.formatDataPart2(dataPath);
+    const formattedData = await formatData(dataPath);
+    const formattedDataPart2 = await formatDataPart2(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedDataPart2),
+      await partOne(formattedData),
+      await partTwo(formattedDataPart2),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();

@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { getData } from '../../Utils/globalFunctions.js';
 
 // https://adventofcode.com/2023/day/1
@@ -78,9 +77,7 @@ export async function partTwo(input: string[]) {
 }
 
 export async function solve() {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day01Input.txt'
-  );
+  const dataPath = new URL('../../puzzleInputs/Day01Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);

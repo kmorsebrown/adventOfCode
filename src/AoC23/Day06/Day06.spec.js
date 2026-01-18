@@ -1,10 +1,15 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   getMinMaxHoldTimeToWin,
   formatDataPart2,
   partOne,
   partTwo,
-} = require('./Day06');
+} from './Day06.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day06/Day06.spec.js
 
@@ -29,7 +34,7 @@ describe('Day06', () => {
   };
   describe('formatData', () => {
     it('Formats the data into an array', async () => {
-      const args = require.resolve('./Day06TestData.txt');
+      const args = new URL('./Day06TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(formattedDataPartOne);
     });
@@ -53,7 +58,7 @@ describe('Day06', () => {
   });
   describe('formatDataPart2', () => {
     it('formats data for part 2', async () => {
-      const args = require.resolve('./Day06TestData.txt');
+      const args = new URL('./Day06TestData.txt', import.meta.url).pathname;
       const actual = await formatDataPart2(args);
       expect(actual).toEqual(formattedDataPartTwo);
     });

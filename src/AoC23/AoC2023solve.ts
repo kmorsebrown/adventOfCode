@@ -1,25 +1,33 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 // DAY=1 npm run 2023
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 let dayNum: string | undefined = process.env.DAY;
 
-if (dayNum) {
-  if (dayNum.length === 1) {
-    dayNum = `0${dayNum}`;
-  }
-  require(`./Day${dayNum}/Day${dayNum}.js`);
-} else {
-  const dayList = fs
-    .readdirSync(__dirname)
-    .filter(
-      (filename) => filename.startsWith('Day') && !filename.endsWith('XX')
-    );
+async function runDays() {
+  if (dayNum) {
+    if (dayNum.length === 1) {
+      dayNum = `0${dayNum}`;
+    }
+    await import(`./Day${dayNum}/Day${dayNum}.js`);
+  } else {
+    const dayList = fs
+      .readdirSync(__dirname)
+      .filter(
+        (filename) => filename.startsWith('Day') && !filename.endsWith('XX')
+      );
 
-  dayList.forEach((day) => {
-    console.log(`${day}:`);
-    require(path.join(__dirname, path.join(day, `${day}.js`)));
-    console.log('\n');
-  });
+    for (const day of dayList) {
+      console.log(`${day}:`);
+      await import(path.join(__dirname, path.join(day, `${day}.js`)));
+      console.log('\n');
+    }
+  }
 }
+
+runDays();

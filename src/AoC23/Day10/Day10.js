@@ -1,9 +1,9 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { isFirst, isLast } = require('../../Utils/grids.js');
-const _ = require('lodash');
+import { getData } from '../../Utils/globalFunctions.js';
+import { isFirst, isLast } from '../../Utils/grids.js';
+import _ from 'lodash';
 
 // https://adventofcode.com/2023/day/10
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
   return data.split('\n');
 };
@@ -57,7 +57,7 @@ const RECIPROCAL_CONNECTIONS = {
   and which is assumed to connect back to those two pipes
 */
 
-exports.getStartCoordinates = (input) => {
+export function getStartCoordinates(input) {
   let x = 0;
   let y = 0;
   const animalStartPos = START;
@@ -72,7 +72,7 @@ exports.getStartCoordinates = (input) => {
   return { xIdx: x, yIdx: y };
 };
 
-exports.getPipeFromDir = (data, coordinates, directionFromCurrent) => {
+export function getPipeFromDir(data, coordinates, directionFromCurrent) {
   const { xIdx, yIdx } = coordinates;
   const isFirstRow = isFirst(yIdx);
   const isLastRow = isLast(yIdx, data);
@@ -124,33 +124,33 @@ exports.getPipeFromDir = (data, coordinates, directionFromCurrent) => {
   };
 };
 
-exports.checkConnection = (pipe, directionFromCurrent) => {
+export function checkConnection(pipe, directionFromCurrent) {
   const reciprocalConnection = RECIPROCAL_CONNECTIONS[directionFromCurrent];
   const possibleConnections = CONNECTIONS[reciprocalConnection];
 
   return possibleConnections.includes(pipe);
 };
 
-exports.getStartingPipe = (data) => {
-  const coordinates = exports.getStartCoordinates(data);
+export function getStartingPipe(data) {
+  const coordinates = getStartCoordinates(data);
 
-  const pipeToNorth = exports.getPipeFromDir(data, coordinates, NORTH);
-  const pipeToSouth = exports.getPipeFromDir(data, coordinates, SOUTH);
-  const pipeToEast = exports.getPipeFromDir(data, coordinates, EAST);
-  const pipeToWest = exports.getPipeFromDir(data, coordinates, WEST);
+  const pipeToNorth = getPipeFromDir(data, coordinates, NORTH);
+  const pipeToSouth = getPipeFromDir(data, coordinates, SOUTH);
+  const pipeToEast = getPipeFromDir(data, coordinates, EAST);
+  const pipeToWest = getPipeFromDir(data, coordinates, WEST);
 
   let validConnections = [];
 
-  if (pipeToNorth && exports.checkConnection(pipeToNorth.type, NORTH)) {
+  if (pipeToNorth && checkConnection(pipeToNorth.type, NORTH)) {
     validConnections.push(NORTH);
   }
-  if (pipeToSouth && exports.checkConnection(pipeToSouth.type, SOUTH)) {
+  if (pipeToSouth && checkConnection(pipeToSouth.type, SOUTH)) {
     validConnections.push(SOUTH);
   }
-  if (pipeToEast && exports.checkConnection(pipeToEast.type, EAST)) {
+  if (pipeToEast && checkConnection(pipeToEast.type, EAST)) {
     validConnections.push(EAST);
   }
-  if (pipeToWest && exports.checkConnection(pipeToWest.type, WEST)) {
+  if (pipeToWest && checkConnection(pipeToWest.type, WEST)) {
     validConnections.push(WEST);
   }
 
@@ -165,10 +165,10 @@ exports.getStartingPipe = (data) => {
     coords: coordinates,
   };
 };
-exports.getNextStep = (data, currentStep) => {
+export function getNextStep(data, currentStep) {
   const { direction, pipe } = currentStep;
 
-  const nextPipe = exports.getPipeFromDir(data, pipe.coords, direction);
+  const nextPipe = getPipeFromDir(data, pipe.coords, direction);
   const nextDirection = PIPES[nextPipe.type]
     .filter((d) => d !== RECIPROCAL_CONNECTIONS[direction])
     .toString();
@@ -178,9 +178,9 @@ exports.getNextStep = (data, currentStep) => {
     pipe: nextPipe,
   };
 };
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let steps = 0;
-  let startingPipe = exports.getStartingPipe(input);
+  let startingPipe = getStartingPipe(input);
   let startingDirections = PIPES[startingPipe.type];
   let currentStep = {
     branchA: {
@@ -200,8 +200,8 @@ exports.partOne = async (input) => {
   // count steps until both branches are on the same coordiantes again
   do {
     let nextStep = {
-      branchA: exports.getNextStep(input, currentStep.branchA),
-      branchB: exports.getNextStep(input, currentStep.branchB),
+      branchA: getNextStep(input, currentStep.branchA),
+      branchB: getNextStep(input, currentStep.branchB),
     };
     prevStep.branchA = currentStep.branchA;
     prevStep.branchB = currentStep.branchB;
@@ -217,20 +217,18 @@ exports.partOne = async (input) => {
 };
 
 // Part Two
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   return input;
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day10Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day10Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      // await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      // await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -239,7 +237,7 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();
+solve();
 
 // const mockDataA = ['-L|F7', '7S-7|', 'L|7||', '-L-J|', 'L|-JF'];
 // this.partOne(mockDataA);

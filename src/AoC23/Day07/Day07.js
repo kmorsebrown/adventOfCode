@@ -1,8 +1,8 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { sum } = require('../../Utils/maths.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { sum } from '../../Utils/maths.js';
 
 // https://adventofcode.com/2023/day/7
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   let data = await getData(filepath);
 
   data = data.split('\n').map((e) => {
@@ -41,7 +41,7 @@ const countOccurrence = (char, str) => {
   return str.match(new RegExp(char, 'g')).length;
 };
 
-exports.getHandType = (hand) => {
+export function getHandType(hand) {
   const distinctChars = getDistinct(hand);
   let charOccurrences = [];
 
@@ -65,7 +65,7 @@ exports.getHandType = (hand) => {
   }
 };
 
-exports.compareHandStrengthPartOne = (a, b) => {
+export function compareHandStrengthPartOne(a, b) {
   // Order hands first by type
 
   // Hand type, strongest to weakest:
@@ -79,8 +79,8 @@ exports.compareHandStrengthPartOne = (a, b) => {
     HIGH_CARD, // all 5 have distinct labels
   ];
 
-  const a_handTypeIndex = handType.indexOf(exports.getHandType(a.hand));
-  const b_handTypeIndex = handType.indexOf(exports.getHandType(b.hand));
+  const a_handTypeIndex = handType.indexOf(getHandType(a.hand));
+  const b_handTypeIndex = handType.indexOf(getHandType(b.hand));
 
   if (a_handTypeIndex < b_handTypeIndex) {
     return -1;
@@ -126,13 +126,13 @@ exports.compareHandStrengthPartOne = (a, b) => {
   return 0;
 };
 
-exports.partOne = async (input) => {
+export async function partOne(input) {
   // Goal to order hands based on the strength of each hand
   // A hand consists of 5 cards
   // each card has exactly one label, and each hand has exactly one type
 
   // sort hands by hand strength
-  let sortedHands = input.sort(exports.compareHandStrengthPartOne);
+  let sortedHands = input.sort(compareHandStrengthPartOne);
 
   // each hand wins an amount equal to bid multipled by its rank
   // weakest hand is rank 1, second-weakest gets rank 2, etc.
@@ -159,7 +159,7 @@ const getDistinctAndCount = (str) => {
   }
   return m;
 };
-exports.getHandTypeWithJokers = (hand) => {
+export function getHandTypeWithJokers(hand) {
   const distinctChars = getDistinctAndCount(hand);
   const charOccurrences = Array.from(distinctChars.values());
 
@@ -211,7 +211,7 @@ exports.getHandTypeWithJokers = (hand) => {
   }
 };
 
-exports.compareHandStrengthWithJokers = (a, b) => {
+export function compareHandStrengthWithJokers(a, b) {
   // Order hands first by type
 
   // Hand type, strongest to weakest:
@@ -226,10 +226,10 @@ exports.compareHandStrengthWithJokers = (a, b) => {
   ];
 
   const a_handTypeIndex = handType.indexOf(
-    exports.getHandTypeWithJokers(a.hand)
+    getHandTypeWithJokers(a.hand)
   );
   const b_handTypeIndex = handType.indexOf(
-    exports.getHandTypeWithJokers(b.hand)
+    getHandTypeWithJokers(b.hand)
   );
 
   if (a_handTypeIndex < b_handTypeIndex) {
@@ -275,13 +275,13 @@ exports.compareHandStrengthWithJokers = (a, b) => {
   }
   return 0;
 };
-exports.partTwo = async (input) => {
+export async function partTwo(input) {
   // Goal to order hands based on the strength of each hand
   // A hand consists of 5 cards
   // each card has exactly one label, and each hand has exactly one type
 
   // sort hands by hand strength
-  let sortedHands = input.sort(exports.compareHandStrengthWithJokers);
+  let sortedHands = input.sort(compareHandStrengthWithJokers);
 
   // each hand wins an amount equal to bid multipled by its rank
   // weakest hand is rank 1, second-weakest gets rank 2, etc.
@@ -294,16 +294,14 @@ exports.partTwo = async (input) => {
   return sum(winnings);
 };
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day07Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day07Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
@@ -312,4 +310,4 @@ exports.solve = async () => {
   }
 };
 
-exports.solve();
+solve();

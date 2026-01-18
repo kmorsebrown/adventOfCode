@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getData, appendFile } from '../Utils/globalFunctions.js';
+import { appendFile } from '../Utils/globalFunctions.js';
 import { runDay01 } from './Day01/Day01.js';
 import { runDay02 } from './Day02/Day02.js';
 import { runDay03 } from './Day03/Day03.js';

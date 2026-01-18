@@ -1,4 +1,6 @@
-const {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {
   formatData,
   getHandType,
   compareHandStrengthPartOne,
@@ -6,7 +8,10 @@ const {
   getHandTypeWithJokers,
   compareHandStrengthWithJokers,
   partTwo,
-} = require('./Day07');
+} from './Day07.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // npm test -- src/AoC23/Day07/Day07.spec.js
 
@@ -42,7 +47,7 @@ describe('Day07', () => {
   const HIGH_CARD = 'HIGH_CARD'; // all 5 have distinct labels
   describe('formatData', () => {
     it('Formats the data into an array of objects', async () => {
-      const args = require.resolve('./Day07TestData.txt');
+      const args = new URL('./Day07TestData.txt', import.meta.url).pathname;
       const actual = await formatData(args);
       expect(actual).toEqual(mockData);
     });

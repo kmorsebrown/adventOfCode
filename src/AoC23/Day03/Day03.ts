@@ -1,5 +1,3 @@
-import * as path from 'path';
-
 import { getData } from '../../Utils/globalFunctions.js';
 
 type Coordinates = {
@@ -269,9 +267,7 @@ export async function partTwo(data: string[]) {
 }
 
 export async function solve() {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day03Input.txt'
-  );
+  const dataPath = new URL('../../puzzleInputs/Day03Input.txt', import.meta.url).pathname;
 
   try {
     const formattedData = await formatData(dataPath);

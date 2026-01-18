@@ -1,9 +1,9 @@
-const { getData } = require('../../Utils/globalFunctions.js');
-const { parseStringOfInts } = require('../../Utils/parse.js');
+import { getData } from '../../Utils/globalFunctions.js';
+import { parseStringOfInts } from '../../Utils/parse.js';
 
 // https://adventofcode.com/2023/day/5
 
-exports.formatData = async (filepath) => {
+export async function formatData(filepath) {
   const data = await getData(filepath);
 
   let dataMap = new Map();
@@ -42,14 +42,14 @@ exports.formatData = async (filepath) => {
   });
 
   return dataMap;
-};
+}
 
-exports.getMappedNum = (srcNum, numArr, index) => {
+export function getMappedNum(srcNum, numArr, index) {
   const { destRngStrt, srcRngStrt, rngLngth } = numArr[index];
   if (srcNum >= srcRngStrt && srcNum < srcRngStrt + rngLngth) {
     return destRngStrt + (srcNum - srcRngStrt);
   } else if (index < numArr.length - 1) {
-    return exports.getMappedNum(srcNum, numArr, index + 1);
+    return getMappedNum(srcNum, numArr, index + 1);
   } else {
     return srcNum;
   }
@@ -64,10 +64,10 @@ exports.getMappedNum = (srcNum, numArr, index) => {
 
   return srcNum
   */
-};
+}
 
 // Part One
-exports.partOne = async (input) => {
+export async function partOne(input) {
   let i = 0;
   let mappedNums = [];
 
@@ -76,7 +76,7 @@ exports.partOne = async (input) => {
       mappedNums.push(value);
     } else {
       mappedNums.push(
-        mappedNums[i].map((num) => exports.getMappedNum(num, value, 0))
+        mappedNums[i].map((num) => getMappedNum(num, value, 0))
       );
       i += 1;
       /* Alt code from Eli's solve for future reference
@@ -97,11 +97,11 @@ exports.partOne = async (input) => {
     })
 
   */
-};
+}
 
 // Part Two
 
-exports.getSeedRanges = (array) => {
+export function getSeedRanges(array) {
   const seedRanges = [];
 
   for (let i = 0; i < array.length; i += 2) {
@@ -117,26 +117,26 @@ exports.getSeedRanges = (array) => {
 
   return seedRanges;
   //.map((pair) => [...range(pair[0], pair[1])]).flat();
-};
+}
 
-exports.getLocationNum = (startNum, input) => {
+export function getLocationNum(startNum, input) {
   let currentNum = startNum;
   for (let [key, value] of input) {
     if (key !== 'seeds') {
-      currentNum = exports.getMappedNum(currentNum, value, 0);
+      currentNum = getMappedNum(currentNum, value, 0);
     }
   }
   return currentNum;
-};
+}
 
-exports.getLowestLocationNumberInRange = (range, input) => {
+export function getLowestLocationNumberInRange(range, input) {
   let [seedId, length] = range;
 
   let lowestLocationNum;
   let currentSeed = seedId;
 
   do {
-    const locationNum = exports.getLocationNum(currentSeed, input);
+    const locationNum = getLocationNum(currentSeed, input);
     if (
       typeof lowestLocationNum === 'undefined' ||
       locationNum < lowestLocationNum
@@ -147,14 +147,14 @@ exports.getLowestLocationNumberInRange = (range, input) => {
   } while (currentSeed < seedId + length);
 
   return lowestLocationNum;
-};
+}
 
-exports.partTwo = async (input) => {
-  const seedRanges = exports.getSeedRanges(input.get('seeds'));
+export async function partTwo(input) {
+  const seedRanges = getSeedRanges(input.get('seeds'));
 
   let lowestLocationNum;
   seedRanges.forEach((range) => {
-    let lowestLocationNumInRange = exports.getLowestLocationNumberInRange(
+    let lowestLocationNumInRange = getLowestLocationNumberInRange(
       range,
       input
     );
@@ -166,27 +166,25 @@ exports.partTwo = async (input) => {
     }
   });
   return lowestLocationNum;
-};
+}
 
-exports.solve = async () => {
-  const dataPath = require.resolve(
-    '../../../src/AoC23/puzzleInputs/Day05Input.txt'
-  );
+export async function solve() {
+  const dataPath = new URL('../../puzzleInputs/Day05Input.txt', import.meta.url).pathname;
 
   try {
-    const formattedData = await exports.formatData(dataPath);
+    const formattedData = await formatData(dataPath);
     const results = await Promise.all([
-      await exports.partOne(formattedData),
-      await exports.partTwo(formattedData),
+      await partOne(formattedData),
+      await partTwo(formattedData),
     ]);
     console.log(results);
     return results;
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.solve();
+solve();
 
 // revisit Eli's solution later & see what I can learn from it
 // https://github.com/dispatchrabbi/advent-of-code/blob/main/puzzles/2023/5/puzzle.js
